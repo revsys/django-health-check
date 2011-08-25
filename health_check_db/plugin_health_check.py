@@ -1,7 +1,7 @@
 from health_check.backends.base import BaseHealthCheckBackend, HealthCheckStatusType
 from health_check.models import TestModel
 from django.db import DatabaseError, IntegrityError
-from health_check import plugin_dir
+from health_check.plugins import plugin_dir
 
 class DjangoDatabaseBackend(BaseHealthCheckBackend):
 

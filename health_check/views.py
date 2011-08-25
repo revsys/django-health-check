@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseServerError
 from django.template import loader
-from health_check import plugin_dir
+from health_check.plugins import plugin_dir
 from health_check.backends.base import HealthCheckStatusType
 def home(request):
     plugins = []

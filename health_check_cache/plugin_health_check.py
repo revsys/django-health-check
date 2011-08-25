@@ -1,6 +1,6 @@
 from django.core.cache.backends.base import CacheKeyWarning
 from health_check.backends.base import BaseHealthCheckBackend, HealthCheckStatusType
-from health_check import plugin_dir
+from health_check.plugins import plugin_dir
 from django.core.cache import cache
 
 class CacheBackend(BaseHealthCheckBackend):

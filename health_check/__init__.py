@@ -5,11 +5,9 @@ __version_info__ = {
     'minor': 1,
     'micro': 0,
     'releaselevel': 'alpha',
-    'serial': 4
+    'serial': 7
 }
 
-
-from health_check.plugins import plugin_dir
 
 def autodiscover():
     """
@@ -22,7 +20,8 @@ def autodiscover():
     from django.conf import settings
     from django.utils.importlib import import_module
     from django.utils.module_loading import module_has_submodule
-
+    from health_check.plugins import plugin_dir
+    
     for app in settings.INSTALLED_APPS:
         mod = import_module(app)
         # Attempt to import the app's admin module.

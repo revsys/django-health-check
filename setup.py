@@ -28,4 +28,6 @@ setup(
     install_requires=[
         'Django>=1.3',
     ],
+    include_package_data=True,
+    zip_safe = False,
 )

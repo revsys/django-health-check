@@ -1,4 +1,4 @@
-from health_check import plugin_dir
+from health_check.plugins import plugin_dir
 from health_check.backends.base import BaseHealthCheckBackend, HealthCheckStatusType
 from health_check_celery.tasks import add
 from datetime import datetime, timedelta
