@@ -28,3 +28,22 @@ The project is made using some of the same codes, that the django admin site use
 plugin_dir.register(DjangoDatabaseBackend)
 ```
 
+
+Installing
+==========
+
+Add this to urls.py
+
+```python
+url(r'^ht/', include('health_check.urls'))
+```
+
+Add required apps:
+
+```python
+    'health_check',
+    'health_check_celery',
+    'health_check_db',
+    'health_check_cache',
+```
+(remember to add dependencies, e.g. djcelery - however you should have that already, if you have celery running)
