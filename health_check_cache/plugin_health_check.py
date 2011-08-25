@@ -16,7 +16,7 @@ class CacheBackend(BaseHealthCheckBackend):
             return HealthCheckStatusType.unexpected_result
         except ValueError:
             return HealthCheckStatusType.unexpected_result
-        except:
+        except Exception:
             return HealthCheckStatusType.unavailable
 
 plugin_dir.register(CacheBackend)

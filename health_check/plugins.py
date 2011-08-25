@@ -1,6 +1,5 @@
 # This is heavily inspired by the django admin sites.py
 
-from django.core.exceptions import ImproperlyConfigured
 from health_check.backends.base import BaseHealthCheckBackend
 
 class AlreadyRegistered(Exception):
