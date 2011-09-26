@@ -45,5 +45,6 @@ Add required apps:
     'health_check_celery',
     'health_check_db',
     'health_check_cache',
+    'health_check_storage',
 ```
 (remember to add dependencies, e.g. djcelery - however you should have that already, if you have celery running)
