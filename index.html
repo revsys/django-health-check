@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="django-health-check : a pluggable app that runs a full check on the deployment, using a number of plugins to check e.g. database, queue server, celery processes, etc." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>django-health-check</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/KristianOellegaard/django-health-check">Fork Me on GitHub</a>
+
+          <h1 id="project_title">django-health-check</h1>
+          <h2 id="project_tagline">a pluggable app that runs a full check on the deployment, using a number of plugins to check e.g. database, queue server, celery processes, etc.</h2>
+
+          <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/KristianOellegaard/django-health-check/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/KristianOellegaard/django-health-check/tarball/master">Download this project as a tar.gz file</a>
+          </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>django-health-check</h1>
+
+<p>This project checks a number of backends, if they are able to connect and do a simple action, e.g. check out the django ORM backend:</p>
+
+<div class="highlight">
+<pre>
+<span class="k">class</span> <span class="nc">DjangoDatabaseBackend</span><span class="p">(</span><span class="n">BaseHealthCheckBackend</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">check_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">TestModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">"test"</span><span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">"newtest"</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">HealthCheckStatusType</span><span class="o">.</span><span class="n">working</span>
+        <span class="k">except</span> <span class="n">IntegrityError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">HealthCheckStatusType</span><span class="o">.</span><span class="n">unexpected_result</span>
+        <span class="k">except</span> <span class="n">DatabaseError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">HealthCheckStatusType</span><span class="o">.</span><span class="n">unavailable</span>
+
+</pre>
+</div>
+
+
+<p>The project is made using some of the same codes, that the django admin site uses - so when you have sucessfully written a new plugin, you register it to the pool, e.g. </p>
+
+<div class="highlight">
+<pre><span class="n">plugin_dir</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">DjangoDatabaseBackend</span><span class="p">)</span>
+</pre>
+</div>
+
+
+<h1>Installing</h1>
+
+<p>Add this to urls.py</p>
+
+<div class="highlight">
+<pre><span class="n">url</span><span class="p">(</span><span class="s">r'^ht/'</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s">'health_check.urls'</span><span class="p">))</span>
+</pre>
+</div>
+
+
+<p>Add required apps:</p>
+
+<div class="highlight">
+<pre>    <span class="s">'health_check'</span><span class="p">,</span>
+    <span class="s">'health_check_celery'</span><span class="p">,</span>
+    <span class="s">'health_check_db'</span><span class="p">,</span>
+    <span class="s">'health_check_cache'</span><span class="p">,</span>
+    <span class="s">'health_check_storage'</span><span class="p">,</span>
+</pre>
+</div>
+
+
+<p>(remember to add dependencies, e.g. djcelery - however you should have that already, if you have celery running)</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">django-health-check maintained by <a href="https://github.com/KristianOellegaard">KristianOellegaard</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
