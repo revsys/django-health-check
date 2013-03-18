@@ -29,8 +29,8 @@ plugin_dir.register(DjangoDatabaseBackend)
 ```
 
 
-Installing
-==========
+Install
+=======
 
 Add this to urls.py
 
@@ -48,3 +48,22 @@ Add required apps:
     'health_check_storage',
 ```
 (remember to add dependencies, e.g. djcelery - however you should have that already, if you have celery running)
+
+Set up monitoring
+=================
+
+E.g. add to pingdom - django-health-check will return HTTP 200 if everything is OK and HTTP 500 is *anything* is not working.
+
+Profit
+======
+
+![Screenshot of django-health-check](http://c.kristian.io/image/3C2s1Z3X071S/Screen%20Shot%202013-03-18%20at%2018.40.52.png)
+
+
+Dependencies
+============
+
+Python 2.7+ (Yes, thats right, we have **Python 3 support**)
+
+Django 1.2+
+
