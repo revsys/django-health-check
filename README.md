@@ -59,6 +59,10 @@ Profit
 
 ![Screenshot of django-health-check](http://c.kristian.io/image/3C2s1Z3X071S/Screen%20Shot%202013-03-18%20at%2018.40.52.png)
 
+Our mascot
+==========
+![django-health-check is the most interresting project in the world](http://c.kristian.io/image/1J3x031Q0S3B/36347774.jpg)
+
 
 Dependencies
 ============
