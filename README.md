@@ -52,7 +52,7 @@ Add required apps:
 Set up monitoring
 =================
 
-E.g. add to pingdom - django-health-check will return HTTP 200 if everything is OK and HTTP 500 is *anything* is not working.
+E.g. add to pingdom - django-health-check will return HTTP 200 if everything is OK and HTTP 500 if *anything* is not working.
 
 Profit
 ======
