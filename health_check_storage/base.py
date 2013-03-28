@@ -26,7 +26,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             return self.storage
 
     def get_file_name(self):
-        return 'health_check-%s-%s/test.txt' % (datetime.datetime.now(), random.randint(10000,99999))
+        return 'health_check_storage_test/test-%s-%s.txt' % (datetime.datetime.now(), random.randint(10000,99999))
 
     def get_file_content(self):
         return 'this is the healthtest file content'
