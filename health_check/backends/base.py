@@ -37,7 +37,7 @@ class BaseHealthCheckBackend(object):
         if not getattr(self, "_status", False):
             try:
                 setattr(self, "_status", self.check_status())
-            except (ServiceUnavailable, ServiceReturnedUnexpectedResult), e:
+            except (ServiceUnavailable, ServiceReturnedUnexpectedResult) as e:
                 setattr(self, "_status", e.code)
 
         return self._status
