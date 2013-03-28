@@ -1,5 +1,5 @@
 from django.core.cache.backends.base import CacheKeyWarning
-from health_check.backends.base import BaseHealthCheckBackend, HealthCheckStatusType
+from health_check.backends.base import BaseHealthCheckBackend, ServiceUnavailable, ServiceReturnedUnexpectedResult
 from health_check.plugins import plugin_dir
 from django.core.cache import cache
 
@@ -9,14 +9,14 @@ class CacheBackend(BaseHealthCheckBackend):
         try:
             cache.set('djangohealtcheck_test', 'itworks', 1)
             if cache.get("djangohealtcheck_test") == "itworks":
-                return HealthCheckStatusType.working
+                return True
             else:
-                return HealthCheckStatusType.unavailable
+                raise ServiceUnavailable("Cache key does not match")
         except CacheKeyWarning:
-            return HealthCheckStatusType.unexpected_result
+            raise ServiceReturnedUnexpectedResult("Cache key warning")
         except ValueError:
-            return HealthCheckStatusType.unexpected_result
+            raise ServiceReturnedUnexpectedResult("ValueError")
         except Exception:
-            return HealthCheckStatusType.unavailable
+            raise ServiceUnavailable("Unknown exception")
 
 plugin_dir.register(CacheBackend)

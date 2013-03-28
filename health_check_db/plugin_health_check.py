@@ -1,4 +1,4 @@
-from health_check.backends.base import BaseHealthCheckBackend, HealthCheckStatusType
+from health_check.backends.base import BaseHealthCheckBackend, ServiceUnavailable, ServiceReturnedUnexpectedResult
 from health_check.models import TestModel
 from django.db import DatabaseError, IntegrityError
 from health_check.plugins import plugin_dir
@@ -11,10 +11,10 @@ class DjangoDatabaseBackend(BaseHealthCheckBackend):
             obj.title = "newtest"
             obj.save()
             obj.delete()
-            return HealthCheckStatusType.working
+            return True
         except IntegrityError:
-            return HealthCheckStatusType.unexpected_result
+            raise ServiceReturnedUnexpectedResult("Integrity Error")
         except DatabaseError:
-            return HealthCheckStatusType.unavailable
+            raise ServiceUnavailable("Database error")
 
 plugin_dir.register(DjangoDatabaseBackend)
