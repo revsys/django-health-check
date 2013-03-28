@@ -10,7 +10,7 @@ class BaseHealthCheck(BaseHealthCheckBackend):
         return HealthCheckStatusType.working
 
 
-def healtcheck(func_or_name):
+def healthcheck(func_or_name):
     """
     Usage:
 
@@ -25,7 +25,7 @@ def healtcheck(func_or_name):
                 raise ServiceUnavailable()
     """
     def inner(func):
-        cls = type(func.__name__, (BaseHealthCheck,), {'_wrapped': func})
+        cls = type(func.__name__, (BaseHealthCheck,), {'_wrapped': staticmethod(func)})
         cls.identifier = name
         plugin_dir.register(cls)
         return func
