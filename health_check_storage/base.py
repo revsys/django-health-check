@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
-from health_check.backends.base import BaseHealthCheckBackend, HealthCheckStatusType
+from health_check.backends.base import BaseHealthCheckBackend, ServiceUnavailable
 import random
 import datetime
 
@@ -26,7 +26,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             return self.storage
 
     def get_file_name(self):
-        return 'health_check-%s-%s/test.txt' % (datetime.datetime.now(), random.randint(10000,99999))
+        return 'health_check_storage_test/test-%s-%s.txt' % (datetime.datetime.now(), random.randint(10000,99999))
 
     def get_file_content(self):
         return 'this is the healthtest file content'
@@ -43,13 +43,13 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             # read the file and compare
             f = storage.open(file_name)
             if not storage.exists(file_name):
-                return HealthCheckStatusType.unavailable
+                raise ServiceUnavailable("File does not exist")
             if not f.read() == file_content:
-                return HealthCheckStatusType.unavailable
+                return ServiceUnavailable("File content doesn't match")
             # delete the file and make sure it is gone
             storage.delete(file_name)
             if storage.exists(file_name):
-                return HealthCheckStatusType.unavailable
-            return HealthCheckStatusType.working
+                return ServiceUnavailable("File was not deleted")
+            return True
         except Exception:
-            return HealthCheckStatusType.unavailable
+            return ServiceUnavailable("Unknown exception")

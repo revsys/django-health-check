@@ -14,11 +14,12 @@ class DjangoDatabaseBackend(BaseHealthCheckBackend):
             obj.title = "newtest"
             obj.save()
             obj.delete()
-            return HealthCheckStatusType.working
+            return True
         except IntegrityError:
-            return HealthCheckStatusType.unexpected_result
+            raise ServiceReturnedUnexpectedResult("Integrity Error")
         except DatabaseError:
-            return HealthCheckStatusType.unavailable
+            raise ServiceUnavailable("Database error")
+
 
 ```
 

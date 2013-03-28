@@ -1,7 +1,6 @@
 from django.http import HttpResponse, HttpResponseServerError
 from django.template import loader
 from health_check.plugins import plugin_dir
-from health_check.backends.base import HealthCheckStatusType
 
 
 def home(request):
@@ -9,7 +8,7 @@ def home(request):
     working = True
     for plugin_class, plugin in plugin_dir._registry.items():
         plugin = plugin_class()
-        if plugin.status != HealthCheckStatusType.working:
+        if not plugin.status:  # Will return True or None
             working = False
         plugins.append(plugin)
     plugins.sort(key=lambda x: x.identifier())
