@@ -7,7 +7,7 @@ from health_check.plugins import plugin_dir
 class BaseHealthCheck(BaseHealthCheckBackend):
     def check_status(self):
         self._wrapped()
-        return HealthCheckStatusType.working
+        return True
 
 
 def healthcheck(func_or_name):
