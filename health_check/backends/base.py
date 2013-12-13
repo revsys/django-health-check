@@ -91,11 +91,11 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             if not storage.exists(file_name):
                 raise ServiceUnavailable("File does not exist")
             if not f.read() == file_content:
-                return ServiceUnavailable("File content doesn't match")
+                raise ServiceUnavailable("File content doesn't match")
             # delete the file and make sure it is gone
             storage.delete(file_name)
             if storage.exists(file_name):
-                return ServiceUnavailable("File was not deleted")
+                raise ServiceUnavailable("File was not deleted")
             return True
         except Exception, e:
-            return ServiceUnavailable("Unknown exception")
+            raise ServiceUnavailable("Unknown exception")
