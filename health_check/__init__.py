@@ -10,7 +10,7 @@ __version_info__ = {
 
 
 def autodiscover():
-    from health_checks import *
+    import health_checks
 
 def get_version(short=False):
     assert __version_info__['releaselevel'] in ('alpha', 'beta', 'final')
