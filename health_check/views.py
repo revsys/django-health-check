@@ -16,4 +16,4 @@ def home(request):
     if working:
         return HttpResponse(loader.render_to_string("health_check/dashboard.html", {'plugins': plugins}))
     else:
-        return HttpResponseServerError(loader.render_to_string("health_check/dashboard.html", {'plugins': plugins}))
+        return HttpResponse(loader.render_to_string("health_check/dashboard.html", {'plugins': plugins}), status=503)
