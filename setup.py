@@ -19,14 +19,14 @@ setup(
 		   " using a number of plugins to check e.g. database, queue server, celery processes, etc."),
     license = "BSD",
     keywords = "django health check monitoring",
-    url = "https://github.com/KristianOellegaard/django-health-check",
-    packages=['health_check', 'health_check_celery', 'health_check_db', 'health_check_cache', 'health_check.backends', 'health_check_storage'],
+    url = "https://github.com/epantry/django-health-check",
+    packages=['health_check', 'health_check.backends'],
     long_description=read('README.md'),
     classifiers=[
         "Topic :: Utilities",
     ],
     install_requires=[
-        'Django>=1.2',
+        'Django>=1.5',
     ],
     include_package_data=True,
     zip_safe = False,
