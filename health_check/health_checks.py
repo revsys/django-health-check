@@ -1,8 +1,7 @@
-
 from health_check.backends.base import BaseHealthCheckBackend, ServiceUnavailable, ServiceReturnedUnexpectedResult, StorageHealthCheck
 from health_check.plugins import plugin_dir
 from health_check.models import TestModel
-from health_check_celery.tasks import add
+from health_check.tasks import add
 
 from datetime import datetime, timedelta
 from time import sleep
