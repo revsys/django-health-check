@@ -1,4 +1,9 @@
-django-health-check
+django-health-check - Django 1.6 compatible
+==================
+
+This project is only a simple fork of http://kristianoellegaard.github.com/django-health-check/
+Pull requests were submitted to make it Django 1.6 compatible, not included for now.
+
 ==================
 
 This project checks a number of backends, if they are able to connect and do a simple action, e.g. check out the django ORM backend:
@@ -70,5 +75,5 @@ Dependencies
 
 Python 2.7+ (Yes, thats right, we have **Python 3 support**)
 
-Django 1.2+
+Django 1.6+
 
