@@ -26,7 +26,7 @@ setup(
         "Topic :: Utilities",
     ],
     install_requires=[
-        'Django>=1.2',
+        'Django>=1.6',
     ],
     include_package_data=True,
     zip_safe = False,
