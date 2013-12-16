@@ -75,5 +75,5 @@ Dependencies
 
 Python 2.7+ (Yes, thats right, we have **Python 3 support**)
 
-Django 1.2+
+Django 1.6+
 
