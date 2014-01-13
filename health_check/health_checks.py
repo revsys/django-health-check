@@ -6,11 +6,15 @@ from health_check.tasks import add
 from datetime import datetime, timedelta
 from time import sleep
 import random
+import logging
 
 from django.core.cache.backends.base import CacheKeyWarning
 from django.core.cache import cache
 from django.db import DatabaseError, IntegrityError
 from django.conf import settings
+
+
+
 
 
 class CacheBackendCheck(BaseHealthCheckBackend):

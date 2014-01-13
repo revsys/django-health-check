@@ -1,7 +1,12 @@
 from django.core.files.storage import get_storage_class
 from django.core.files.base import ContentFile
+import logging
 import datetime
 import random
+
+
+logger = logging.getLogger('django')
+
 
 class HealthCheckStatusType(object):
     unavailable = 0
@@ -20,12 +25,10 @@ class HealthCheckException(Exception):
 
 
 class ServiceUnavailable(HealthCheckException):
-    message = HEALTH_CHECK_STATUS_TYPE_TRANSLATOR[0]
     code = 0
 
 
 class ServiceReturnedUnexpectedResult(HealthCheckException):
-    message = HEALTH_CHECK_STATUS_TYPE_TRANSLATOR[2]
     code = 2
 
 
@@ -40,6 +43,7 @@ class BaseHealthCheckBackend(object):
             try:
                 setattr(self, "_status", self.check_status())
             except (ServiceUnavailable, ServiceReturnedUnexpectedResult) as e:
+                logger.exception(e)
                 setattr(self, "_status", e.code)
 
         return self._status
@@ -78,24 +82,21 @@ class StorageHealthCheck(BaseHealthCheckBackend):
         return 'this is the healthtest file content'
 
     def check_status(self):
-        try:
-            # write the file to the storage backend
-            storage = self.get_storage()
-            file_name = self.get_file_name()
-            file_content = self.get_file_content()
+        # write the file to the storage backend
+        storage = self.get_storage()
+        file_name = self.get_file_name()
+        file_content = self.get_file_content()
 
-            # save the file
-            file_name = storage.save(file_name, ContentFile(content=file_content))
-            # read the file and compare
-            f = storage.open(file_name)
-            if not storage.exists(file_name):
-                raise ServiceUnavailable("File does not exist")
-            if not f.read() == file_content:
-                raise ServiceUnavailable("File content doesn't match")
-            # delete the file and make sure it is gone
-            storage.delete(file_name)
-            if storage.exists(file_name):
-                raise ServiceUnavailable("File was not deleted")
-            return True
-        except Exception, e:
-            raise ServiceUnavailable("Unknown exception")
+        # save the file
+        file_name = storage.save(file_name, ContentFile(content=file_content))
+        # read the file and compare
+        f = storage.open(file_name)
+        if not storage.exists(file_name):
+            raise ServiceUnavailable("File does not exist")
+        if not f.read() == file_content:
+            raise ServiceUnavailable("File content doesn't match")
+        # delete the file and make sure it is gone
+        storage.delete(file_name)
+        if storage.exists(file_name):
+            raise ServiceUnavailable("File was not deleted")
+        return True
