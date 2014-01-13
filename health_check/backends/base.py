@@ -97,6 +97,11 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             raise ServiceUnavailable("File content doesn't match")
         # delete the file and make sure it is gone
         storage.delete(file_name)
+
+        # brutal hack because of a bug in django-storages s3 implementation. Pull request submitted:
+        # https://github.com/richleland/django-storages/pull/8
+        if hasattr(storage, '_entries'): setattr(storage, '_entries', None)
+
         if storage.exists(file_name):
             raise ServiceUnavailable("File was not deleted")
         return True
