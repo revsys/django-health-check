@@ -12,11 +12,13 @@ class HealthCheckStatusType(object):
     unavailable = 0
     working = 1
     unexpected_result = 2
+    fail = 3
 
 HEALTH_CHECK_STATUS_TYPE_TRANSLATOR = {
     0: "unavailable",
     1: "working",
     2: "unexpected result",
+    3: "fail"
 }
 
 
@@ -42,9 +44,12 @@ class BaseHealthCheckBackend(object):
         if not getattr(self, "_status", False):
             try:
                 setattr(self, "_status", self.check_status())
-            except (ServiceUnavailable, ServiceReturnedUnexpectedResult) as e:
+            except (ServiceUnavailable, ServiceReturnedUnexpectedResult, ) as e:
                 logger.exception(e)
                 setattr(self, "_status", e.code)
+            except Exception as e:
+                logger.exception(e)
+                setattr(self, "_status", 3)
 
         return self._status
 

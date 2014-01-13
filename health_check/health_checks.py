@@ -30,8 +30,8 @@ class CacheBackendCheck(BaseHealthCheckBackend):
             raise ServiceReturnedUnexpectedResult("Cache key warning")
         except ValueError:
             raise ServiceReturnedUnexpectedResult("ValueError")
-        except Exception:
-            raise ServiceUnavailable("Unknown exception")
+        except Exception as e:
+            raise ServiceUnavailable("Unknown cache exception: %s" % e)
 
 plugin_dir.register(CacheBackendCheck)
 
