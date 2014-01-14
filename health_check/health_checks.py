@@ -14,22 +14,21 @@ from django.db import DatabaseError, IntegrityError
 from django.conf import settings
 
 
-
-
-
 class CacheBackendCheck(BaseHealthCheckBackend):
 
     def check_status(self):
         try:
-            cache.set('djangohealtcheck_test', 'itworks', 1)
-            if cache.get("djangohealtcheck_test") == "itworks":
+            expected = 'itworks'
+            cache.set('djangohealtcheck_test', expected, 1)
+            got = cache.get("djangohealtcheck_test")
+            if got == expected:
                 return True
             else:
-                raise ServiceUnavailable("Cache key does not match")
-        except CacheKeyWarning:
-            raise ServiceReturnedUnexpectedResult("Cache key warning")
-        except ValueError:
-            raise ServiceReturnedUnexpectedResult("ValueError")
+                raise ServiceUnavailable("Cache key does not match. Got %s, expected %s" % (got, expected))
+        except CacheKeyWarning as e:
+            raise ServiceReturnedUnexpectedResult("Cache key warning: %s" % e)
+        except ValueError as e:
+            raise ServiceReturnedUnexpectedResult("ValueError: %s" % e)
         except Exception as e:
             raise ServiceUnavailable("Unknown cache exception: %s" % e)
 
@@ -62,10 +61,10 @@ class DjangoDatabaseBackend(BaseHealthCheckBackend):
             obj.save()
             obj.delete()
             return True
-        except IntegrityError:
-            raise ServiceReturnedUnexpectedResult("Integrity Error")
-        except DatabaseError, e:
-            raise ServiceUnavailable("Database error")
+        except IntegrityError as e:
+            raise ServiceReturnedUnexpectedResult("Integrity Error: %s" % e)
+        except DatabaseError as e:
+            raise ServiceUnavailable("Database error: %s" % e)
 
 plugin_dir.register(DjangoDatabaseBackend)
 
