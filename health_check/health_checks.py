@@ -47,7 +47,7 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
                 sleep(0.5)
         except IOError:
             pass
-        raise ServiceUnavailable("Unknown error")
+        raise ServiceUnavailable("Celery task took > 3 seconds to complete.")
 
 plugin_dir.register(CeleryHealthCheck)
 
