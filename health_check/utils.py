@@ -34,3 +34,14 @@ def healthcheck(func_or_name):
     else:
         name = func_or_name
         return inner
+
+def get_plugins():
+    plugins = []
+    working = True
+    for plugin_class, plugin in plugin_dir._registry.items():
+        plugin = plugin_class()
+        if not plugin.status:  # Will return True or None
+            working = False
+        plugins.append(plugin)
+    plugins.sort(key=lambda x: x.identifier())
+    return plugins, working
