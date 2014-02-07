@@ -21,7 +21,7 @@ def home(request):
     else:
         return HttpResponseServerError(loader.render_to_string("health_check/dashboard.html", {'plugins': plugins}))
 
-def json(request):
+def jsonhealthcheck(request):
     plugins = []
     working = True
     for plugin_class, plugin in plugin_dir._registry.items():
