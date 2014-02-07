@@ -45,10 +45,10 @@ class BaseHealthCheckBackend(object):
             try:
                 setattr(self, "_status", self.check_status())
             except (ServiceUnavailable, ServiceReturnedUnexpectedResult, ) as e:
-                logger.exception(e)
+                logger.warning(e)
                 setattr(self, "_status", e.code)
             except Exception as e:
-                logger.exception(e)
+                logger.warning(e)
                 setattr(self, "_status", 3)
 
         return self._status
