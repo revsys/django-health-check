@@ -48,7 +48,12 @@ Add required apps:
     'health_check_cache',
     'health_check_storage',
 ```
-(remember to add dependencies, e.g. djcelery - however you should have that already, if you have celery running)
+(remember to add dependencies, e.g. djcelery - however you should have that already, if you have celery running).
+You'll also have to make sure that you have a
+`result backend <http://celery.readthedocs.org/en/latest/configuration.html?highlight=result_backend#std:setting-CELERY_RESULT_BACKEND>`_
+configured.
+If you are using celery 3, use ``health_check_celery3`` instead of ``health_check_celery``.
+
 
 Set up monitoring
 =================
