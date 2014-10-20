@@ -1,8 +1,8 @@
 # This file is heavily inspired from the django admin autodiscover
 
 __version_info__ = {
-    'major': 0,
-    'minor': 3,
+    'major': 1,
+    'minor': 0,
     'micro': 0,
     'releaselevel': 'final',
     'serial': 0
@@ -21,7 +21,7 @@ def autodiscover():
     from django.utils.importlib import import_module
     from django.utils.module_loading import module_has_submodule
     from health_check.plugins import plugin_dir
-    
+
     for app in settings.INSTALLED_APPS:
         mod = import_module(app)
         # Attempt to import the app's admin module.
