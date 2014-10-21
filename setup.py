@@ -23,7 +23,15 @@ setup(
     license="BSD",
     keywords="django health check monitoring",
     url="https://github.com/KristianOellegaard/django-health-check",
-    packages=['health_check', 'health_check_celery', 'health_check_db', 'health_check_cache', 'health_check.backends', 'health_check_storage'],
+    packages=[
+        'health_check',
+        'health_check_celery',
+        'health_check_celery3',
+        'health_check_db',
+        'health_check_cache',
+        'health_check.backends',
+        'health_check_storage',
+    ],
     long_description=read('README.md'),
     classifiers=[
         "Topic :: Utilities",
