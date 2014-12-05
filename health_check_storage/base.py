@@ -52,4 +52,4 @@ class StorageHealthCheck(BaseHealthCheckBackend):
                 return ServiceUnavailable("File was not deleted")
             return True
         except Exception:
-            return ServiceUnavailable("Unknown exception")
+            raise ServiceUnavailable("Unknown exception")
