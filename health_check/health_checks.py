@@ -49,7 +49,7 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
             pass
         raise ServiceUnavailable("Celery task took > 3 seconds to complete.")
 
-#plugin_dir.register(CeleryHealthCheck)
+plugin_dir.register(CeleryHealthCheck)
 
 
 class DjangoDatabaseBackend(BaseHealthCheckBackend):
