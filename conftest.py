@@ -1,4 +1,5 @@
 def pytest_configure():
+    import django
     from django.conf import settings
 
     settings.configure(
@@ -25,3 +26,5 @@ def pytest_configure():
             'health_check_cache',
         ),
     )
+
+    django.setup()
