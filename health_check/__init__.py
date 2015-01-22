@@ -23,7 +23,7 @@ def autodiscover():
     from django.utils.module_loading import module_has_submodule
     from health_check.plugins import plugin_dir
 
-    if django.get_version() > '1.7':
+    if django.get_version() >= '1.7':
         from django.apps import apps
 
         for app_config in apps.get_app_configs():
