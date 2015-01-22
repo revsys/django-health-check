@@ -2,6 +2,7 @@ def pytest_configure():
     from django.conf import settings
 
     settings.configure(
+        DEBUG=False,
         DEBUG_PROPAGATE_EXCEPTIONS=True,
         DATABASES={'default': {'ENGINE': 'django.db.backends.sqlite3',
                                'NAME': ':memory:'}},
@@ -23,16 +24,4 @@ def pytest_configure():
             'health_check',
             'health_check_cache',
         ),
-        PASSWORD_HASHERS=(
-            'django.contrib.auth.hashers.MD5PasswordHasher',
-        ),
-        REST_FRAMEWORK={
-            "DEFAULT_RENDERER_CLASSES": (
-                "rest_framework_json_api.renderers.JsonApiRenderer",
-            ),
-            "DEFAULT_PARSER_CLASSES": (
-                "rest_framework_json_api.parsers.JsonApiParser",
-            ),
-            "TEST_REQUEST_DEFAULT_FORMAT": "json",
-        },
     )
