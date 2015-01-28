@@ -48,3 +48,4 @@ class BaseHealthCheckBackend(object):
     @classmethod
     def identifier(cls):
         return cls.__name__
+
