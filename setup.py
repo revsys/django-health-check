@@ -14,15 +14,15 @@ def read(fname):
 
 
 setup(
-    name="django-health-check",
+    name='django-health-check',
     version=__version__,
-    author="Kristian Ollegaard",
-    author_email="kristian@oellegaard.com",
-    description=("a pluggable app that runs a full check on the deployment,"
-                 " using a number of plugins to check e.g. database, queue server, celery processes, etc."),
-    license="BSD",
-    keywords="django health check monitoring",
-    url="https://github.com/KristianOellegaard/django-health-check",
+    author='Kristian Ollegaard',
+    author_email='kristian@oellegaard.com',
+    description=('a pluggable app that runs a full check on the deployment,'
+                 ' using a number of plugins to check e.g. database, queue server, celery processes, etc.'),
+    license='BSD',
+    keywords='django health check monitoring',
+    url='https://github.com/KristianOellegaard/django-health-check',
     packages=[
         'health_check',
         'health_check_celery',
@@ -34,7 +34,10 @@ setup(
     ],
     long_description=read('README.md'),
     classifiers=[
-        "Topic :: Utilities",
+        'Topic :: Utilities',
+        'License :: OSI Approved :: BSD License'
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
     ],
     install_requires=[
         'Django>=1.4',
