@@ -27,4 +27,5 @@ def pytest_configure():
         ),
     )
 
-    django.setup()
+    if django.get_version() >= '1.7':
+        django.setup()
