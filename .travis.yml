@@ -13,5 +13,11 @@ install:
   - pip install -q Django==$DJANGO_VERSION
   - make requirements
 
+before_script:
+  - pip install python-coveralls
+
 script:
   - make coverage
+
+after_success:
+  - coveralls
