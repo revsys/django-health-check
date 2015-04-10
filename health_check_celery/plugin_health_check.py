@@ -14,7 +14,7 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
         timeout = getattr(settings, 'HEALTHCHECK_CELERY_BROKER_TIMEOUT', 3)
 
         try:
-            result = add.apply_async(args=[4, 4], expires=datetime.now() + timedelta(seconds=3), connect_timeout=timeout)
+            result = add.apply_async(args=[4, 4], expires=datetime.now() + timedelta(seconds=timeout), connect_timeout=timeout)
             now = datetime.now()
             while (now + timedelta(seconds=3)) > datetime.now():
                 if result.result == 8:
