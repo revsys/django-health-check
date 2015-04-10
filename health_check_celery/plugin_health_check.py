@@ -11,7 +11,7 @@ from health_check_celery.tasks import add
 class CeleryHealthCheck(BaseHealthCheckBackend):
 
     def check_status(self):
-        timeout = getattr(settings, 'HEALTHCHECK_CELERY_BROKER_TIMEOUT', 3)
+        timeout = getattr(settings, 'HEALTHCHECK_CELERY_TIMEOUT', 3)
 
         try:
             result = add.apply_async(args=[4, 4], expires=datetime.now() + timedelta(seconds=timeout), connect_timeout=timeout)
