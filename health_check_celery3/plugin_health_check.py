@@ -26,6 +26,7 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
                 sleep(0.5)
         except IOError:
             logger.exception("IOError")
+            raise ServiceUnavailable("IOError")
         except:
             logger.exception("Unknown Error")
             raise ServiceUnavailable("Unknown error")
