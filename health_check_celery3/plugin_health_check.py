@@ -30,6 +30,7 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
         except:
             logger.exception("Unknown Error")
             raise ServiceUnavailable("Unknown error")
+        logger.error("Celery task did not complete successfully. Verify celery is running")
         raise ServiceUnavailable("Unknown error")
 
 plugin_dir.register(CeleryHealthCheck)
