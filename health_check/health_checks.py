@@ -67,9 +67,3 @@ class DjangoDatabaseBackend(BaseHealthCheckBackend):
             raise ServiceUnavailable("Database error: %s" % e)
 
 plugin_dir.register(DjangoDatabaseBackend)
-
-
-class DefaultFileStorageHealthCheck(StorageHealthCheck):
-    storage = settings.DEFAULT_FILE_STORAGE
-
-plugin_dir.register(DefaultFileStorageHealthCheck)
