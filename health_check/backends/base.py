@@ -1,3 +1,4 @@
+import timeit
 from django.core.files.storage import get_storage_class
 from django.core.files.base import ContentFile
 import logging
@@ -35,15 +36,24 @@ class ServiceReturnedUnexpectedResult(HealthCheckException):
 
 
 class BaseHealthCheckBackend(object):
+    _check_status_time = 'Not calculated'
 
     def check_status(self):
         return None
 
     @property
+    def check_status_time(self):
+        if type(self._check_status_time) == float:
+            return u'%.3f s' % self._check_status_time
+        return self._check_status_time
+
+    @property
     def status(self):
         if not getattr(self, "_status", False):
             try:
+                start_time = timeit.default_timer()
                 setattr(self, "_status", self.check_status())
+                self._check_status_time = (timeit.default_timer() - start_time)
             except (ServiceUnavailable, ServiceReturnedUnexpectedResult, ) as e:
                 logger.warning(e)
                 setattr(self, "_status", e.code)

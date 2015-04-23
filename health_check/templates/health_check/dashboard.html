@@ -30,6 +30,10 @@
             font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
             font-size: 22px;
         }
+        th
+        {
+            text-align: left;
+        }
         td.status_1, td.status_True
         {
             background-color: #0f0;
@@ -50,11 +54,18 @@
     <div class="container">
     <h1>ePantry System status</h1>
         <table>
+            <tr>
+                <th></th>
+                <th>Plugin</th>
+                <th>Status</th>
+                <th>Check status time</th>
+            </tr>
         {% for plugin in plugins %}
             <tr>
                 <td class="status_{{ plugin.status }}"></td>
                 <td>{{ plugin.identifier }}</td>
                 <td>{{ plugin.pretty_status }}</td>
+                <td>{{ plugin.check_status_time }}</td>
             </tr>
         {% endfor %}
         </table>
