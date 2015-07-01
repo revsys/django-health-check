@@ -1,0 +1,23 @@
+language: python
+
+env:
+  - DJANGO_VERSION=1.5.12
+  - DJANGO_VERSION=1.6.10
+  - DJANGO_VERSION=1.7.4
+
+python:
+  - "2.7"
+  - "3.4"
+
+install:
+  - pip install -q Django==$DJANGO_VERSION
+  - make requirements
+
+before_script:
+  - pip install python-coveralls
+
+script:
+  - make coverage
+
+after_success:
+  - coveralls
