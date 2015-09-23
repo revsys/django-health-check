@@ -22,4 +22,4 @@ def jsonhealthcheck(request):
             health_check_status[str(plugin.identifier())] = str(plugin.pretty_status())
 
     health_check_json = json.dumps(health_check_status)
-    return HttpResponse(health_check_json, mimetype='application/json')
+    return HttpResponse(health_check_json, content_type='application/json')

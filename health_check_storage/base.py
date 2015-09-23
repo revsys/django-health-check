@@ -4,7 +4,12 @@ from django.core.files.storage import get_storage_class
 from health_check.backends.base import BaseHealthCheckBackend, ServiceUnavailable
 import random
 import datetime
-
+import platform
+py_majversion, py_minversion, py_revversion = platform.python_version_tuple()
+if py_majversion == '2':
+    basestring = basestring
+else:
+    basestring = (str,bytes)
 
 class StorageHealthCheck(BaseHealthCheckBackend):
     """
@@ -29,7 +34,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
         return 'health_check_storage_test/test-%s-%s.txt' % (datetime.datetime.now(), random.randint(10000,99999))
 
     def get_file_content(self):
-        return 'this is the healthtest file content'
+        return b'this is the healthtest file content'
 
     def check_status(self):
         try:
@@ -44,12 +49,14 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             f = storage.open(file_name)
             if not storage.exists(file_name):
                 raise ServiceUnavailable("File does not exist")
-            if not f.read() == file_content:
+
+            read_file_contents = f.read()
+            if not read_file_contents.decode("utf-8")  == file_content.decode("utf-8") :
                 return ServiceUnavailable("File content doesn't match")
             # delete the file and make sure it is gone
             storage.delete(file_name)
             if storage.exists(file_name):
                 return ServiceUnavailable("File was not deleted")
             return True
-        except Exception:
+        except Exception as exc:
             return ServiceUnavailable("Unknown exception")
