@@ -7,13 +7,10 @@ from health_check.utils import get_plugins
 class Command(BaseCommand):
     help = 'Django Health Checks'
 
-
     def handle(self, *args, **options):
         plugins, working = get_plugins()
-
-        health_check_status = {}
+        sys.stdout.write("Running Health checks\n")
         for plugin in plugins:
-            health_check_status[str(plugin.identifier())] = str(plugin.pretty_status())
+            sys.stdout.write("Running Health check - %s\n" % str(plugin.identifier()))
+            sys.stdout.write("Result - %s\n" % str(plugin.pretty_status()))
 
-        health_check_json = json.dumps(health_check_status)
-        sys.stdout.write("No filenames given; defaulting to admin scripts\n")
