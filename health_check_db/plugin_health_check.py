@@ -12,9 +12,9 @@ class DjangoDatabaseBackend(BaseHealthCheckBackend):
             obj.save()
             obj.delete()
             return True
-        except IntegrityError:
-            raise ServiceReturnedUnexpectedResult("Integrity Error")
-        except DatabaseError:
-            raise ServiceUnavailable("Database error")
+        except IntegrityError as e:
+            raise ServiceReturnedUnexpectedResult("Integrity Error") from e
+        except DatabaseError as e:
+            raise ServiceUnavailable("Database error") from e
 
 plugin_dir.register(DjangoDatabaseBackend)

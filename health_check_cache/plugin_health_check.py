@@ -12,11 +12,11 @@ class CacheBackend(BaseHealthCheckBackend):
                 return True
             else:
                 raise ServiceUnavailable("Cache key does not match")
-        except CacheKeyWarning:
-            raise ServiceReturnedUnexpectedResult("Cache key warning")
-        except ValueError:
-            raise ServiceReturnedUnexpectedResult("ValueError")
-        except Exception:
-            raise ServiceUnavailable("Unknown exception")
+        except CacheKeyWarning as e:
+            raise ServiceReturnedUnexpectedResult("Cache key warning") from e
+        except ValueError as e:
+            raise ServiceReturnedUnexpectedResult("ValueError") from e
+        except Exception as e:
+            raise ServiceUnavailable("Unknown exception") from e
 
 plugin_dir.register(CacheBackend)
