@@ -5,6 +5,9 @@ from health_check.plugins import plugin_dir
 
 class DjangoDatabaseBackend(BaseHealthCheckBackend):
 
+    def description(self):
+        return "Checks that the default database can be saved to and read from"
+
     def check_status(self):
         try:
             obj = TestModel.objects.create(title="test")

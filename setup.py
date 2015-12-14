@@ -27,6 +27,7 @@ setup(
     ],
     install_requires=[
         'Django>=1.4',
+        'pyyaml',
     ],
     include_package_data=True,
     zip_safe = False,

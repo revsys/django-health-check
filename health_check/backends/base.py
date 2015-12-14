@@ -29,8 +29,15 @@ class ServiceReturnedUnexpectedResult(HealthCheckException):
 
 class BaseHealthCheckBackend(object):
 
+
+    def description(self):
+        return None
+
     def check_status(self):
         return None
+
+    def verbose_result(self):
+        return getattr(self, "_verbose_result", None)
 
     @property
     def status(self):
@@ -38,6 +45,7 @@ class BaseHealthCheckBackend(object):
             try:
                 setattr(self, "_status", self.check_status())
             except (ServiceUnavailable, ServiceReturnedUnexpectedResult) as e:
+                setattr(self, "_verbose_result", e.args[0])
                 setattr(self, "_status", e.code)
 
         return self._status

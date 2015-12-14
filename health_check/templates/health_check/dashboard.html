@@ -1,4 +1,5 @@
-<html>
+{% load i18n %}
+<html
 <head>
     <title>System status</title>
     <style>
@@ -16,48 +17,87 @@
         {
             background-color: #fff;
             border: 1px solid #ccc;
-            margin: auto;
-            width: 600px;
-            margin-top: 50px;
-            padding: 15px;
+            margin: 1em auto;
+            width: 95%;
+            padding: 1em;
         }
         table
         {
             width: 100%;
+            border-spacing: 0;
+            border-collapse: collapse;
         }
-        h1
-        {
-            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-            font-size: 22px;
+        td{
+            padding: 0.7em;
+            border-bottom: 1px solid #fff;
         }
-        td.status_1, td.status_True
+        em.description
         {
-            background-color: #0f0;
-            width: 2px;
-            padding: 0px;
-            margin: 0px;
+            font-size: 70%;
         }
-        td.status_0
+        tr:nth-child(even)
         {
-            background-color: #f00;
-            width: 2px;
-            padding: 0px;
-            margin: 0px;
+            background: #EEE;
+        }
+        tr:nth-child(odd)
+        {
+            background: #FFF;
+        }
+        tr:hover
+        {
+            background: #D2DCE7;
+        }
+        tr.status_1 .result, tr.status_True .result
+        {
+            background: #15BF28;
+
+        }
+        tr.status_1:hover .result, tr.status_True:hover .result
+        {
+            background: #62DE70;
+
+        }
+
+        tr.status_0 .result, tr.status_False .result
+        {
+            background: #EF514F;
+
+        }
+        tr.status_1 .status, tr.status_True .status
+        {
+            background-color: #15BF28;
+            width: 1em;
+        }
+        tr.status_0 .status
+        {
+            background: #EF514F;
+            width: 1em;
+        }
+        .verbose_result{
+            display: none;
+        }
+        tr.status_0:hover .verbose_result {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-    <h1>System status</h1>
+    <h1>{% trans 'System status' %}</h1>
         <table>
         {% for plugin in plugins %}
-            <tr>
-                <td class="status_{{ plugin.status }}"></td>
-                <td>{{ plugin.identifier }}</td>
-                <td>{{ plugin.pretty_status }}</td>
+            <tr class="status_{{ plugin.status }}">
+                <td class="status"></td>
+                <td>{{ plugin.identifier }}{% if plugin.description %} <em class="description">{{ plugin.description }}</em>{% endif %} <em class="verbose_result">{{ plugin.verbose_result }}</em></td>
+                <td class="result">{{ plugin.pretty_status }}</td>
             </tr>
         {% endfor %}
         </table>
+    <ul>
+        <li><a href="{% url 'health_check_json' %}">{% trans 'JSON' %}</a></li>
+        <li><a href="{% url 'health_check_yaml' %}">{% trans 'YAML' %}</a></li>
+        <li><a href="{% url 'health_check_text' %}">{% trans 'TEXT' %}</a></li>
+    </ul>
     </div>
 </body>
 </html>

@@ -5,6 +5,9 @@ from django.core.cache import cache
 
 class CacheBackend(BaseHealthCheckBackend):
 
+    def description(self):
+        return "Checks that the default Django cache is working"
+
     def check_status(self):
         try:
             cache.set('djangohealtcheck_test', 'itworks', 1)

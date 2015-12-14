@@ -7,6 +7,9 @@ from time import sleep
 
 class CeleryHealthCheck(BaseHealthCheckBackend):
 
+    def description(self):
+        return "Checks that the default celery queue is processing tasks"
+
     def check_status(self):
         try:
             result = add.apply_async(args=[4, 4], expires=datetime.now() + timedelta(seconds=3), connect_timeout=3)
