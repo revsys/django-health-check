@@ -52,11 +52,14 @@ class StorageHealthCheck(BaseHealthCheckBackend):
 
             read_file_contents = f.read()
             if not read_file_contents.decode("utf-8")  == file_content.decode("utf-8") :
-                return ServiceUnavailable("File content doesn't match")
+                raise ServiceUnavailable("File content doesn't match")
             # delete the file and make sure it is gone
             storage.delete(file_name)
             if storage.exists(file_name):
-                return ServiceUnavailable("File was not deleted")
+                raise ServiceUnavailable("File was not deleted")
+
             return True
+        except ServiceUnavailable as service_unavailable_exc:
+            raise service_unavailable_exc
         except Exception as exc:
-            return ServiceUnavailable("Unknown exception")
+            raise ServiceUnavailable("Unknown exception")
