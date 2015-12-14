@@ -12,7 +12,6 @@ if py_majversion == '2':
 else:
     basestring = (str,bytes)
 
-import logging
 
 class StorageHealthCheck(BaseHealthCheckBackend):
     """
@@ -48,16 +47,14 @@ class StorageHealthCheck(BaseHealthCheckBackend):
 
             # save the file
             file_name = storage.save(file_name, ContentFile(content=file_content))
-            logging.debug('StorageHealthCheck file_name = %s' % file_name)
-
-
+            
             # read the file and compare
             f = storage.open(file_name)
             if not storage.exists(file_name):
                 raise ServiceUnavailable("File does not exist")
 
             read_file_contents = f.read()
-            logging.debug('StorageHealthCheck read_file_contents = %s' % read_file_contents.decode("utf-8"))
+
             if not read_file_contents.decode("utf-8")  == file_content.decode("utf-8") :
                 raise ServiceUnavailable("File content doesn't match")
 
