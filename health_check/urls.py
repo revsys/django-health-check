@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 
 import health_check
+from health_check.views import home
+
 health_check.autodiscover()
 
-urlpatterns = patterns('',
-    url(r'^$', 'health_check.views.home', name='health_check_home'),
-)
+urlpatterns = [url(r'^$', home, name='health_check_home')]
