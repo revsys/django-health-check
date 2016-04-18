@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db.models.options import get_verbose_name
-from health_check.backends.base import HealthCheckStatusType, BaseHealthCheckBackend
+
+from health_check.backends.base import BaseHealthCheckBackend
 from health_check.plugins import plugin_dir
 
 
@@ -11,6 +12,8 @@ class BaseHealthCheck(BaseHealthCheckBackend):
 
 def healthcheck(func_or_name):
     """
+    Health check decorator.
+
     Usage:
 
         @healthcheck("My Check")
@@ -28,6 +31,7 @@ def healthcheck(func_or_name):
         cls.identifier = name
         plugin_dir.register(cls)
         return func
+
     if callable(func_or_name):
         name = get_verbose_name(func_or_name.__name__).replace('_', ' ')
         return inner(func_or_name)

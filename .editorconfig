@@ -1,0 +1,42 @@
+# http://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.py]
+indent_style = space
+indent_size = 4
+# isort config
+atomic = true
+multi_line_output = 5
+line_length = 80
+combine_as_imports = true
+skip = wsgi.py,docs,.tox,env
+known_first_party = health_check,health_check_cache,health_check_celery,health_check_celery3,health_check_db,health_check_storage,tests
+known_third_party = django
+
+
+[*.{rst,ini}]
+indent_style = space
+indent_size = 4
+
+[*.{yml,html,xml,xsl,json}]
+indent_style = space
+indent_size = 2
+
+[*.{css,less}]
+indent_style = space
+indent_size = 2
+
+[*.{js,coffee}]
+indent_style = space
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+indent_size = 1

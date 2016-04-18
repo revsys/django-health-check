@@ -1,7 +1,8 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+from django.conf import settings
+
 from health_check.plugins import plugin_dir
 from health_check_storage.base import StorageHealthCheck
-from django.conf import settings
 
 
 class DefaultFileStorageHealthCheck(StorageHealthCheck):

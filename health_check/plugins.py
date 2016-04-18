@@ -2,14 +2,19 @@
 
 from health_check.backends.base import BaseHealthCheckBackend
 
+
 class AlreadyRegistered(Exception):
     pass
+
 
 class NotRegistered(Exception):
     pass
 
+
 class HealthCheckPluginDirectory(object):
     """
+    Django health check registry.
+
     An AdminSite object encapsulates an instance of the Django admin application, ready
     to be hooked in to your URLconf. Models are registered with the AdminSite using the
     register() method, and the get_urls() method can then be used to access Django view
@@ -18,11 +23,11 @@ class HealthCheckPluginDirectory(object):
     """
 
     def __init__(self):
-        self._registry = {} # model_class class -> admin_class instance
+        self._registry = {}  # model_class class -> admin_class instance
 
     def register(self, plugin, admin_class=None, **options):
         """
-        Registers the given model(s) with the given admin class.
+        Register the given model(s) with the given admin class.
 
         The model(s) should be Model classes, not instances.
 
@@ -41,7 +46,7 @@ class HealthCheckPluginDirectory(object):
 
     def unregister(self, model_or_iterable):
         """
-        Unregisters the given model(s).
+        Remove the given model(s) from the registry.
 
         If a model isn't already registered, this will raise NotRegistered.
         """

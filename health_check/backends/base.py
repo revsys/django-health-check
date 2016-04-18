@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -43,9 +44,8 @@ class BaseHealthCheckBackend(object):
         return self._status
 
     def pretty_status(self):
-        return u"%s" % (HEALTH_CHECK_STATUS_TYPE_TRANSLATOR[self.status])
+        return "%s" % (HEALTH_CHECK_STATUS_TYPE_TRANSLATOR[self.status])
 
     @classmethod
     def identifier(cls):
         return cls.__name__
-
