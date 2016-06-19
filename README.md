@@ -1,6 +1,12 @@
 django-health-check
 ==================
 
+[![Build Status](https://travis-ci.org/KristianOellegaard/django-health-check.svg)](https://travis-ci.org/KristianOellegaard/django-health-check)
+[![Supported Python versions](https://pypip.in/py_versions/django-health-check/badge.svg)](https://pypi.python.org/pypi/django-health-check/)
+[![Latest Version](https://pypip.in/version/django-health-check/badge.svg)](https://pypi.python.org/pypi/django-health-check/)
+[![License](https://pypip.in/license/django-health-check/badge.svg)](https://pypi.python.org/pypi/django-health-check/)
+[![Downloads](https://pypip.in/download/django-health-check/badge.svg?period=month)](https://pypi.python.org/pypi/django-health-check/)
+
 This project checks a number of backends, if they are able to connect and do a simple action, e.g. check out the django ORM backend:
 
 
@@ -60,20 +66,9 @@ Set up monitoring
 
 E.g. add to pingdom - django-health-check will return HTTP 200 if everything is OK and HTTP 500 if *anything* is not working.
 
-Profit
-======
-
-![Screenshot of django-health-check](http://c.kristian.io/image/3C2s1Z3X071S/Screen%20Shot%202013-03-18%20at%2018.40.52.png)
-
-Our mascot
-==========
-![django-health-check is the most interresting project in the world](http://c.kristian.io/image/1J3x031Q0S3B/36347774.jpg)
-
 
 Dependencies
 ============
 
-Python 2.7+ (Yes, thats right, we have **Python 3 support**)
-
-Django 1.2+
+Django 1.4+
 
