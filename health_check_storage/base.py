@@ -1,14 +1,21 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+import datetime
+import random
+
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
-from health_check.backends.base import BaseHealthCheckBackend, ServiceUnavailable
-import random
-import datetime
+from django.utils.six import string_types
+
+from health_check.backends.base import (
+    BaseHealthCheckBackend, ServiceUnavailable
+)
 
 
 class StorageHealthCheck(BaseHealthCheckBackend):
     """
-    Tests the status of a StorageBakcend. Can be extended to test any storage backend by subclassing:
+    Tests the status of a `StorageBackend`.
+
+    Can be extended to test any storage backend by subclassing:
 
         class MyStorageHealthCheck(StorageHealthCheck):
             storage = 'some.other.StorageBackend'
@@ -17,19 +24,20 @@ class StorageHealthCheck(BaseHealthCheckBackend):
     storage must be either a string pointing to a storage class (e.g 'django.core.files.storage.FileSystemStorage') or
     a Storage instance.
     """
+
     storage = None
 
     def get_storage(self):
-        if isinstance(self.storage, basestring):
+        if isinstance(self.storage, string_types):
             return get_storage_class(self.storage)()
         else:
             return self.storage
 
     def get_file_name(self):
-        return 'health_check_storage_test/test-%s-%s.txt' % (datetime.datetime.now(), random.randint(10000,99999))
+        return 'health_check_storage_test/test-%s-%s.txt' % (datetime.datetime.now(), random.randint(10000, 99999))
 
     def get_file_content(self):
-        return 'this is the healthtest file content'
+        return b'this is the healthtest file content'
 
     def check_status(self):
         try:
