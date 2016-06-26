@@ -10,6 +10,7 @@ from health_check_db.models import TestModel
 import logging
 logger = logging.getLogger(__name__)
 
+
 class DjangoDatabaseBackend(BaseHealthCheckBackend):
 
     def check_status(self):
