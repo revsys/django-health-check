@@ -10,6 +10,8 @@ from health_check.backends.base import (
     BaseHealthCheckBackend, ServiceUnavailable
 )
 
+import logging
+logger = logging.getLogger(__name__)
 
 class StorageHealthCheck(BaseHealthCheckBackend):
     """
@@ -57,7 +59,9 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             # delete the file and make sure it is gone
             storage.delete(file_name)
             if storage.exists(file_name):
+                logger.exception("File was not deleted")
                 return ServiceUnavailable("File was not deleted")
             return True
         except Exception:
+            logger.exception("Unknown exception") 
             raise ServiceUnavailable("Unknown exception")

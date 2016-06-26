@@ -9,6 +9,8 @@ from health_check.backends.base import (
 from health_check.plugins import plugin_dir
 from health_check_celery3.tasks import add
 
+import logging
+logger = logging.getLogger(__name__)
 
 class CeleryHealthCheck(BaseHealthCheckBackend):
 
@@ -25,7 +27,12 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
                     return True
                 sleep(0.5)
         except IOError:
-            pass
+            logger.exception("IOError")
+            raise ServiceUnavailable("IOError")
+        except:
+            logger.exception("Unknown Error")
+            raise ServiceUnavailable("Unknown error")
+        logger.error("Celery task did not complete successfully. Verify celery is running")
         raise ServiceUnavailable("Unknown error")
 
 plugin_dir.register(CeleryHealthCheck)
