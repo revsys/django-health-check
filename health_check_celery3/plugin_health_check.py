@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from time import sleep
 
@@ -9,7 +10,6 @@ from health_check.backends.base import (
 from health_check.plugins import plugin_dir
 from health_check_celery3.tasks import add
 
-import logging
 logger = logging.getLogger(__name__)
 
 

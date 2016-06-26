@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import logging
 import random
 
 from django.core.files.base import ContentFile
@@ -10,7 +11,6 @@ from health_check.backends.base import (
     BaseHealthCheckBackend, ServiceUnavailable
 )
 
-import logging
 logger = logging.getLogger(__name__)
 
 
