@@ -19,6 +19,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'django_health_check',
+    'health_check_cache',
     'tests.testapp',
 )
 
