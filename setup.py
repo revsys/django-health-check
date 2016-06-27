@@ -1,5 +1,7 @@
 import os
+
 from setuptools import setup
+
 from health_check import __version__
 
 

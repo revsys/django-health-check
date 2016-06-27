@@ -19,6 +19,7 @@ combine_as_imports = true
 skip = wsgi.py,docs,.tox,env
 known_first_party = health_check,health_check_cache,health_check_celery,health_check_celery3,health_check_db,health_check_storage,tests
 known_third_party = django
+not_skip = __init__.py
 
 
 [*.{rst,ini}]

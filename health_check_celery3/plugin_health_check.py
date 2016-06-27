@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from time import sleep
 
@@ -9,8 +10,8 @@ from health_check.backends.base import (
 from health_check.plugins import plugin_dir
 from health_check_celery3.tasks import add
 
-import logging
 logger = logging.getLogger(__name__)
+
 
 class CeleryHealthCheck(BaseHealthCheckBackend):
 
@@ -18,7 +19,10 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
         timeout = getattr(settings, 'HEALTHCHECK_CELERY_TIMEOUT', 3)
 
         try:
-            result = add.apply_async(args=[4, 4], expires=datetime.now() + timedelta(seconds=timeout))
+            result = add.apply_async(
+                args=[4, 4],
+                expires=datetime.now() + timedelta(seconds=timeout)
+            )
             now = datetime.now()
             while (now + timedelta(seconds=3)) > datetime.now():
                 print("            checking....")
@@ -32,7 +36,11 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
         except:
             logger.exception("Unknown Error")
             raise ServiceUnavailable("Unknown error")
-        logger.error("Celery task did not complete successfully. Verify celery is running")
+
+        logger.error(
+            u'Celery task did not complete successfully. '
+            u'Verify celery is running'
+        )
         raise ServiceUnavailable("Unknown error")
 
 plugin_dir.register(CeleryHealthCheck)
