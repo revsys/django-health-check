@@ -27,7 +27,10 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
             while (now + timedelta(seconds=3)) > datetime.now():
                 print("            checking....")
                 if result.ready():
-                    result.forget()
+                    try:
+                        result.forget()
+                    except NotImplementedError:
+                        pass
                     return True
                 sleep(0.5)
         except IOError:
