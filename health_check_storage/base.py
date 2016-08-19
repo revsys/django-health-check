@@ -8,7 +8,7 @@ from django.core.files.storage import get_storage_class
 from django.utils.six import string_types
 
 from health_check.backends.base import (
-    BaseHealthCheckBackend, ServiceUnavailable
+    BaseHealthCheckBackend, ServiceUnavailable, HealthCheckException
 )
 
 logger = logging.getLogger(__name__)
@@ -56,18 +56,20 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             file_name = storage.save(
                 file_name, ContentFile(content=file_content)
             )
-            # read the file and compare
-            f = storage.open(file_name)
             if not storage.exists(file_name):
                 raise ServiceUnavailable('File does not exist')
+            # read the file and compare
+            f = storage.open(file_name)
             if not f.read() == file_content:
-                return ServiceUnavailable('File content doesn\'t match')
+                raise ServiceUnavailable('File content doesn\'t match')
             # delete the file and make sure it is gone
             storage.delete(file_name)
             if storage.exists(file_name):
                 logger.exception('File was not deleted')
-                return ServiceUnavailable('File was not deleted')
+                raise ServiceUnavailable('File was not deleted')
             return True
+        except HealthCheckException, e:
+            raise e
         except Exception:
             logger.exception('Unknown exception')
             raise ServiceUnavailable('Unknown exception')

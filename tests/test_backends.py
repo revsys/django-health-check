@@ -1,7 +1,8 @@
+from django.test import TestCase
 from health_check.backends.base import BaseHealthCheckBackend
 
 
-class TestBaseHealthCheckBackend(object):
+class TestBaseHealthCheckBackend(TestCase):
 
     def test_status(self):
-        assert BaseHealthCheckBackend().status is None
+        self.assertIsNone(BaseHealthCheckBackend().status)
