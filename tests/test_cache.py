@@ -1,11 +1,12 @@
-__author__ = 'mspeedy'
+from django.core.cache.backends.base import BaseCache, CacheKeyWarning
 from django.test import TestCase
-from mock import patch
-from health_check.backends.base import ServiceUnavailable
-from health_check.backends.base import ServiceReturnedUnexpectedResult
+from health_check.backends.base import (
+    ServiceReturnedUnexpectedResult, ServiceUnavailable
+)
+
 from health_check_cache.plugin_health_check import CacheBackend
-from django.core.cache.backends.base import BaseCache
-from django.core.cache.backends.base import CacheKeyWarning
+from mock import patch
+
 
 # A Mock version of the cache to use for testing
 class MockCache(BaseCache):

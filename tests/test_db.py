@@ -1,11 +1,12 @@
-__author__ = 'mspeedy'
-from django.test import TestCase
-from mock import patch
-from health_check.backends.base import ServiceUnavailable
-from health_check.backends.base import ServiceReturnedUnexpectedResult
-from health_check_db.plugin_health_check import DjangoDatabaseBackend
-from django.db.models import Model
 from django.db import DatabaseError, IntegrityError
+from django.db.models import Model
+from django.test import TestCase
+
+from health_check.backends.base import (
+    ServiceReturnedUnexpectedResult, ServiceUnavailable
+)
+from health_check_db.plugin_health_check import DjangoDatabaseBackend
+from mock import patch
 
 
 class MockDBModel(Model):
@@ -57,4 +58,3 @@ class HealthCheckDatabaseTests(TestCase):
         db_backend = DjangoDatabaseBackend()
         with self.assertRaises(Exception):
             db_backend.check_status()
-

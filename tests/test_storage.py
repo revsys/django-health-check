@@ -1,11 +1,13 @@
-__author__ = 'mspeedy'
-from django.test import TestCase
-from mock import MagicMock, patch
-from health_check.backends.base import ServiceUnavailable
-from health_check_storage.plugin_health_check import DefaultFileStorageHealthCheck
-from health_check_storage.base import StorageHealthCheck
-from django.core.files.storage import Storage
 from django.core.files.base import File
+from django.core.files.storage import Storage
+from django.test import TestCase
+
+from health_check.backends.base import ServiceUnavailable
+from health_check_storage.base import StorageHealthCheck
+from health_check_storage.plugin_health_check import \
+    DefaultFileStorageHealthCheck
+from mock import MagicMock, patch
+
 
 # A mock version of the base Storage Backend class
 class MockStorage(Storage):
