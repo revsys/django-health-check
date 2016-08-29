@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.test import TestCase
 from health_check.backends.base import BaseHealthCheckBackend
 from health_check.plugins import AlreadyRegistered, NotRegistered, plugin_dir
-from django.test import TestCase
 
 
 class FakePlugin(BaseHealthCheckBackend):

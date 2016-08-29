@@ -18,9 +18,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.staticfiles',
 
-    'django_health_check',
+    'health_check',
     'health_check_cache',
-    'tests.testapp',
+    'health_check_db',
+    'health_check_storage',
+    'health_check_celery',
+    'health_check_celery3',
+    'tests',
 )
 
 MIDDLEWARE_CLASSES = (

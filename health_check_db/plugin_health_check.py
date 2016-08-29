@@ -2,7 +2,6 @@
 import logging
 
 from django.db import DatabaseError, IntegrityError
-
 from health_check.backends.base import (
     BaseHealthCheckBackend, ServiceReturnedUnexpectedResult, ServiceUnavailable
 )
