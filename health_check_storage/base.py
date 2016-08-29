@@ -66,6 +66,5 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             return True
         except HealthCheckException, e:
             raise e
-        except Exception, e:
-            raise e
+        except Exception:
             raise ServiceUnavailable('Unknown exception')

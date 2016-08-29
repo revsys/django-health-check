@@ -19,7 +19,7 @@ class MockStorage(Storage):
         self.MOCK_FILE_COUNT = 0
         self.saves = saves
         self.deletes = deletes
-        super(self)
+        super(MockStorage)
 
     def exists(self, file_name):
         return self.MOCK_FILE_COUNT != 0
