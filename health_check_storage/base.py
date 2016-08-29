@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import datetime
-import logging
 import random
 
 from django.core.files.base import ContentFile
@@ -8,10 +7,8 @@ from django.core.files.storage import get_storage_class
 from django.utils.six import string_types
 
 from health_check.backends.base import (
-    BaseHealthCheckBackend, ServiceUnavailable, HealthCheckException
+    BaseHealthCheckBackend, HealthCheckException, ServiceUnavailable
 )
-
-logger = logging.getLogger(__name__)
 
 
 class StorageHealthCheck(BaseHealthCheckBackend):
@@ -65,11 +62,10 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             # delete the file and make sure it is gone
             storage.delete(file_name)
             if storage.exists(file_name):
-                logger.exception('File was not deleted')
                 raise ServiceUnavailable('File was not deleted')
             return True
         except HealthCheckException, e:
             raise e
-        except Exception:
-            logger.exception('Unknown exception')
+        except Exception, e:
+            raise e
             raise ServiceUnavailable('Unknown exception')
