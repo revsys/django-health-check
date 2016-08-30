@@ -38,7 +38,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
 
     def get_file_name(self):
         return 'health_check_storage_test/test-{}-{}.txt'.format(
-            datetime.datetime.now(),
+            datetime.datetime.now().strftime('%Y%m%dT%H%M%SZ'),
             random.randint(10000, 99999)
         )
 
