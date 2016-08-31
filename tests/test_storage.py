@@ -9,11 +9,15 @@ from health_check_storage.plugin_health_check import \
 from mock import MagicMock, patch
 
 
-# A mock version of the base Storage Backend class
 class MockStorage(Storage):
+    """
+    A Mock Storage backend used for testing.
+    saves - Determines whether save will mock a successful or unsuccessful save
+    deletes -  Determines whether save will mock a successful or unsuccessful deletion
+    """
     MOCK_FILE_COUNT = 0
-    saves = None  # Determines whether save will mock a successful or unsuccessful save
-    deletes = None  # Determines whether save will mock a successful or unsuccessful deletion
+    saves = None
+    deletes = None
 
     def __init__(self, saves=True, deletes=True):
         self.MOCK_FILE_COUNT = 0
@@ -41,6 +45,10 @@ def mock_file_name(file):
 
 @patch("health_check_storage.base.StorageHealthCheck.get_file_name", mock_file_name)
 class HealthCheckStorageTests(TestCase):
+    """
+    Tests health check behavior with a mocked storage backend.
+    Ensures check_status returns/raises the expected result when the storage works or raises exceptions.
+    """
 
     # Test that the get_storage method returns None on the base class, but a Storage instance on default
     def test_get_storage(self):
