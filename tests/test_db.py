@@ -10,6 +10,10 @@ from mock import patch
 
 
 class MockDBModel(Model):
+    """
+    A Mock database used for testing.
+    error_thrown - The Exception to be raised when save() is called, if any
+    """
 
     error_thrown = None
 
@@ -31,6 +35,10 @@ def raise_(ex):
 
 
 class HealthCheckDatabaseTests(TestCase):
+    """
+    Tests health check behavior with a mocked database backend.
+    Ensures check_status returns/raises the expected result when the database works or raises exceptions.
+    """
 
     @patch('health_check_db.plugin_health_check.TestModel.objects.create',
            lambda title=None: MockDBModel())
