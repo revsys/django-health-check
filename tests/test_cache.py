@@ -10,7 +10,11 @@ from mock import patch
 
 # A Mock version of the cache to use for testing
 class MockCache(BaseCache):
-
+    """
+    A Mock Cache used for testing.
+    set_works - set to False to make the mocked set method fail, but not raise
+    set_raises - The Exception to be raised when set() is called, if any
+    """
     key = None
     value = None
     set_works = None
@@ -38,6 +42,10 @@ class MockCache(BaseCache):
 
 
 class HealthCheckCacheTests(TestCase):
+    """
+    Tests health check behavior with a mocked cache backend.
+    Ensures check_status returns/raises the expected result when the cache works, fails, or raises exceptions.
+    """
 
     @patch("health_check_cache.plugin_health_check.cache", MockCache())
     def test_check_status_working(self):
