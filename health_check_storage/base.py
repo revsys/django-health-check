@@ -38,7 +38,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
 
     def get_file_name(self):
         return 'health_check_storage_test/test-{}-{}.txt'.format(
-            datetime.datetime.now(),
+            datetime.datetime.now().strftime('%Y%m%dT%H%M%SZ'),
             random.randint(10000, 99999)
         )
 
@@ -57,11 +57,11 @@ class StorageHealthCheck(BaseHealthCheckBackend):
                 file_name, ContentFile(content=file_content)
             )
             # read the file and compare
-            f = storage.open(file_name)
             if not storage.exists(file_name):
                 raise ServiceUnavailable('File does not exist')
-            if not f.read() == file_content:
-                return ServiceUnavailable('File content doesn\'t match')
+            with storage.open(file_name) as f:
+                if not f.read() == file_content:
+                    return ServiceUnavailable('File content doesn\'t match')
             # delete the file and make sure it is gone
             storage.delete(file_name)
             if storage.exists(file_name):
