@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-from time import sleep
 from django.conf import settings
 import redis
 from rq.worker import Worker
