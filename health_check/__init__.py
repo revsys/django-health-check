@@ -1,5 +1,4 @@
-# This file is heavily inspired from the django admin autodiscover
-from django.utils.module_loading import autodiscover_modules
+# Used by setup.py, so minimize top-level imports.
 
 __version_info__ = {
     'major': 1,
@@ -16,6 +15,7 @@ def autodiscover():
 
     This forces an import on them to register any admin bits they may want.
     """
+    from django.utils.module_loading import autodiscover_modules
     from health_check.plugins import plugin_dir
 
     autodiscover_modules('plugin_health_check', register_to=plugin_dir)
