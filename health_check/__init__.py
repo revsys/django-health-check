@@ -20,6 +20,7 @@ def autodiscover():
 
     autodiscover_modules('plugin_health_check', register_to=plugin_dir)
 
+
 def get_version(short=False):
     assert __version_info__['releaselevel'] in ('alpha', 'beta', 'final')
     vers = ["%(major)i.%(minor)i" % __version_info__, ]
