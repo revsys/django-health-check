@@ -8,6 +8,8 @@ __version_info__ = {
     'serial': 0
 }
 
+default_app_config = 'health_check.apps.HealthCheckConfig'
+
 
 def autodiscover():
     """
