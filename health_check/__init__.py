@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 # Used by setup.py, so minimize top-level imports.
 
 __version_info__ = {
     'major': 1,
     'minor': 2,
-    'micro': 0,
+    'micro': 1,
     'releaselevel': 'final',
     'serial': 0
 }

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.core.cache import cache
 from django.core.cache.backends.base import CacheKeyWarning
 
