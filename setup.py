@@ -35,7 +35,7 @@ setup(
         'health_check.backends',
         'health_check_storage',
     ],
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     classifiers=[
         'Topic :: Utilities',
         'License :: OSI Approved :: BSD License',
