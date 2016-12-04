@@ -5,16 +5,13 @@ from time import sleep
 
 from django.conf import settings
 
-from health_check.backends.base import (
-    BaseHealthCheckBackend, ServiceUnavailable
-)
+from health_check.backends.base import BaseHealthCheckBackend
 from health_check.plugins import plugin_dir
 from health_check_celery3.tasks import add
 
-logger = logging.getLogger(__name__)
-
 
 class CeleryHealthCheck(BaseHealthCheckBackend):
+    logger = logging.getLogger(__name__)
 
     def check_status(self):
         timeout = getattr(settings, 'HEALTHCHECK_CELERY_TIMEOUT', 3)
@@ -35,16 +32,13 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
                     return True
                 sleep(0.5)
         except IOError:
-            logger.exception("IOError")
-            raise ServiceUnavailable("IOError")
-        except:
-            logger.exception("Unknown Error")
-            raise ServiceUnavailable("Unknown error")
+            self.unavailable("IOError")
+        except Exception as e:
+            self.unavailable("Unknown Error {}".format(e))
 
-        logger.error(
-            u'Celery task did not complete successfully. '
-            u'Verify celery is running'
+        self.unavailable(
+            'Celery task did not complete successfully. '
+            'Verify celery is running'
         )
-        raise ServiceUnavailable("Unknown error")
 
 plugin_dir.register(CeleryHealthCheck)
