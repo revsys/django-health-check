@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Used by setup.py, so minimize top-level imports.
 
 __version_info__ = {
