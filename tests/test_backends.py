@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from health_check.backends.base import BaseHealthCheckBackend
 
 
