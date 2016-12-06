@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 from setuptools import setup
@@ -34,6 +35,7 @@ setup(
         'health_check_cache',
         'health_check.backends',
         'health_check_storage',
+        'health_check_storage_s3',
     ],
     long_description=read('README.rst'),
     classifiers=[

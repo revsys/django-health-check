@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # This is heavily inspired by the django admin sites.py
 
 from health_check.backends.base import BaseHealthCheckBackend
