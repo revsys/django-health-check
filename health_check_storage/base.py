@@ -64,7 +64,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             if storage.exists(file_name):
                 raise ServiceUnavailable('File was not deleted')
             return True
-        except HealthCheckException, e:
+        except HealthCheckException as e:
             raise e
         except Exception:
             raise ServiceUnavailable('Unknown exception')
