@@ -1,5 +1,6 @@
 -e .
 coverage==4.0.3
+celery==4.0.1
 django-coverage-plugin==1.3
 flake8==2.5.4
 isort==4.2.5
