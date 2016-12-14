@@ -20,10 +20,10 @@ class MockStorage(Storage):
     deletes = None
 
     def __init__(self, saves=True, deletes=True):
+        super(MockStorage, self).__init__()
         self.MOCK_FILE_COUNT = 0
         self.saves = saves
         self.deletes = deletes
-        super(MockStorage)
 
     def exists(self, file_name):
         return self.MOCK_FILE_COUNT != 0
@@ -32,7 +32,7 @@ class MockStorage(Storage):
         if self.deletes:
             self.MOCK_FILE_COUNT -= 1
 
-    def save(self, name, content):
+    def save(self, name, content, max_length=None):
         if self.saves:
             self.MOCK_FILE_COUNT += 1
 

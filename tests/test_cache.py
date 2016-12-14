@@ -21,6 +21,7 @@ class MockCache(BaseCache):
     set_raises = None
 
     def __init__(self, set_works=True, set_raises=None):
+        super(MockCache, self).__init__(params={})
         self.set_works = set_works
         self.set_raises = set_raises
 
