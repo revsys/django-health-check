@@ -25,13 +25,13 @@ class TestPlugin(object):
     def test_register_plugin(self):
         assert len(plugin_dir._registry) == 1
 
-    def test_should_raise_exception_when_registry_a_registrated_plugin(self):
+    def test_already_registered_exception(self):
         with pytest.raises(AlreadyRegistered):
             plugin_dir.register(FakePlugin)
 
         assert len(plugin_dir._registry) == 1
 
-    def test_should_raise_exception_when_unresgistry_plugin_not_registred(self):
+    def test_not_registered_exception(self):
         fake = Plugin()
         fake.__name__ = 'Fake'
         with pytest.raises(NotRegistered):
