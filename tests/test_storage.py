@@ -20,6 +20,7 @@ class MockStorage(Storage):
     deletes = None
 
     def __init__(self, saves=True, deletes=True):
+        super(MockStorage, self).__init__()
         self.MOCK_FILE_COUNT = 0
         self.saves = saves
         self.deletes = deletes
