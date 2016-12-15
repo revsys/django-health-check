@@ -1,8 +1,6 @@
-from django.core.files.base import File
+import mock
 from django.core.files.storage import Storage
 from django.test import TestCase
-
-from mock import MagicMock, patch
 
 from health_check.backends.base import ServiceUnavailable
 from health_check_storage.base import StorageHealthCheck
@@ -37,47 +35,62 @@ class MockStorage(Storage):
         if self.saves:
             self.MOCK_FILE_COUNT += 1
 
-    def open(self, name, mode='rb'):
-        return MagicMock(spec=File, name='mockfile.txt', read=lambda: b'this is the healthtest file content')
 
-
-def mock_file_name(file):
+def get_file_name(*args, **kwargs):
     return 'mockfile.txt'
 
 
-@patch("health_check_storage.base.StorageHealthCheck.get_file_name", mock_file_name)
+def get_file_content(*args, **kwargs):
+    return b'mockcontent'
+
+
+@mock.patch("health_check_storage.base.StorageHealthCheck.get_file_name", get_file_name)
+@mock.patch("health_check_storage.base.StorageHealthCheck.get_file_content", get_file_content)
 class HealthCheckStorageTests(TestCase):
     """
     Tests health check behavior with a mocked storage backend.
     Ensures check_status returns/raises the expected result when the storage works or raises exceptions.
     """
 
-    # Test that the get_storage method returns None on the base class, but a Storage instance on default
     def test_get_storage(self):
+        """Test get_storage method returns None on the base class, but a Storage instance on default."""
         base_storage = StorageHealthCheck()
         self.assertIsNone(base_storage.get_storage())
         default_storage = DefaultFileStorageHealthCheck()
         self.assertIsInstance(default_storage.get_storage(), Storage)
 
-    # Test that check status returns true when storage is working properly
-    @patch("health_check_storage.plugin_health_check.DefaultFileStorageHealthCheck.storage",
-           MockStorage())
+    @mock.patch(
+        "health_check_storage.plugin_health_check.DefaultFileStorageHealthCheck.storage",
+        MockStorage()
+    )
     def test_check_status_working(self):
-        default_storage = DefaultFileStorageHealthCheck()
-        self.assertTrue(default_storage.check_status())
+        """Test check_status returns True when storage is working properly."""
+        default_storage_health = DefaultFileStorageHealthCheck()
+        default_storage = default_storage_health.get_storage()
+        default_storage_open = '{}.{}.open'.format(
+            default_storage.__module__,
+            default_storage.__class__.__name__
+        )
 
-    # Test that check status raises a ServiceUnavailable exception when the file is not saved
-    @patch("health_check_storage.plugin_health_check.DefaultFileStorageHealthCheck.storage",
-           MockStorage(saves=False))
+        with mock.patch(default_storage_open, mock.mock_open(read_data=default_storage_health.get_file_content())):
+            self.assertTrue(default_storage_health.check_status())
+
+    @mock.patch(
+        "health_check_storage.plugin_health_check.DefaultFileStorageHealthCheck.storage",
+        MockStorage(saves=False)
+    )
     def test_file_does_not_exist(self):
+        """Test check_status raises ServiceUnavailable when file is not saved."""
         default_storage_health = DefaultFileStorageHealthCheck()
         with self.assertRaises(ServiceUnavailable):
             default_storage_health.check_status()
 
-    # Test that check status raises a ServiceUnavailable exception when the file is not deleted
-    @patch("health_check_storage.plugin_health_check.DefaultFileStorageHealthCheck.storage",
-           MockStorage(deletes=False))
+    @mock.patch(
+        "health_check_storage.plugin_health_check.DefaultFileStorageHealthCheck.storage",
+        MockStorage(deletes=False)
+    )
     def test_file_not_deleted(self):
+        """Test check_status raises ServiceUnavailable when file is not deleted."""
         default_storage_health = DefaultFileStorageHealthCheck()
         with self.assertRaises(ServiceUnavailable):
             default_storage_health.check_status()
