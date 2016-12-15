@@ -26,6 +26,10 @@ class HealthCheckPluginDirectory(object):
     def __init__(self):
         self._registry = {}  # model_class class -> admin_class instance
 
+    def reset(self):
+        """Reset registry state, e.g. for testing purposes."""
+        self._registry = {}
+
     def register(self, plugin, admin_class=None, **options):
         """
         Register the given model(s) with the given admin class.

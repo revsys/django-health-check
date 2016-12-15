@@ -18,6 +18,7 @@ class Plugin(BaseHealthCheckBackend):
 class TestPlugin(object):
     @pytest.yield_fixture(autouse=True)
     def setup(self):
+        plugin_dir.reset()
         plugin_dir.register(FakePlugin)
         yield
         plugin_dir.unregister([FakePlugin])
