@@ -17,7 +17,8 @@ class MockDBModel(Model):
 
     error_thrown = None
 
-    def __init__(self, error_thrown=None):
+    def __init__(self, error_thrown=None, *args, **kwargs):
+        super(MockDBModel, self).__init__(*args, **kwargs)
         self.error_thrown = error_thrown
 
     def save(self, *args, **kwargs):
