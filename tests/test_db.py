@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import DatabaseError, IntegrityError
 from django.db.models import Model
 from django.test import TestCase
