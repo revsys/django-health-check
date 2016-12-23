@@ -48,14 +48,12 @@ Add required apps:
         'health_check_cache',
         'health_check_storage',
 
-Remember to add dependencies, for example ``djcelery`` for Celery. You should have
-that already, if you have Celery running. You'll also have to make sure
-that you have a `result backend`_ configured.
+Celery notes
+~~~~~~~~~~~~
 
-.. _result backend: http://docs.celeryproject.org/en/latest/getting-started/first-steps-with-celery.html#keeping-results
+If you are using current Celery (version 3 or 4) the ``health_check_celery`` application should work out of the box.
 
-If you are using Celery 3, use the ``health_check_celery3``
-application instead of ``health_check_celery``.
+This package also offers a ``health_check_celery2`` application for Celery 2 support and backwards compatibility. ``health_check_celery2`` was previously named ``health_check_celery``.
 
 Set up monitoring
 =================
