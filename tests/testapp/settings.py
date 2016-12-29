@@ -19,11 +19,11 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'health_check',
-    'health_check_cache',
-    'health_check_db',
-    'health_check_storage',
-    'health_check_celery',
-    'health_check_celery3',
+    'health_check.cache',
+    'health_check.db',
+    'health_check.storage',
+    'health_check.contrib.celery',
+    'health_check.contrib.s3boto_storage',
     'tests',
 )
 

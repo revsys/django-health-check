@@ -9,6 +9,7 @@ class HealthCheckStatusType(object):
     working = 1
     unexpected_result = 2
 
+
 HEALTH_CHECK_STATUS_TYPE_TRANSLATOR = {
     0: _("unavailable"),
     1: _("working"),

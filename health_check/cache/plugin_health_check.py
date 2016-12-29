@@ -24,4 +24,5 @@ class CacheBackend(BaseHealthCheckBackend):
         except Exception:
             raise ServiceUnavailable("Unknown exception")
 
+
 plugin_dir.register(CacheBackend)

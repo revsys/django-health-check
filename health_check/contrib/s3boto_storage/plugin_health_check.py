@@ -2,7 +2,7 @@
 import logging
 
 from health_check.plugins import plugin_dir
-from health_check_storage.base import StorageHealthCheck
+from health_check.storage.base import StorageHealthCheck
 
 
 class S3BotoStorageHealthCheck(StorageHealthCheck):
@@ -23,5 +23,6 @@ class S3BotoStorageHealthCheck(StorageHealthCheck):
     def check_delete(self, file_name):
         storage = self.get_storage()
         storage.delete(file_name)
+
 
 plugin_dir.register(S3BotoStorageHealthCheck)

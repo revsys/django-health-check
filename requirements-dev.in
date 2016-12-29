@@ -1,0 +1,11 @@
+celery
+coverage
+flake8
+isort
+mccabe
+mock
+pydocstyle
+pep8
+pep8-naming
+pytest
+pytest-django
