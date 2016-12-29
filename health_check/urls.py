@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
+from health_check.views import home
 
 import health_check
 from health_check.views import home
