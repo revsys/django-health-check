@@ -9,6 +9,10 @@ class Migration(migrations.Migration):
 
     initial = True
 
+    replaces = [
+        ('health_check_db', '0001_initial'),
+    ]
+
     dependencies = [
     ]
 
@@ -19,5 +23,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=128)),
             ],
+            options={
+                'db_table': 'health_check_db_testmodel',
+            },
         ),
     ]

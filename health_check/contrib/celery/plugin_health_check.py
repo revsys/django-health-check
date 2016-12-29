@@ -9,7 +9,7 @@ from health_check.backends.base import (
     BaseHealthCheckBackend, ServiceUnavailable
 )
 from health_check.plugins import plugin_dir
-from health_check_celery.tasks import add
+from .tasks import add
 
 logger = logging.getLogger(__name__)
 
@@ -46,5 +46,6 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
             u'Verify celery is running'
         )
         raise ServiceUnavailable("Unknown error")
+
 
 plugin_dir.register(CeleryHealthCheck)
