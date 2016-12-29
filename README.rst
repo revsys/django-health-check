@@ -63,11 +63,6 @@ Set up monitoring
 E.g. add to pingdom - django-health-check will return HTTP 200 if
 everything is OK and HTTP 500 if *anything* is not working.
 
-Dependencies
-============
-
-Django 1.4+
-
 .. |version| image:: https://img.shields.io/pypi/v/django-health-check.svg
    :target: https://pypi.python.org/pypi/django-health-check/
 .. |ci| image:: https://api.travis-ci.org/KristianOellegaard/django-health-check.svg?branch=master
