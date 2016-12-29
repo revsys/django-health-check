@@ -29,7 +29,6 @@ setup(
     packages=[
         'health_check',
         'health_check_celery',
-        'health_check_celery3',
         'health_check_db',
         'health_check_db.migrations',
         'health_check_cache',
