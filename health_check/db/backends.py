@@ -1,14 +1,14 @@
-# -*- coding: utf-8 -*-
-
 from django.db import DatabaseError, IntegrityError
 
-from health_check.exceptions import ServiceUnavailable, ServiceReturnedUnexpectedResult
 from health_check.backends import BaseHealthCheckBackend
-from health_check.db.models import TestModel
-from health_check.plugins import plugin_dir
+from health_check.exceptions import (
+    ServiceReturnedUnexpectedResult, ServiceUnavailable
+)
+
+from .models import TestModel
 
 
-class DjangoDatabaseBackend(BaseHealthCheckBackend):
+class DatabaseBackend(BaseHealthCheckBackend):
 
     def check_status(self):
         try:
@@ -20,6 +20,3 @@ class DjangoDatabaseBackend(BaseHealthCheckBackend):
             raise ServiceReturnedUnexpectedResult("Integrity Error")
         except DatabaseError:
             raise ServiceUnavailable("Database error")
-
-
-plugin_dir.register(DjangoDatabaseBackend)

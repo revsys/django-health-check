@@ -1,9 +1,9 @@
-from django.core.cache import cache
-from django.core.cache.backends.base import CacheKeyWarning
+from django.core.cache import CacheKeyWarning, cache
 
 from health_check.backends import BaseHealthCheckBackend
-from health_check.exceptions import ServiceUnavailable, ServiceReturnedUnexpectedResult
-from health_check.plugins import plugin_dir
+from health_check.exceptions import (
+    ServiceReturnedUnexpectedResult, ServiceUnavailable
+)
 
 
 class CacheBackend(BaseHealthCheckBackend):
@@ -16,6 +16,3 @@ class CacheBackend(BaseHealthCheckBackend):
             self.add_error(ServiceReturnedUnexpectedResult("Cache key warning"), e)
         except ValueError as e:
             self.add_error(ServiceReturnedUnexpectedResult("ValueError"), e)
-
-
-plugin_dir.register(CacheBackend)

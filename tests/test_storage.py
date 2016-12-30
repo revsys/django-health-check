@@ -4,9 +4,9 @@ from django.core.files.storage import Storage
 from django.test import TestCase
 
 from health_check.exceptions import ServiceUnavailable
-from health_check.storage.base import StorageHealthCheck
-from health_check.storage.plugin_health_check import \
-    DefaultFileStorageHealthCheck
+from health_check.storage.backends import (
+    DefaultFileStorageHealthCheck, StorageHealthCheck
+)
 
 
 class MockStorage(Storage):
@@ -45,8 +45,8 @@ def get_file_content(*args, **kwargs):
     return b'mockcontent'
 
 
-@mock.patch("health_check.storage.base.StorageHealthCheck.get_file_name", get_file_name)
-@mock.patch("health_check.storage.base.StorageHealthCheck.get_file_content", get_file_content)
+@mock.patch("health_check.storage.backends.StorageHealthCheck.get_file_name", get_file_name)
+@mock.patch("health_check.storage.backends.StorageHealthCheck.get_file_content", get_file_content)
 class HealthCheckStorageTests(TestCase):
     """
     Tests health check behavior with a mocked storage backend.
@@ -61,7 +61,7 @@ class HealthCheckStorageTests(TestCase):
         self.assertIsInstance(default_storage.get_storage(), Storage)
 
     @mock.patch(
-        "health_check.storage.plugin_health_check.DefaultFileStorageHealthCheck.storage",
+        "health_check.storage.backends.DefaultFileStorageHealthCheck.storage",
         MockStorage()
     )
     def test_check_status_working(self):
@@ -77,7 +77,7 @@ class HealthCheckStorageTests(TestCase):
             self.assertTrue(default_storage_health.check_status())
 
     @mock.patch(
-        "health_check.storage.plugin_health_check.DefaultFileStorageHealthCheck.storage",
+        "health_check.storage.backends.DefaultFileStorageHealthCheck.storage",
         MockStorage(saves=False)
     )
     def test_file_does_not_exist(self):
@@ -87,7 +87,7 @@ class HealthCheckStorageTests(TestCase):
             default_storage_health.check_status()
 
     @mock.patch(
-        "health_check.storage.plugin_health_check.DefaultFileStorageHealthCheck.storage",
+        "health_check.storage.backends.DefaultFileStorageHealthCheck.storage",
         MockStorage(deletes=False)
     )
     def test_file_not_deleted(self):
