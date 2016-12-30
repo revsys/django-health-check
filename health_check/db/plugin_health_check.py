@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 
 from django.db import DatabaseError, IntegrityError
 
@@ -8,8 +7,6 @@ from health_check.backends.base import (
 )
 from health_check.db.models import TestModel
 from health_check.plugins import plugin_dir
-
-logger = logging.getLogger(__name__)
 
 
 class DjangoDatabaseBackend(BaseHealthCheckBackend):
@@ -20,12 +17,9 @@ class DjangoDatabaseBackend(BaseHealthCheckBackend):
             obj.title = "newtest"
             obj.save()
             obj.delete()
-            return True
         except IntegrityError:
-            logger.exception("Integrity Error")
             raise ServiceReturnedUnexpectedResult("Integrity Error")
         except DatabaseError:
-            logger.exception("Database Error")
             raise ServiceUnavailable("Database error")
 
 
