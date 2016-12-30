@@ -15,6 +15,12 @@ HEALTH_CHECK_STATUS_TYPE_TRANSLATOR = {
     2: _("unexpected result"),
 }
 
+HEALTH_CHECK_JSON_STATUS_TYPE_TRANSLATOR = {
+    0: "DOWN",
+    1: "OK",
+    2: "WARNING",
+}
+
 
 class HealthCheckException(Exception):
     pass
@@ -44,6 +50,9 @@ class BaseHealthCheckBackend(object):
                 setattr(self, "_status", e.code)
 
         return self._status
+
+    def json_status(self):
+        return HEALTH_CHECK_JSON_STATUS_TYPE_TRANSLATOR[self.status]
 
     def pretty_status(self):
         return "%s" % (HEALTH_CHECK_STATUS_TYPE_TRANSLATOR[self.status])
