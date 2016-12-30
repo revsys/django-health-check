@@ -23,12 +23,10 @@ def _base():
 def home(request):
     working, plugins = _base()
     method = RESPONSE_METHOD[1 if working else 0]
+
+    if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
+        data = {p.identifier(): p.json_status() for p in plugins}
+        return method(json.dumps(data, indent=2), content_type="application/json")
+
     return method(loader.render_to_string(
         "health_check/dashboard.html", {'plugins': plugins}))
-
-
-def json_view(request):
-    working, plugins = _base()
-    data = {p.identifier(): p.json_status() for p in plugins}
-    method = RESPONSE_METHOD[1 if working else 0]
-    return method(json.dumps(data, indent=2), content_type="application/json")

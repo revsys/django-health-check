@@ -1,14 +1,10 @@
+import json
+
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from health_check.plugins import plugin_dir
 from health_check_cache.plugin_health_check import CacheBackend
-
-try:
-    # Django >= 1.4, < 2.0 import
-    from django.core.urlresolvers import reverse
-except (DeprecationWarning, ImportError):
-    # Django >= 2.0 import
-    from django.urls import reverse
 
 
 class HealthCheckViewsTest(TestCase):
@@ -34,11 +30,11 @@ class HealthCheckViewsTest(TestCase):
         for plugin in self.plugins:
             self.assertContains(response, plugin.__name__)
 
-    def test_home_view(self):
+    def test_home(self):
         response = self.client.get(reverse('health_check_home'))
         self.check_health_check_response(response)
 
-    def test_json_view(self):
-        response = self.client.get(reverse('health_check_json_view'))
-        self.assertEqual(response.status_code, 200)
+    def test_home_json(self):
+        response = self.client.get(reverse('health_check_home'), HTTP_ACCEPT='application/json')
         self.check_health_check_response(response)
+        self.assertEqual(json.loads(response.content.decode('utf-8'))['CacheBackend'], 'OK')
