@@ -21,7 +21,7 @@ class TestPlugin(object):
         plugin_dir.reset()
         plugin_dir.register(FakePlugin)
         yield
-        plugin_dir.unregister([FakePlugin])
+        plugin_dir.unregister(FakePlugin)
 
     def test_register_plugin(self):
         assert len(plugin_dir._registry) == 1

@@ -30,7 +30,7 @@ class BaseHealthCheckBackend(object):
 
     def add_error(self, error, cause=None):
         if isinstance(error, HealthCheckException):
-            msg = error.message
+            pass
         elif isinstance(error, text_type):
             msg = error
             error = HealthCheckException(msg)
@@ -38,14 +38,14 @@ class BaseHealthCheckBackend(object):
             msg = _("unknown error")
             error = HealthCheckException(msg)
         if isinstance(cause, BaseException):
-            logger.exception(msg)
+            logger.exception(text_type(error))
         else:
-            logger.error(msg)
+            logger.error(text_type(error))
         self.errors.append(error)
 
     def pretty_status(self):
         if self.errors:
-            return "/n".join(str(e) for e in self.errors)
+            return "\n".join(str(e) for e in self.errors)
         return _('working')
 
     @property
