@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-urlpatterns = []
+from django.conf.urls import include, url
+
+urlpatterns = [
+    url(r'^ht/', include('health_check.urls')),
+]

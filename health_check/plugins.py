@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-# This is heavily inspired by the django admin sites.py
-
-from health_check.backends import BaseHealthCheckBackend
 
 
 class AlreadyRegistered(Exception):
@@ -13,54 +10,27 @@ class NotRegistered(Exception):
 
 
 class HealthCheckPluginDirectory(object):
-    """
-    Django health check registry.
-
-    An AdminSite object encapsulates an instance of the Django admin application, ready
-    to be hooked in to your URLconf. Models are registered with the AdminSite using the
-    register() method, and the get_urls() method can then be used to access Django view
-    functions that present a full admin interface for the collection of registered
-    models.
-    """
+    """Django health check registry."""
 
     def __init__(self):
-        self._registry = {}  # model_class class -> admin_class instance
+        self._registry = {}  # plugin_class class -> plugin options
 
     def reset(self):
         """Reset registry state, e.g. for testing purposes."""
         self._registry = {}
 
-    def register(self, plugin, admin_class=None, **options):
-        """
-        Register the given model(s) with the given admin class.
-
-        The model(s) should be Model classes, not instances.
-
-        If an admin class isn't given, it will use ModelAdmin (the default
-        admin options). If keyword arguments are given -- e.g., list_display --
-        they'll be applied as options to the admin class.
-
-        If a model is already registered, this will raise AlreadyRegistered.
-
-        If a model is abstract, this will raise ImproperlyConfigured.
-        """
+    def register(self, plugin, **options):
+        """Add the given plugin from the registry."""
         if plugin in self._registry:
-            raise AlreadyRegistered('The model %s is already registered' % plugin.__name__)
+            raise AlreadyRegistered('The plugin %s is already registered' % plugin.__name__)
         # Instantiate the admin class to save in the registry
-        self._registry[plugin] = plugin()
+        self._registry[plugin] = options
 
-    def unregister(self, model_or_iterable):
-        """
-        Remove the given model(s) from the registry.
-
-        If a model isn't already registered, this will raise NotRegistered.
-        """
-        if isinstance(model_or_iterable, BaseHealthCheckBackend):
-            model_or_iterable = [model_or_iterable]
-        for model in model_or_iterable:
-            if model not in self._registry:
-                raise NotRegistered('The model %s is not registered' % model.__name__)
-            del self._registry[model]
+    def unregister(self, plugin):
+        """Remove the given plugin from the registry."""
+        if plugin not in self._registry:
+            raise NotRegistered('The plugin %s is not registered' % plugin.__name__)
+        del self._registry[plugin]
 
 
 plugin_dir = HealthCheckPluginDirectory()
