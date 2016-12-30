@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 
 from django.conf import settings
 
-from health_check.exceptions import ServiceUnavailable, ServiceReturnedUnexpectedResult
 from health_check.backends import BaseHealthCheckBackend
-from health_check.plugins import plugin_dir
+from health_check.exceptions import (
+    ServiceReturnedUnexpectedResult, ServiceUnavailable
+)
+
 from .tasks import add
 
 
@@ -25,6 +26,3 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
             self.add_error(ServiceUnavailable("IOError"), e)
         except BaseException as e:
             self.add_error(ServiceUnavailable("Unknown error"), e)
-
-
-plugin_dir.register(CeleryHealthCheck)

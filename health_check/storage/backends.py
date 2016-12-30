@@ -1,13 +1,13 @@
-# -*- coding: utf-8 -*-
 import datetime
 import random
 
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.six import string_types
 
-from health_check.exceptions import ServiceUnavailable
 from health_check.backends import BaseHealthCheckBackend
+from health_check.exceptions import ServiceUnavailable
 
 
 class StorageHealthCheck(BaseHealthCheckBackend):
@@ -71,3 +71,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             return True
         except Exception:
             raise ServiceUnavailable('Unknown exception')
+
+
+class DefaultFileStorageHealthCheck(StorageHealthCheck):
+    storage = settings.DEFAULT_FILE_STORAGE
