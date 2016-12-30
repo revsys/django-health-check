@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-try:
-    from django.urls import reverse_lazy
-except ImportError:
-    from django.core.urlresolvers import reverse_lazy
-
 from health_check.backends import BaseHealthCheckBackend
 from health_check.plugins import plugin_dir
 
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
-class TestHomeView(object):
-    url = reverse_lazy('health_check_home')
+
+class TestMainView(object):
+    url = reverse('health_check_home')
 
     def test_success(self, client):
         response = client.get(self.url)
