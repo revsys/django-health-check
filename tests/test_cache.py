@@ -3,9 +3,6 @@ from django.core.cache.backends.base import BaseCache, CacheKeyWarning
 from django.test import TestCase
 from mock import patch
 
-from health_check.backends.base import (
-    ServiceReturnedUnexpectedResult, ServiceUnavailable,
-    HealthCheckException)
 from health_check.cache.plugin_health_check import CacheBackend
 
 
