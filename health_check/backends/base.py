@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import logging
+
+from django.utils.six import text_type
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
+
+logger = logging.getLogger('health-check')
 
 
 class HealthCheckStatusType(object):
@@ -10,44 +16,66 @@ class HealthCheckStatusType(object):
     unexpected_result = 2
 
 
-HEALTH_CHECK_STATUS_TYPE_TRANSLATOR = {
-    0: _("unavailable"),
-    1: _("working"),
-    2: _("unexpected result"),
-}
-
-
+@python_2_unicode_compatible
 class HealthCheckException(Exception):
-    pass
+    type = _("unknown error")
+
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return "%s: %s" % (self.type, self.message)
 
 
 class ServiceUnavailable(HealthCheckException):
-    message = HEALTH_CHECK_STATUS_TYPE_TRANSLATOR[0]
-    code = 0
+    type = _("unavailable")
 
 
 class ServiceReturnedUnexpectedResult(HealthCheckException):
-    message = HEALTH_CHECK_STATUS_TYPE_TRANSLATOR[2]
-    code = 2
+    type = _("unexpected result")
 
 
 class BaseHealthCheckBackend(object):
 
+    def __init__(self):
+        self.errors = []
+
     def check_status(self):
-        return None
+        raise NotImplementedError
+
+    def run_check(self):
+        self.errors = []
+        try:
+            self.check_status()
+        except HealthCheckException as e:
+            self.add_error(e, e)
+        except BaseException:
+            logger.exception("Unexpected Error!")
+            raise
+
+    def add_error(self, error, cause=None):
+        if isinstance(error, HealthCheckException):
+            msg = error.message
+        elif isinstance(error, text_type):
+            msg = error
+            error = HealthCheckException(msg)
+        else:
+            msg = _("unknown error")
+            error = HealthCheckException(msg)
+        if isinstance(cause, BaseException):
+            logger.exception(msg)
+        else:
+            logger.error(msg)
+        self.errors.append(error)
+
+    def pretty_status(self):
+        if self.errors:
+            return "/n".join(str(e) for e in self.errors)
+        return _('working')
 
     @property
     def status(self):
-        if not getattr(self, "_status", False):
-            try:
-                setattr(self, "_status", self.check_status())
-            except (ServiceUnavailable, ServiceReturnedUnexpectedResult) as e:
-                setattr(self, "_status", e.code)
-
-        return self._status
-
-    def pretty_status(self):
-        return "%s" % (HEALTH_CHECK_STATUS_TYPE_TRANSLATOR[self.status])
+        return int(not self.errors)
 
     @classmethod
     def identifier(cls):

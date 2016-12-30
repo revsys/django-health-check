@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 from datetime import datetime, timedelta
 from time import sleep
 
@@ -10,8 +9,6 @@ from health_check.backends.base import (
 )
 from health_check.plugins import plugin_dir
 from .tasks import add
-
-logger = logging.getLogger(__name__)
 
 
 class CeleryHealthCheck(BaseHealthCheckBackend):
@@ -35,16 +32,10 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
                     return True
                 sleep(0.5)
         except IOError:
-            logger.exception("IOError")
             raise ServiceUnavailable("IOError")
         except:
-            logger.exception("Unknown Error")
             raise ServiceUnavailable("Unknown error")
 
-        logger.error(
-            u'Celery task did not complete successfully. '
-            u'Verify celery is running'
-        )
         raise ServiceUnavailable("Unknown error")
 
 

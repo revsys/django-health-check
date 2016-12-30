@@ -4,8 +4,8 @@ from django.test import TestCase
 from mock import patch
 
 from health_check.backends.base import (
-    ServiceReturnedUnexpectedResult, ServiceUnavailable
-)
+    ServiceReturnedUnexpectedResult, ServiceUnavailable,
+    HealthCheckException)
 from health_check.cache.plugin_health_check import CacheBackend
 
 
@@ -52,25 +52,28 @@ class HealthCheckCacheTests(TestCase):
     @patch("health_check.cache.plugin_health_check.cache", MockCache())
     def test_check_status_working(self):
         cache_backend = CacheBackend()
-        self.assertTrue(cache_backend.check_status())
+        cache_backend.run_check()
+        self.assertFalse(cache_backend.errors)
 
     # check_status should raise ServiceUnavailable when values at cache key do not match
     @patch("health_check.cache.plugin_health_check.cache", MockCache(set_works=False))
     def test_set_fails(self):
         cache_backend = CacheBackend()
-        with self.assertRaises(ServiceUnavailable):
-            cache_backend.check_status()
+        cache_backend.run_check()
+        self.assertTrue(cache_backend.errors)
+        self.assertIn('unavailable: Cache key does not match', cache_backend.pretty_status())
 
     # check_status should catch generic exceptions raised by set and convert to ServiceUnavailable
     @patch("health_check.cache.plugin_health_check.cache", MockCache(set_raises=Exception))
     def test_set_raises_generic(self):
         cache_backend = CacheBackend()
-        with self.assertRaises(ServiceUnavailable):
-            cache_backend.check_status()
+        with self.assertRaises(Exception):
+            cache_backend.run_check()
 
     # check_status should catch CacheKeyWarning and convert to ServiceReturnedUnexpectedResult
     @patch("health_check.cache.plugin_health_check.cache", MockCache(set_raises=CacheKeyWarning))
     def test_set_raises_cache_key_warning(self):
         cache_backend = CacheBackend()
-        with self.assertRaises(ServiceReturnedUnexpectedResult):
-            cache_backend.check_status()
+        cache_backend.check_status()
+        cache_backend.run_check()
+        self.assertIn('unexpected result: Cache key warning', cache_backend.pretty_status())
