@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from health_check.backends.base import BaseHealthCheckBackend
+from health_check.backends import BaseHealthCheckBackend
 from health_check.plugins import AlreadyRegistered, NotRegistered, plugin_dir
 
 

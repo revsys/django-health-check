@@ -4,9 +4,6 @@ from django.db.models import Model
 from django.test import TestCase
 from mock import patch
 
-from health_check.backends.base import (
-    ServiceReturnedUnexpectedResult, ServiceUnavailable
-)
 from health_check.db.plugin_health_check import DjangoDatabaseBackend
 
 

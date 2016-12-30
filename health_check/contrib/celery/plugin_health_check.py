@@ -3,9 +3,8 @@ from datetime import datetime, timedelta
 
 from django.conf import settings
 
-from health_check.backends.base import (
-    BaseHealthCheckBackend, ServiceUnavailable,
-    ServiceReturnedUnexpectedResult)
+from health_check.exceptions import ServiceUnavailable, ServiceReturnedUnexpectedResult
+from health_check.backends import BaseHealthCheckBackend
 from health_check.plugins import plugin_dir
 from .tasks import add
 

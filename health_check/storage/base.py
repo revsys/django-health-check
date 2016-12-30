@@ -6,9 +6,8 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.six import string_types
 
-from health_check.backends.base import (
-    BaseHealthCheckBackend, ServiceUnavailable
-)
+from health_check.exceptions import ServiceUnavailable
+from health_check.backends import BaseHealthCheckBackend
 
 
 class StorageHealthCheck(BaseHealthCheckBackend):

@@ -3,7 +3,7 @@ import mock
 from django.core.files.storage import Storage
 from django.test import TestCase
 
-from health_check.backends.base import ServiceUnavailable
+from health_check.exceptions import ServiceUnavailable
 from health_check.storage.base import StorageHealthCheck
 from health_check.storage.plugin_health_check import \
     DefaultFileStorageHealthCheck
