@@ -4,18 +4,18 @@ from django.utils.translation import ugettext_lazy as _
 
 @python_2_unicode_compatible
 class HealthCheckException(Exception):
-    type = _("unknown error")
+    message_type = _("unknown error")
 
     def __init__(self, message):
         self.message = message
 
     def __str__(self):
-        return "%s: %s" % (self.type, self.message)
+        return "%s: %s" % (self.message_type, self.message)
 
 
 class ServiceUnavailable(HealthCheckException):
-    type = _("unavailable")
+    message_type = _("unavailable")
 
 
 class ServiceReturnedUnexpectedResult(HealthCheckException):
-    type = _("unexpected result")
+    message_type = _("unexpected result")
