@@ -17,21 +17,20 @@ class TestBaseHealthCheckBackend(object):
             BaseHealthCheckBackend().run_check()
 
     def test_identifier(self):
-        assert BaseHealthCheckBackend.identifier() == 'BaseHealthCheckBackend'
+        assert BaseHealthCheckBackend().identifier() == 'BaseHealthCheckBackend'
 
         class MyHeathCheck(BaseHealthCheckBackend):
             pass
 
-        assert MyHeathCheck.identifier() == 'MyHeathCheck'
+        assert MyHeathCheck().identifier() == 'MyHeathCheck'
 
         class MyHeathCheck(BaseHealthCheckBackend):
             foo = 'bar'
 
-            @classmethod
-            def identifier(cls):
-                return cls.foo
+            def identifier(self):
+                return self.foo
 
-        assert MyHeathCheck.identifier() == 'bar'
+        assert MyHeathCheck().identifier() == 'bar'
 
     def test_status(self):
         ht = BaseHealthCheckBackend()
