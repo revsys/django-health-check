@@ -52,6 +52,5 @@ class BaseHealthCheckBackend(object):
     def status(self):
         return int(not self.errors)
 
-    @classmethod
-    def identifier(cls):
-        return cls.__name__
+    def identifier(self):
+        return self.__class__.__name__
