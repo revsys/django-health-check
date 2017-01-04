@@ -9,6 +9,6 @@ mock==2.0.0
 pydocstyle==1.1.1
 pep8==1.7.0
 pep8-naming==0.4.1
-pre-commit==0.8.0
+pre-commit==0.9.4
 py==1.4.32
 pytest==3.0.5
