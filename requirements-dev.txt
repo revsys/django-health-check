@@ -1,5 +1,5 @@
 -e .
-celery==4.0.1
+celery==4.0.2
 coverage==4.0.3
 django-coverage-plugin==1.3
 flake8==3.2.1
