@@ -3,30 +3,40 @@ sudo: false
 dist: trusty
 cache: pip
 python:
-  - "2.7"
-  - "3.5"
-  - "3.6"
+- '2.7'
+- '3.5'
+- '3.6'
 env:
   matrix:
-    - TOXENV=qa
-    - DJANGO=18
-    - DJANGO=19
-    - DJANGO=110
-    - DJANGO=master
+  - TOXENV=qa
+  - DJANGO=18
+  - DJANGO=19
+  - DJANGO=110
+  - DJANGO=master
 matrix:
   fast_finish: true
   allow_failures:
-    - env: DJANGO=master
+  - env: DJANGO=master
 install:
-  - pip install --upgrade pip tox
-  - pip install -U coveralls
+- pip install --upgrade pip tox
+- pip install -U coveralls
 before_script:
-  - |
-    if [[ -z $TOXENV ]]; then
-      export TOXENV=py$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/\.//g')-dj$DJANGO
-    fi
-  - echo $TOXENV
+- |
+  if [[ -z $TOXENV ]]; then
+    export TOXENV=py$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/\.//g')-dj$DJANGO
+  fi
+- echo $TOXENV
 script:
-  - tox -e $TOXENV
+- tox -e $TOXENV
 after_success:
-  - coveralls
+- coveralls
+deploy:
+  provider: pypi
+  user: codingjoe
+  password:
+    secure: jJyadofJm7F1Qco+EDCyN/aMZaYSbfQ0GAE02Bx7I499MkjPYvv38X2btg+PjdW3rzGD0d/kq24lfWLkgKncyQ/YMgLQ7H/GuCCHHYbKUklxllaoFXActBjstmKOvXyWWC5oEb+YEJ4HTwgkvS6wkp69B7C1d4BAOqGs5IKnCSo=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: KristianOellegaard/django-health-check
+    branch: master
