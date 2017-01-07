@@ -12,7 +12,7 @@ class MainView(TemplateView):
     def get(self, request, *args, **kwargs):
         plugins = []
         errors = []
-        for plugin_class, options in plugin_dir._registry.items():
+        for plugin_class, options in plugin_dir._registry:
             plugin = plugin_class(**copy.deepcopy(options))
             plugin.run_check()
             plugins.append(plugin)
