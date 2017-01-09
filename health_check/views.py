@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 
+from django.http import JsonResponse
 from django.views.generic import TemplateView
 
 from health_check.plugins import plugin_dir
@@ -19,4 +20,11 @@ class MainView(TemplateView):
             errors += plugin.errors
         plugins.sort(key=lambda x: x.identifier())
         status_code = 500 if errors else 200
+
+        if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
+            return JsonResponse(
+                {str(p.identifier()): str(p.pretty_status()) for p in plugins},
+                status=status_code
+            )
+
         return self.render_to_response({'plugins': plugins}, status=status_code)
