@@ -22,9 +22,12 @@ class MainView(TemplateView):
         status_code = 500 if errors else 200
 
         if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
-            return JsonResponse(
-                {str(p.identifier()): str(p.pretty_status()) for p in plugins},
-                status=status_code
-            )
+            return self.render_to_response_json(plugins, status_code)
 
         return self.render_to_response({'plugins': plugins}, status=status_code)
+
+    def render_to_response_json(self, plugins, status):
+        return JsonResponse(
+            {str(p.identifier()): str(p.pretty_status()) for p in plugins},
+            status=status
+        )
