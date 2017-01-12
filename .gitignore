@@ -9,3 +9,5 @@
 *#
 *~
 .tox/
+.cache/
+.coverage

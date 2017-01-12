@@ -7,7 +7,7 @@ from health_check.plugins import plugin_dir
 class TestAutoDiscover(object):
     def test_autodiscover(self):
         health_check_plugins = list(filter(
-            lambda x: 'health_check_' in x,
+            lambda x: 'health_check.' in x,
             settings.INSTALLED_APPS
         ))
 

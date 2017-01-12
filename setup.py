@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 from health_check import __version__
 
@@ -26,30 +26,15 @@ setup(
     license="BSD",
     keywords="django health check monitoring",
     url="https://github.com/KristianOellegaard/django-health-check",
-    packages=[
-        'health_check',
-        'health_check_celery',
-        'health_check_celery3',
-        'health_check_db',
-        'health_check_db.migrations',
-        'health_check_cache',
-        'health_check.backends',
-        'health_check_storage',
-        'health_check_storage_s3',
-    ],
+    packages=find_packages(exclude=['tests', 'docs']),
     long_description=read('README.rst'),
     classifiers=[
         'Topic :: Utilities',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
     ],
-    install_requires=[
-        'Django>=1.4',
-    ],
+    install_requires=[],
     include_package_data=True,
     zip_safe=False,
 )

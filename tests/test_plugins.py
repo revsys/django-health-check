@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from health_check.backends.base import BaseHealthCheckBackend
-from health_check.plugins import AlreadyRegistered, NotRegistered, plugin_dir
+from health_check.backends import BaseHealthCheckBackend
+from health_check.plugins import plugin_dir
 
 
 class FakePlugin(BaseHealthCheckBackend):
@@ -21,21 +21,7 @@ class TestPlugin(object):
         plugin_dir.reset()
         plugin_dir.register(FakePlugin)
         yield
-        plugin_dir.unregister([FakePlugin])
+        plugin_dir.reset()
 
     def test_register_plugin(self):
-        assert len(plugin_dir._registry) == 1
-
-    def test_already_registered_exception(self):
-        with pytest.raises(AlreadyRegistered):
-            plugin_dir.register(FakePlugin)
-
-        assert len(plugin_dir._registry) == 1
-
-    def test_not_registered_exception(self):
-        fake = Plugin()
-        fake.__name__ = 'Fake'
-        with pytest.raises(NotRegistered):
-            plugin_dir.unregister(fake)
-
         assert len(plugin_dir._registry) == 1

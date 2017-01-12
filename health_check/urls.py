@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
 
-import health_check
-from health_check.views import home
-
-health_check.autodiscover()
+from health_check.views import MainView
 
 urlpatterns = [
-    url(r'^$', home, name='health_check_home'),
+    url(r'^$', MainView.as_view(), name='health_check_home'),
 ]

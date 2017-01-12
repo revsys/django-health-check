@@ -1,42 +1,42 @@
 language: python
 sudo: false
-cache:
-- pip
+dist: trusty
+cache: pip
 python:
 - '2.7'
-- '3.4'
 - '3.5'
-- pypy
+- '3.6'
 env:
-  global:
-  - DJANGO_SETTINGS_MODULE="tests.testapp.settings"
   matrix:
-  - DJANGO="Django<1.9,>=1.8"
-  - DJANGO="Django<1.10,>=1.9"
-  - DJANGO="Django<1.11,>=1.10"
-  - DJANGO="-e git+https://github.com/django/django.git@master#egg=Django"
+  - TOXENV=qa
+  - DJANGO=18
+  - DJANGO=19
+  - DJANGO=110
+  - DJANGO=master
 matrix:
   fast_finish: true
   allow_failures:
-  - env: DJANGO="-e git+https://github.com/django/django.git@master#egg=Django"
+  - env: DJANGO=master
 install:
-- pip install --upgrade pip
-- pip install -r requirements-dev.txt
-- pip install $DJANGO
-- pip install --upgrade coveralls
+- pip install --upgrade pip tox
+- pip install -U coveralls
+before_script:
+- |
+  if [[ -z $TOXENV ]]; then
+    export TOXENV=py$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/\.//g')-dj$DJANGO
+  fi
+- echo $TOXENV
 script:
-- isort --check-only --recursive --diff .
-- flake8 --jobs=2 .
-- pydocstyle --verbose --explain --source --count
-- coverage run -m pytest
+- tox -e $TOXENV
 after_success:
 - coveralls
 deploy:
   provider: pypi
   user: codingjoe
   password:
-    secure: fWXbGApcxF3CSv8hdg1MuN62O2CIIGCe+dFfUliY8zjWs2FCye5c3qBgRRXWXjTnNhLuNN1bGNsP5Bc6ifLZCZ/4slyxu3ijWFViVoEvefIdmCG/4EihXxaZ1x+VbkIkFYCiXeNyXsqDtROgXmZjat0URph5Sk+fdJohKkK7ZxM=
+    secure: jJyadofJm7F1Qco+EDCyN/aMZaYSbfQ0GAE02Bx7I499MkjPYvv38X2btg+PjdW3rzGD0d/kq24lfWLkgKncyQ/YMgLQ7H/GuCCHHYbKUklxllaoFXActBjstmKOvXyWWC5oEb+YEJ4HTwgkvS6wkp69B7C1d4BAOqGs5IKnCSo=
   on:
     tags: true
     distributions: sdist bdist_wheel
     repo: KristianOellegaard/django-health-check
+    branch: master

@@ -1,0 +1,62 @@
+<html>
+<head>
+    <title>System status</title>
+    <style>
+        html, body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        body {
+            background-color: #ddd;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            margin: auto;
+            width: 600px;
+            margin-top: 50px;
+            padding: 15px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        h1 {
+            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            font-size: 22px;
+        }
+
+        td.status_1 {
+            background-color: #0f0;
+            width: 2px;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        td.status_0 {
+            background-color: #f00;
+            width: 2px;
+            padding: 0px;
+            margin: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>System status</h1>
+    <table>
+        {% for plugin in plugins %}
+        <tr>
+            <td class="status_{{ plugin.status }}"></td>
+            <td>{{ plugin.identifier }}</td>
+            <td>{{ plugin.pretty_status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

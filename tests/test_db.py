@@ -2,13 +2,9 @@
 from django.db import DatabaseError, IntegrityError
 from django.db.models import Model
 from django.test import TestCase
-
 from mock import patch
 
-from health_check.backends.base import (
-    ServiceReturnedUnexpectedResult, ServiceUnavailable
-)
-from health_check_db.plugin_health_check import DjangoDatabaseBackend
+from health_check.db.backends import DatabaseBackend
 
 
 class MockDBModel(Model):
@@ -43,29 +39,32 @@ class HealthCheckDatabaseTests(TestCase):
     Ensures check_status returns/raises the expected result when the database works or raises exceptions.
     """
 
-    @patch('health_check_db.plugin_health_check.TestModel.objects.create',
+    @patch('health_check.db.backends.TestModel.objects.create',
            lambda title=None: MockDBModel())
     def test_check_status_works(self):
-        db_backend = DjangoDatabaseBackend()
-        self.assertTrue(db_backend.check_status())
+        db_backend = DatabaseBackend()
+        db_backend.check_status()
+        self.assertFalse(db_backend.errors)
 
-    @patch('health_check_db.plugin_health_check.TestModel.objects.create',
+    @patch('health_check.db.backends.TestModel.objects.create',
            lambda title=None: raise_(IntegrityError))
     def test_raise_integrity_error(self):
-        db_backend = DjangoDatabaseBackend()
-        with self.assertRaises(ServiceReturnedUnexpectedResult):
-            db_backend.check_status()
+        db_backend = DatabaseBackend()
+        db_backend.run_check()
+        self.assertTrue(db_backend.errors)
+        self.assertIn('unexpected result: Integrity Error', db_backend.pretty_status())
 
-    @patch('health_check_db.plugin_health_check.TestModel.objects.create',
+    @patch('health_check.db.backends.TestModel.objects.create',
            lambda title=None: MockDBModel(error_thrown=DatabaseError))
     def test_raise_database_error(self):
-        db_backend = DjangoDatabaseBackend()
-        with self.assertRaises(ServiceUnavailable):
-            db_backend.check_status()
+        db_backend = DatabaseBackend()
+        db_backend.run_check()
+        self.assertTrue(db_backend.errors)
+        self.assertIn('unavailable: Database error', db_backend.pretty_status())
 
-    @patch('health_check_db.plugin_health_check.TestModel.objects.create',
+    @patch('health_check.db.backends.TestModel.objects.create',
            lambda title=None: MockDBModel(error_thrown=Exception))
     def test_raise_exception(self):
-        db_backend = DjangoDatabaseBackend()
+        db_backend = DatabaseBackend()
         with self.assertRaises(Exception):
-            db_backend.check_status()
+            db_backend.run_check()
