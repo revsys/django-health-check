@@ -40,6 +40,19 @@ You can use tools like Pingdom_ or other uptime robots.
 The ``/ht/`` endpoint will respond a HTTP 200 if all checks passed
 and a HTTP 500 if any of the tests failed.
 
+Machine-readable reports
+------------------------
+
+If you want machine-readable status reports you can request the ``/ht/``
+endpoint with the ``Accept`` HTTP header set to ``application/json``.
+The backend will return a JSON response of form:
+
+.. code:: python
+
+    {
+        "CacheBackend": "OK"
+    }
+
 Writing a custom health check
 -----------------------------
 
@@ -72,6 +85,32 @@ Register the backend in your app configuration:
         def ready(self):
             from .backends import MyHealthCheckBackend
             plugin_dir.register(MyHealthCheckBackend)
+
+Customizing output
+------------------
+
+You can customize JSON rendering by e.g. inheriting from ``MainView`` in ``health_check.views``
+and customizing the ``render_to_response_json`` method:
+
+.. code:: python
+
+    # views.py
+    from health_check.views import MainView
+
+    class HealthCheckCustomView(MainView)
+        def render_to_response_json(self, plugins, status):
+            return JsonResponse(
+                {str(p.identifier()): "COOL" if status == 200 else "SWEATY" for p in plugins}
+                status=status
+            )
+
+    # urls.py
+    import views
+
+    urlpatterns = [
+        # ...
+        url(r'^ht/$', views.HealthCheckCustomView.as_view(), name='health_check_custom')),
+    ]
 
 
 .. |version| image:: https://img.shields.io/pypi/v/django-health-check.svg
