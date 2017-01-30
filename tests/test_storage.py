@@ -57,6 +57,7 @@ class HealthCheckStorageTests(TestCase):
         """Test get_storage method returns None on the base class, but a Storage instance on default."""
         base_storage = StorageHealthCheck()
         self.assertIsNone(base_storage.get_storage())
+
         default_storage = DefaultFileStorageHealthCheck()
         self.assertIsInstance(default_storage.get_storage(), Storage)
 
@@ -67,7 +68,9 @@ class HealthCheckStorageTests(TestCase):
     def test_check_status_working(self):
         """Test check_status returns True when storage is working properly."""
         default_storage_health = DefaultFileStorageHealthCheck()
+
         default_storage = default_storage_health.get_storage()
+
         default_storage_open = '{}.{}.open'.format(
             default_storage.__module__,
             default_storage.__class__.__name__
