@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.conf import settings
+from django.utils import timezone
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import (
@@ -17,7 +18,7 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
         try:
             result = add.apply_async(
                 args=[4, 4],
-                expires=datetime.now() + timedelta(seconds=timeout)
+                expires=timezone.now() + timedelta(seconds=timeout)
             )
             result.get(timeout=timeout)
             if result.result != 8:
