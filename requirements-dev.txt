@@ -13,7 +13,7 @@ isort==4.2.5
 kombu==4.0.2              # via celery
 mccabe==0.6.1
 mock==2.0.0
-pbr==1.10.0               # via mock
+pbr==2.0.0               # via mock
 pep8-naming==0.4.1
 pep8==1.7.0
 py==1.4.32                # via pytest
