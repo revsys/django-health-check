@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from django.conf import settings
 
 from health_check.backends import BaseHealthCheckBackend
