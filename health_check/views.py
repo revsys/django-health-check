@@ -2,8 +2,8 @@
 import copy
 
 from django.http import JsonResponse
-from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
+from django.views.generic import TemplateView
 
 from health_check.plugins import plugin_dir
 
