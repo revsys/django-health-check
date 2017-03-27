@@ -2,6 +2,7 @@
 import copy
 
 from django.http import JsonResponse
+from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
 from health_check.plugins import plugin_dir
@@ -10,6 +11,7 @@ from health_check.plugins import plugin_dir
 class MainView(TemplateView):
     template_name = 'health_check/index.html'
 
+    @never_cache
     def get(self, request, *args, **kwargs):
         plugins = []
         errors = []
