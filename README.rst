@@ -188,7 +188,7 @@ and customizing the ``template_name``, ``get``, ``render_to_response`` and ``ren
 
     urlpatterns = [
         # ...
-        url(r'^ht/$', views.HealthCheckCustomView.as_view(), name='health_check_custom')),
+        url(r'^ht/$', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
     ]
 
 Other resources
