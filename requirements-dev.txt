@@ -21,7 +21,7 @@ pycodestyle==2.3.1        # via flake8
 pydocstyle==2.0.0
 pyflakes==1.5.0 # via flake8
 pytest-django==3.1.2
-pytest==3.1.0
+pytest==3.1.1
 pytz==2017.2             # via celery
 six==1.10.0               # via mock
 vine==1.1.3               # via amqp
