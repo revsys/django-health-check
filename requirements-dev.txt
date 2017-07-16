@@ -5,7 +5,7 @@
 #    pip-compile --output-file requirements-dev.txt requirements-dev.in
 #
 amqp==2.2.1               # via kombu
-billiard==3.5.0.2         # via celery
+billiard==3.5.0.3         # via celery
 celery==4.0.2
 coverage==4.4.1
 flake8==3.3.0
