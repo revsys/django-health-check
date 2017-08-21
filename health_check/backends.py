@@ -8,6 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from health_check.exceptions import HealthCheckException
 
+from timeit import default_timer as timer
+
 logger = logging.getLogger('health-check')
 
 
@@ -19,6 +21,7 @@ class BaseHealthCheckBackend(object):
         raise NotImplementedError
 
     def run_check(self):
+        start = timer()
         self.errors = []
         try:
             self.check_status()
@@ -27,6 +30,8 @@ class BaseHealthCheckBackend(object):
         except BaseException:
             logger.exception("Unexpected Error!")
             raise
+        finally:
+            self.time_taken = timer() - start
 
     def add_error(self, error, cause=None):
         if isinstance(error, HealthCheckException):
