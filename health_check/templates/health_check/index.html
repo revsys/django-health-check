@@ -16,7 +16,7 @@
             background-color: #fff;
             border: 1px solid #ccc;
             margin: auto;
-            width: 600px;
+            width: 700px;
             margin-top: 50px;
             padding: 15px;
         }
@@ -54,6 +54,7 @@
             <td class="status_{{ plugin.status }}"></td>
             <td>{{ plugin.identifier }}</td>
             <td>{{ plugin.pretty_status }}</td>
+            <td>{{ plugin.time_taken|floatformat:4 }} seconds</td>
         </tr>
         {% endfor %}
     </table>

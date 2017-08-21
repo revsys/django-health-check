@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import logging
+from timeit import default_timer as timer
 
 from django.utils.six import text_type
 from django.utils.translation import ugettext_lazy as _
@@ -19,6 +20,7 @@ class BaseHealthCheckBackend(object):
         raise NotImplementedError
 
     def run_check(self):
+        start = timer()
         self.errors = []
         try:
             self.check_status()
@@ -27,6 +29,8 @@ class BaseHealthCheckBackend(object):
         except BaseException:
             logger.exception("Unexpected Error!")
             raise
+        finally:
+            self.time_taken = timer() - start
 
     def add_error(self, error, cause=None):
         if isinstance(error, HealthCheckException):
