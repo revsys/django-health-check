@@ -23,5 +23,5 @@ pyflakes==1.6.0 # via flake8
 pytest-django==3.1.2
 pytest==3.2.2
 pytz==2017.2             # via celery
-six==1.10.0               # via mock
+six==1.11.0               # via mock
 vine==1.1.4               # via amqp
