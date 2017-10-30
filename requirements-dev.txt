@@ -22,6 +22,6 @@ pydocstyle==2.1.1
 pyflakes==1.6.0 # via flake8
 pytest-django==3.1.2
 pytest==3.2.3
-pytz==2017.2             # via celery
+pytz==2017.3             # via celery
 six==1.11.0               # via mock
 vine==1.1.4               # via amqp
