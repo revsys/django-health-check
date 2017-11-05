@@ -7,7 +7,7 @@
 amqp==2.2.2               # via kombu
 billiard==3.5.0.3         # via celery
 celery==4.1.0
-coverage==4.4.1
+coverage==4.4.2
 flake8==3.5.0
 isort==4.2.15
 kombu==4.1.0              # via celery
