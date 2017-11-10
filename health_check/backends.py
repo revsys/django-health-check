@@ -9,8 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from health_check.exceptions import HealthCheckException
 
-from timeit import default_timer as timer
-
 logger = logging.getLogger('health-check')
 
 
