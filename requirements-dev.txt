@@ -4,24 +4,24 @@
 #
 #    pip-compile --output-file requirements-dev.txt requirements-dev.in
 #
-amqp==2.2.1               # via kombu
+amqp==2.2.2               # via kombu
 billiard==3.5.0.3         # via celery
 celery==4.1.0
-coverage==4.4.1
-flake8==3.4.1
+coverage==4.4.2
+flake8==3.5.0
 isort==4.2.15
 kombu==4.1.0              # via celery
 mccabe==0.6.1
 mock==2.0.0
 pbr==3.1.1               # via mock
 pep8-naming==0.4.1
-pep8==1.7.0
+pep8==1.7.1
 py==1.4.34                # via pytest
 pycodestyle==2.3.1        # via flake8
-pydocstyle==2.0.0
+pydocstyle==2.1.1
 pyflakes==1.6.0 # via flake8
 pytest-django==3.1.2
-pytest==3.2.1
-pytz==2017.2             # via celery
-six==1.10.0               # via mock
+pytest==3.2.3
+pytz==2017.3             # via celery
+six==1.11.0               # via mock
 vine==1.1.4               # via amqp

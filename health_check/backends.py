@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import logging
+from timeit import default_timer as timer
 
 from django.utils.six import text_type
 from django.utils.translation import ugettext_lazy as _
