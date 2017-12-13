@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import json
 
 from health_check.backends import BaseHealthCheckBackend
@@ -12,7 +9,7 @@ except ImportError:
     from django.core.urlresolvers import reverse
 
 
-class TestMainView(object):
+class TestMainView:
     url = reverse('health_check_home')
 
     def test_success(self, client):

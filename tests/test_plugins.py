@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import pytest
 
 from health_check.backends import BaseHealthCheckBackend
@@ -15,7 +14,7 @@ class Plugin(BaseHealthCheckBackend):
         pass
 
 
-class TestPlugin(object):
+class TestPlugin:
     @pytest.yield_fixture(autouse=True)
     def setup(self):
         plugin_dir.reset()

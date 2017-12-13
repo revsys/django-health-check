@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.core.cache.backends.base import BaseCache, CacheKeyWarning
 from django.test import TestCase
 from mock import patch
