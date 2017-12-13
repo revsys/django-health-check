@@ -14,8 +14,7 @@ matrix:
   allow_failures:
   - env: DJANGO=master
 install:
-- pip install --upgrade pip tox
-- pip install -U coveralls
+- pip install --upgrade codecov tox
 before_script:
 - |
   if [[ -z $TOXENV ]]; then
@@ -25,7 +24,7 @@ before_script:
 script:
 - tox -e $TOXENV
 after_success:
-- coveralls
+- codecov
 deploy:
   provider: pypi
   user: codingjoe
