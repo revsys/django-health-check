@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import logging
 
 from health_check.storage.backends import StorageHealthCheck
