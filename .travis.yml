@@ -1,17 +1,13 @@
 language: python
 sudo: false
-dist: trusty
 cache: pip
 python:
-- '2.7'
-- '3.5'
 - '3.6'
 env:
   matrix:
   - TOXENV=qa
-  - DJANGO=18
-  - DJANGO=19
-  - DJANGO=110
+  - DJANGO=111
+  - DJANGO=20
   - DJANGO=master
 matrix:
   fast_finish: true
