@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import logging
 from io import StringIO
 
@@ -10,7 +7,7 @@ from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import HealthCheckException
 
 
-class TestBaseHealthCheckBackend(object):
+class TestBaseHealthCheckBackend:
 
     def test_run_check(self):
         with pytest.raises(NotImplementedError):
