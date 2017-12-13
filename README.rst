@@ -201,8 +201,8 @@ Other resources
    :target: https://pypi.python.org/pypi/django-health-check/
 .. |ci| image:: https://api.travis-ci.org/KristianOellegaard/django-health-check.svg?branch=master
    :target: https://travis-ci.org/KristianOellegaard/django-health-check
-.. |coverage| image:: https://coveralls.io/repos/KristianOellegaard/django-health-check/badge.svg?branch=master
-   :target: https://coveralls.io/r/KristianOellegaard/django-health-check
+.. |coverage| image:: https://codecov.io/gh/KristianOellegaard/django-health-check/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/KristianOellegaard/django-health-check
 .. |health| image:: https://landscape.io/github/KristianOellegaard/django-health-check/master/landscape.svg?style=flat
    :target: https://landscape.io/github/KristianOellegaard/django-health-check/master
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
