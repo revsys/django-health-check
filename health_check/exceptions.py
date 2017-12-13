@@ -1,8 +1,6 @@
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 
-@python_2_unicode_compatible
 class HealthCheckException(Exception):
     message_type = _("unknown error")
 
