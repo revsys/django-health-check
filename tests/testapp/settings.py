@@ -53,3 +53,8 @@ TEMPLATES = [
 SECRET_KEY = uuid.uuid4().hex
 
 USE_L10N = True
+
+CELERY_TASK_QUEUES = {
+    'default': {},
+    'queue2': {}
+}

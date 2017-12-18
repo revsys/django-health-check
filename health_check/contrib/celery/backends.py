@@ -15,7 +15,8 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
         try:
             result = add.apply_async(
                 args=[4, 4],
-                expires=timeout
+                expires=timeout,
+                queue=self.queue
             )
             result.get(timeout=timeout)
             if result.result != 8:
