@@ -13,7 +13,8 @@ class S3Boto3StorageHealthCheck(StorageHealthCheck):
     static and media file storage on cloud platforms.
 
     ``django-storages`` can be found at https://git.io/v1lGx
-    ``S3Boto3Storage`` can be found at https://github.com/jschneier/django-storages/blob/master/storages/backends/s3boto3.py
+    ``S3Boto3Storage`` can be found at
+        https://github.com/jschneier/django-storages/blob/master/storages/backends/s3boto3.py
     """
 
     logger = logging.getLogger(__name__)
