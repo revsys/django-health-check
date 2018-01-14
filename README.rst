@@ -34,7 +34,7 @@ Add the health checker to an URL you want to use:
 
     urlpatterns = [
         # ...
-        url(r'^ht/$', include('health_check.urls')),
+        url(r'^ht/', include('health_check.urls')),
     ]
 
 Add the ``health_check`` applications to your ``INSTALLED_APPS``:
