@@ -51,6 +51,12 @@ Add the ``health_check`` applications to your ``INSTALLED_APPS``:
         'health_check.contrib.s3boto_storage',      # requires boto and S3BotoStorage backend
     ]
 
+If using the DB check, run migrations:
+
+.. code::
+
+    django-admin migrate
+
 Setting up monitoring
 ---------------------
 
