@@ -1,5 +1,7 @@
 import copy
 
+from concurrent.futures import ThreadPoolExecutor
+
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
@@ -12,14 +14,21 @@ class MainView(TemplateView):
 
     @never_cache
     def get(self, request, *args, **kwargs):
-        plugins = []
         errors = []
-        for plugin_class, options in plugin_dir._registry:
-            plugin = plugin_class(**copy.deepcopy(options))
+
+        plugins = sorted((
+            plugin_class(**copy.deepcopy(options))
+            for plugin_class, options in plugin_dir._registry
+        ), key=lambda plugin: plugin.identifier())
+
+        def _run(plugin):
             plugin.run_check()
-            plugins.append(plugin)
-            errors += plugin.errors
-        plugins.sort(key=lambda x: x.identifier())
+            return plugin.errors
+
+        with ThreadPoolExecutor() as executor:
+            for ers in executor.map(_run, plugins):
+                errors.extend(ers)
+
         status_code = 500 if errors else 200
 
         if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
