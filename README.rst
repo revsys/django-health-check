@@ -19,6 +19,12 @@ Writing your own custom health checks is also very quick and easy.
 
 We also like contributions, so don't be afraid to make a pull request.
 
+Requirements
+------------
+
+- Python 3.6 and Django >= 1.11
+- The latest version to support Python 2 is 2.4.0
+
 Installation
 ------------
 
