@@ -11,3 +11,5 @@
 .tox/
 .cache/
 .coverage
+.eggs
+/docs/_build

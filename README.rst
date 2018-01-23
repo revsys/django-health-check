@@ -19,6 +19,14 @@ Writing your own custom health checks is also very quick and easy.
 
 We also like contributions, so don't be afraid to make a pull request.
 
+Supported Versions
+------------------
+
+We officially only support the latest Version of Python as well as the
+latest version of Django and the latest Django LTS version.
+
+.. note:: The latest version to support Python 2 is 2.4.0
+
 Installation
 ------------
 

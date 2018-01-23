@@ -6,6 +6,7 @@ python:
 env:
   matrix:
   - TOXENV=qa
+  - TOXENV=docs
   - DJANGO=111
   - DJANGO=20
   - DJANGO=master
