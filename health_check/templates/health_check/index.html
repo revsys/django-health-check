@@ -1,63 +1,32 @@
 <html>
 <head>
-    <title>System status</title>
-    <style>
-        html, body {
-            margin: 0px;
-            padding: 0px;
-        }
-
-        body {
-            background-color: #ddd;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .container {
-            background-color: #fff;
-            border: 1px solid #ccc;
-            margin: auto;
-            width: 700px;
-            margin-top: 50px;
-            padding: 15px;
-        }
-
-        table {
-            width: 100%;
-        }
-
-        h1 {
-            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-            font-size: 22px;
-        }
-
-        td.status_1 {
-            background-color: #0f0;
-            width: 2px;
-            padding: 0px;
-            margin: 0px;
-        }
-
-        td.status_0 {
-            background-color: #f00;
-            width: 2px;
-            padding: 0px;
-            margin: 0px;
-        }
-    </style>
+  <title>System status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body>
-<div class="container">
-    <h1>System status</h1>
-    <table>
-        {% for plugin in plugins %}
-        <tr>
-            <td class="status_{{ plugin.status }}"></td>
-            <td>{{ plugin.identifier }}</td>
-            <td>{{ plugin.pretty_status }}</td>
-            <td>{{ plugin.time_taken|floatformat:4 }} seconds</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+<body class="w3-content">
+<h1 class="w3-center">System status</h1>
+<table class="w3-table w3-striped w3-white">
+  <tr class="w3-blue">
+    <th colspan="2">Service</th>
+    <th>Status</th>
+    <th class="w3-hide-small w3-hide-medium w3-right">Time Taken</th>
+  </tr>
+  {% for plugin in plugins %}
+  <tr>
+    <td class="w3-center" style="width: 50px">
+      {% if plugin.status %}
+      <i class="w3-text-green fa fa-check" aria-hidden="true"></i>
+      {% else %}
+      <i class="w3-text-red fa fa-close" aria-hidden="true"></i>
+      {% endif %}
+    </td>
+    <td>{{ plugin.identifier }}</td>
+    <td>{{ plugin.pretty_status }}</td>
+    <td class="w3-hide-small w3-hide-medium w3-right">{{ plugin.time_taken|floatformat:4 }} seconds</td>
+  </tr>
+  {% endfor %}
+</table>
 </body>
 </html>

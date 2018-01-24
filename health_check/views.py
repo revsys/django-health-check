@@ -33,7 +33,9 @@ class MainView(TemplateView):
         if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
             return self.render_to_response_json(plugins, status_code)
 
-        return self.render_to_response({'plugins': plugins}, status=status_code)
+        context = {'plugins': plugins, 'status_code': status_code}
+
+        return self.render_to_response(context, status=status_code)
 
     def render_to_response_json(self, plugins, status):
         return JsonResponse(
