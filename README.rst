@@ -4,14 +4,15 @@ django-health-check
 
 |version| |ci| |coverage| |health| |license|
 
-This project checks the health for a number of backends and sees if they are able
-to connect and do a simple action.
+This project checks for various conditions and provides reports when anomalous
+behavior is detected.
 
-The following health check backends are bundled into this project:
+The following health checks are bundled with this project:
 
-- Cache
-- Database
-- Storage
+- cache
+- database
+- storage
+- disk and memory utilization (via ``psutil``)
 - AWS S3 storage
 - Celery task queue
 
@@ -19,10 +20,22 @@ Writing your own custom health checks is also very quick and easy.
 
 We also like contributions, so don't be afraid to make a pull request.
 
+Use Cases
+---------
+
+The primary intended use case is to monitor conditions via HTTP(S), with
+responses available in HTML and JSON formats. When you get back a response that
+includes one or more problems, you can then decide the appropriate course of
+action, which could include generating notifications and/or automating the
+replacement of a failing node with a new one. If you are monitoring health in a
+high-availability environment with a load balancer that returns responses from
+multiple nodes, please note that certain checks (e.g., disk and memory usage)
+will return responses specific to the node selected by the load balancer.
+
 Supported Versions
 ------------------
 
-We officially only support the latest Version of Python as well as the
+We officially only support the latest version of Python as well as the
 latest version of Django and the latest Django LTS version.
 
 .. note:: The latest version to support Python 2 is 2.4.0
@@ -36,7 +49,7 @@ First install the ``django-health-check`` package:
 
     pip install django-health-check
 
-Add the health checker to an URL you want to use:
+Add the health checker to a URL you want to use:
 
 .. code:: python
 
@@ -56,8 +69,20 @@ Add the ``health_check`` applications to your ``INSTALLED_APPS``:
         'health_check.cache',
         'health_check.storage',
         'health_check.contrib.celery',              # requires celery
+        'health_check.contrib.psutil',              # disk and memory utilization; requires psutil
         'health_check.contrib.s3boto_storage',      # requires boto and S3BotoStorage backend
     ]
+
+(Optional) If using the ``psutil`` app, you can configure disk and memory
+threshold settings; otherwise below defaults are assumed. If you want to disable
+one of these checks, set its value to ``None``.
+
+.. code:: python
+
+    HEALTH_CHECK = {
+        'DISK_USAGE_MAX': 90,  # percent
+        'MEMORY_MIN' = 100,    # in MB
+    }
 
 If using the DB check, run migrations:
 

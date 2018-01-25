@@ -11,6 +11,10 @@ class HealthCheckException(Exception):
         return "%s: %s" % (self.message_type, self.message)
 
 
+class ServiceWarning(HealthCheckException):
+    message_type = _("warning")
+
+
 class ServiceUnavailable(HealthCheckException):
     message_type = _("unavailable")
 
