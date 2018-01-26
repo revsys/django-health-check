@@ -24,7 +24,7 @@ class MainView(TemplateView):
             plugin.run_check()
             return plugin.errors
 
-        with ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor(max_workers=len(plugins)) as executor:
             for ers in executor.map(_run, plugins):
                 errors.extend(ers)
 
