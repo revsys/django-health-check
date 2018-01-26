@@ -1,12 +1,15 @@
 django-health-check
 -------------------
 
-This project checks the health for a number of backends and sees if they are able
-to connect and do a simple action.
+This project checks for various conditions and provides reports when anomalous
+behavior is detected. Many of these checks involve connecting to back-end
+services and ensuring basic operations are successful.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    readme
+   contrib
+   settings
    changelog
