@@ -26,7 +26,7 @@ class MainView(TemplateView):
                 return plugin.errors
             finally:
                 from django.db import connection
-                connection.close_if_unusable_or_obsolete()
+                connection.close()
 
         with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
             for ers in executor.map(_run, plugins):
