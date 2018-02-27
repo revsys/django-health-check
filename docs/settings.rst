@@ -3,6 +3,38 @@ Settings
 
 Settings can be configured via the ``HEALTH_CHECK`` dictionary.
 
+Security
+--------
+
+Django health check can be used as a possible DOS attack vector as it can put
+your system under a lot of stress. As a default the view is also not cached by
+CDNs. Therefore we recommend to use a secure token to protect you application
+servers from an attacker.
+
+1.  Setup HTTPS. Seriously...
+2.  Add a secure token to your URL.
+
+Create a secure token:
+
+.. code:: shell
+
+    python -c "import secrets; print(secrets.token_urlsafe())"
+
+Add it to your URL:
+
+.. code:: python
+
+    urlpatterns = [
+        # ...
+        url(r'^ht/super_secret_token/'), include('health_check.urls')),
+    ]
+
+You can still use any uptime bot that is URL based while enjoying token protection.
+
+.. warning::
+    Do NOT use Django's `SECRET_KEY` setting. This should never be exposed,
+    to any third party. Not even your trusted uptime bot.
+
 ``psutil``
 ----------
 
