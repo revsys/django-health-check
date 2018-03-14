@@ -25,7 +25,8 @@ class DiskUsage(BaseHealthCheckBackend):
             du = psutil.disk_usage('/')
             if DISK_USAGE_MAX and du.percent >= DISK_USAGE_MAX:
                 raise ServiceWarning(
-                    f"{host} {du.percent}% disk usage exceeds {DISK_USAGE_MAX}%"
+                    "{} {}% disk usage exceeds {}%".format(
+                        host, du.percent, DISK_USAGE_MAX)
                 )
         except ValueError as e:
             self.add_error(ServiceReturnedUnexpectedResult("ValueError"), e)
@@ -40,7 +41,8 @@ class MemoryUsage(BaseHealthCheckBackend):
                 avail = '{:n}'.format(int(memory.available / 1024 / 1024))
                 threshold = '{:n}'.format(MEMORY_MIN)
                 raise ServiceWarning(
-                    f"{host} {avail} MB available RAM below {threshold} MB"
+                    "{} {} MB available RAM below {} MB".format(
+                        host, avail, threshold)
                 )
         except ValueError as e:
             self.add_error(ServiceReturnedUnexpectedResult("ValueError"), e)
