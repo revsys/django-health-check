@@ -25,8 +25,8 @@ class DiskUsage(BaseHealthCheckBackend):
             du = psutil.disk_usage('/')
             if DISK_USAGE_MAX and du.percent >= DISK_USAGE_MAX:
                 raise ServiceWarning(
-                    "{host} {percent}% disk usage exceeds {}%".format(
-                        host=host, percent=du.percent, DISK_USAGE_MAX)
+                    "{host} {percent}% disk usage exceeds {disk_usage}%".format(
+                        host=host, percent=du.percent, disk_usage=DISK_USAGE_MAX)
                 )
         except ValueError as e:
             self.add_error(ServiceReturnedUnexpectedResult("ValueError"), e)
