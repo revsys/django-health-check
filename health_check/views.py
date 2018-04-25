@@ -14,23 +14,19 @@ class MainView(TemplateView):
     @never_cache
     def get(self, request, *args, **kwargs):
         errors = []
+        warnings = []
 
         plugins = sorted((
             plugin_class(**copy.deepcopy(options))
             for plugin_class, options in plugin_dir._registry
         ), key=lambda plugin: plugin.identifier())
 
-        def _run(plugin):
-            plugin.run_check()
-            try:
-                return plugin.errors
-            finally:
-                from django.db import connection
-                connection.close()
-
         with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-            for ers in executor.map(_run, plugins):
-                errors.extend(ers)
+            for plugin, error in zip(plugins, executor.map(self._run, plugins)):
+                if plugin.critical:
+                    errors.extend(error)
+                else:
+                    warnings.extend(error)
 
         status_code = 500 if errors else 200
 
@@ -41,8 +37,21 @@ class MainView(TemplateView):
 
         return self.render_to_response(context, status=status_code)
 
-    def render_to_response_json(self, plugins, status):
+    def render_to_response_json(self, plugins, status_code):
         return JsonResponse(
-            {str(p.identifier()): str(p.pretty_status()) for p in plugins},
-            status=status
+            {
+                str(p.identifier()): {
+                    "status": str(p.pretty_status()),
+                    "took": round(p.time_taken, 4)
+                } for p in plugins
+            },
+            status=status_code
         )
+
+    def _run(self, plugin):
+        plugin.run_check()
+        try:
+            return plugin.errors
+        finally:
+            from django.db import connection
+            connection.close()
