@@ -32,7 +32,7 @@ class MainView(TemplateView):
         status_code = 500 if errors else 200
 
         if 'application/json' in request.META.get('HTTP_ACCEPT', '') or self._is_setting_enabled(
-            'DISABLE_HTML_RENDERING', False):
+                'DISABLE_HTML_RENDERING', False):
             return self.render_to_response_json(plugins, status_code)
 
         context = {'plugins': plugins, 'status_code': status_code}
