@@ -8,11 +8,6 @@ from django.views.generic import TemplateView
 
 from health_check.plugins import plugin_dir
 
-if hasattr(settings, 'HEALTH_CHECK'):
-    JSON_VERBOSE = settings.HEALTH_CHECK.get('JSON_VERBOSE', False)
-else:
-    JSON_VERBOSE = False
-
 
 class MainView(TemplateView):
     template_name = 'health_check/index.html'
@@ -36,7 +31,8 @@ class MainView(TemplateView):
 
         status_code = 500 if errors else 200
 
-        if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
+        if 'application/json' in request.META.get('HTTP_ACCEPT', '') or self._is_setting_enabled(
+            'DISABLE_HTML_RENDERING', False):
             return self.render_to_response_json(plugins, status_code)
 
         context = {'plugins': plugins, 'status_code': status_code}
@@ -44,7 +40,7 @@ class MainView(TemplateView):
         return self.render_to_response(context, status=status_code)
 
     def render_to_response_json(self, plugins, status_code):
-        if JSON_VERBOSE:
+        if self._is_setting_enabled('JSON_VERBOSE', False):
             return JsonResponse(
                 {
                     str(p.identifier()): {
@@ -67,3 +63,9 @@ class MainView(TemplateView):
         finally:
             from django.db import connection
             connection.close()
+
+    def _is_setting_enabled(self, setting, default):
+        if hasattr(settings, 'HEALTH_CHECK'):
+            return settings.HEALTH_CHECK.get(setting, default)
+        else:
+            return default

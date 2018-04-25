@@ -59,11 +59,11 @@ class TestMainView:
 
         class JSONSuccessBackend(BaseHealthCheckBackend):
             def run_check(self):
-                self.time_taken = 2.12345
+                self.time_taken = 2.1234567
 
         plugin_dir.reset()
         plugin_dir.register(JSONSuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/json')
         assert response.status_code == 200, response.content.decode('utf-8')
         assert json.loads(response.content.decode('utf-8')) == \
-               {JSONSuccessBackend().identifier(): {"status": JSONSuccessBackend().pretty_status(), "took": JSONSuccessBackend().time_taken}}
+               {JSONSuccessBackend().identifier(): {"status": JSONSuccessBackend().pretty_status(), "took": 2.1235}}
