@@ -158,6 +158,27 @@ The backend will return a JSON response:
 Optionally, the ``JSON_VERBOSE`` can be set to ``True`` in ``HEALTH_CHECK`` settings to output additional details about
 each plugin (for instance, response time).
 
+Overriding a health check
+-------------------------
+
+If you would like to customize an existing health check, for instance by changing its name or overriding its
+``critical`` flag, you can do so by adding something similar to the following to your own AppConfig.
+
+.. code:: python
+
+    from django.apps import AppConfig
+
+    from health_check.plugins import plugin_dir
+
+    class MyAppConfig(AppConfig):
+        name = 'my_app'
+
+        def ready(self):
+            from health_check.contrib.s3boto_storage.backends import S3BotoStorageBackend
+            plugin_dir.reregister(S3BotoStorageBackend.__name__,
+                                  type('S3Backend', (S3BotoStorageBackend,), {'critical': False}))
+
+
 Writing a custom health check
 -----------------------------
 

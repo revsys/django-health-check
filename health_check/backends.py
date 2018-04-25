@@ -11,7 +11,8 @@ logger = logging.getLogger('health-check')
 class BaseHealthCheckBackend:
     def __init__(self):
         self.errors = []
-        self.critical = True
+        if not hasattr(self, 'critical'):
+            self.critical = True
 
     def check_status(self):
         raise NotImplementedError
