@@ -21,5 +21,12 @@ class HealthCheckPluginDirectory:
         # Instantiate the admin class to save in the registry
         self._registry.append((plugin, options))
 
+    def reregister(self, replace_class, new_plugin, **options):
+        """Update the given plugin in the registry."""
+        for i, value in enumerate(self._registry):
+            if value.__name__ == replace_class:
+                self._registry[i] = (new_plugin, options)
+                break
+
 
 plugin_dir = HealthCheckPluginDirectory()
