@@ -66,4 +66,4 @@ class TestMainView:
         response = client.get(self.url, HTTP_ACCEPT='application/json')
         assert response.status_code == 200, response.content.decode('utf-8')
         assert json.loads(response.content.decode('utf-8')) == \
-               {JSONSuccessBackend().identifier(): {"status": JSONSuccessBackend().pretty_status(), "took": 2.1235}}
+            {JSONSuccessBackend().identifier(): {"status": JSONSuccessBackend().pretty_status(), "took": 2.1235}}
