@@ -53,7 +53,9 @@ class TestMainView:
         assert 'JSON Error' in json.loads(response.content.decode('utf-8'))[JSONErrorBackend().identifier()]
 
     def test_success_json_verbose(self, client):
-        settings.HEALTH_CHECK["JSON_VERBOSE"] = True
+        settings.HEALTH_CHECK = {
+            "JSON_VERBOSE": True
+        }
 
         class JSONSuccessBackend(BaseHealthCheckBackend):
             def run_check(self):
