@@ -1,6 +1,7 @@
 import copy
 from concurrent.futures import ThreadPoolExecutor
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
@@ -14,35 +15,57 @@ class MainView(TemplateView):
     @never_cache
     def get(self, request, *args, **kwargs):
         errors = []
+        warnings = []
 
         plugins = sorted((
             plugin_class(**copy.deepcopy(options))
             for plugin_class, options in plugin_dir._registry
         ), key=lambda plugin: plugin.identifier())
 
-        def _run(plugin):
-            plugin.run_check()
-            try:
-                return plugin.errors
-            finally:
-                from django.db import connection
-                connection.close()
-
         with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-            for ers in executor.map(_run, plugins):
-                errors.extend(ers)
+            for plugin, error in zip(plugins, executor.map(self._run, plugins)):
+                if plugin.critical:
+                    errors.extend(error)
+                else:
+                    warnings.extend(error)
 
         status_code = 500 if errors else 200
 
-        if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
+        if 'application/json' in request.META.get('HTTP_ACCEPT', '') or self._is_setting_enabled(
+                'DISABLE_HTML_RENDERING', False):
             return self.render_to_response_json(plugins, status_code)
 
         context = {'plugins': plugins, 'status_code': status_code}
 
         return self.render_to_response(context, status=status_code)
 
-    def render_to_response_json(self, plugins, status):
-        return JsonResponse(
-            {str(p.identifier()): str(p.pretty_status()) for p in plugins},
-            status=status
-        )
+    def render_to_response_json(self, plugins, status_code):
+        if self._is_setting_enabled('JSON_VERBOSE', False):
+            return JsonResponse(
+                {
+                    str(p.identifier()): {
+                        "status": str(p.pretty_status()),
+                        "took": round(p.time_taken, 4)
+                    } for p in plugins
+                },
+                status=status_code
+            )
+        else:
+            return JsonResponse(
+                {str(p.identifier()): str(p.pretty_status()) for p in plugins},
+                status=status_code
+            )
+
+    def _run(self, plugin):
+        plugin.run_check()
+        try:
+            return plugin.errors
+        finally:
+            from django.db import connection
+            connection.close()
+
+    def _is_setting_enabled(self, setting, default):
+        if hasattr(settings, 'HEALTH_CHECK'):
+            return settings.HEALTH_CHECK.get(setting, default)
+        else:
+            return default
