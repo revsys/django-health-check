@@ -1,11 +1,17 @@
 import copy
 from concurrent.futures import ThreadPoolExecutor
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
 from health_check.plugins import plugin_dir
+
+if hasattr(settings, 'HEALTH_CHECK'):
+    JSON_VERBOSE = settings.HEALTH_CHECK.get('JSON_VERBOSE', False)
+else:
+    JSON_VERBOSE = False
 
 
 class MainView(TemplateView):
@@ -38,15 +44,21 @@ class MainView(TemplateView):
         return self.render_to_response(context, status=status_code)
 
     def render_to_response_json(self, plugins, status_code):
-        return JsonResponse(
-            {
-                str(p.identifier()): {
-                    "status": str(p.pretty_status()),
-                    "took": round(p.time_taken, 4)
-                } for p in plugins
-            },
-            status=status_code
-        )
+        if JSON_VERBOSE:
+            return JsonResponse(
+                {
+                    str(p.identifier()): {
+                        "status": str(p.pretty_status()),
+                        "took": round(p.time_taken, 4)
+                    } for p in plugins
+                },
+                status=status_code
+            )
+        else:
+            return JsonResponse(
+                {str(p.identifier()): str(p.pretty_status()) for p in plugins},
+                status=status_code
+            )
 
     def _run(self, plugin):
         plugin.run_check()
