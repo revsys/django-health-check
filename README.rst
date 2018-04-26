@@ -155,6 +155,30 @@ The backend will return a JSON response:
         "S3BotoStorageHealthCheck": "working"
     }
 
+Optionally, the ``HEALTHCHECK_JSON_RESPONSE_ONLY`` can be set to ``True`` in settings to output additional details about
+each plugin (for instance, response time).
+
+Overriding a health check
+-------------------------
+
+If you would like to customize an existing health check, for instance by changing its name or overriding its
+``critical`` flag, you can do so by adding something similar to the following to your own AppConfig.
+
+.. code:: python
+
+    from django.apps import AppConfig
+
+    from health_check.plugins import plugin_dir
+
+    class MyAppConfig(AppConfig):
+        name = 'my_app'
+
+        def ready(self):
+            from health_check.contrib.s3boto_storage.backends import S3BotoStorageBackend
+            plugin_dir.reregister(S3BotoStorageBackend.__name__,
+                                  type('S3Backend', (S3BotoStorageBackend,), {'critical': False}))
+
+
 Writing a custom health check
 -----------------------------
 
@@ -165,6 +189,15 @@ Writing a health check is quick and easy:
     from health_check.backends import BaseHealthCheckBackend
 
     class MyHealthCheckBackend(BaseHealthCheckBackend):
+        def __init__(self):
+            super().__init__()
+
+            # This flag indicates whether or not this plugin
+            # failing represents a critical health failure.
+            # If False,  a failure on this plugin will still
+            # allow a status_code of 200 to be returned
+            self.critical = False
+
         def check_status(self):
             # The test code goes here.
             # You can use `self.add_error` or
@@ -210,16 +243,16 @@ and customizing the ``template_name``, ``get``, ``render_to_response`` and ``ren
             plugins = []
             # ...
             if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
-                return self.render_to_response_json(plugins, status)
-            return self.render_to_response(plugins, status)
+                return self.render_to_response_json(plugins, status_code)
+            return self.render_to_response(plugins, status_code)
 
-        def render_to_response(self, plugins, status):       # customize HTML output
-            return HttpResponse('COOL' if status == 200 else 'SWEATY', status=status)
+        def render_to_response(self, plugins, status_code):       # customize HTML output
+            return HttpResponse('COOL' if status_code == 200 else 'SWEATY', status=status_code)
 
-        def render_to_response_json(self, plugins, status):  # customize JSON output
+        def render_to_response_json(self, plugins, status_code):  # customize JSON output
             return JsonResponse(
-                {str(p.identifier()): 'COOL' if status == 200 else 'SWEATY' for p in plugins}
-                status=status
+                {str(p.identifier()): 'COOL' if status == 200 else 'SWEATY' for p in plugins},
+                status=status_code
             )
 
     # urls.py

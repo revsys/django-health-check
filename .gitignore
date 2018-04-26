@@ -13,3 +13,4 @@
 .coverage
 .eggs
 /docs/_build
+.pytest_cache

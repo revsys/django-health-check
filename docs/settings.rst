@@ -46,8 +46,8 @@ to disable any of these checks, set its value to ``None``.
 .. code:: python
 
     HEALTH_CHECK = {
-        'DISK_USAGE_MAX': 90,  # percent
-        'MEMORY_MIN' = 100,    # in MB
+        'DISK_USAGE_MAX': 90,   # percent
+        'MEMORY_MIN' = 100,     # in MB
     }
 
 With the above default settings, warnings will be reported when disk utilization
