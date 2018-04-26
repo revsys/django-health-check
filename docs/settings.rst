@@ -48,7 +48,6 @@ to disable any of these checks, set its value to ``None``.
     HEALTH_CHECK = {
         'DISK_USAGE_MAX': 90,   # percent
         'MEMORY_MIN' = 100,     # in MB
-        'JSON_VERBOSE' = False,
     }
 
 With the above default settings, warnings will be reported when disk utilization
@@ -63,8 +62,3 @@ exceeds 90% or available memory drops below 100 MB.
 
    Specify the desired memory utilization threshold, in megabytes. When available
    memory falls below the specified value, a warning will be reported.
-
-.. data:: JSON_VERBOSE
-
-   Specify whether or not additional details about each plugin (for instance,
-   response time) should also be emitted.

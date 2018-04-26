@@ -54,7 +54,7 @@ class TestMainView:
 
     def test_success_json_verbose(self, client):
         settings.HEALTH_CHECK = {
-            "JSON_VERBOSE": True
+            "HEALTHCHECK_JSON_STATUS": True
         }
 
         class JSONSuccessBackend(BaseHealthCheckBackend):
