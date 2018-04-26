@@ -31,7 +31,8 @@ class MainView(TemplateView):
 
         status_code = 500 if errors else 200
 
-        if 'application/json' in request.META.get('HTTP_ACCEPT', '') or getattr(settings, 'HEALTHCHECK_JSON_RESPONSE_ONLY', False):
+        if 'application/json' in request.META.get('HTTP_ACCEPT', '') or \
+           getattr(settings, 'HEALTHCHECK_JSON_RESPONSE_ONLY', False):
             return self.render_to_response_json(plugins, status_code)
 
         context = {'plugins': plugins, 'status_code': status_code}
@@ -39,7 +40,7 @@ class MainView(TemplateView):
         return self.render_to_response(context, status=status_code)
 
     def render_to_response_json(self, plugins, status_code):
-        if self._is_setting_enabled('HEALTHCHECK_JSON_STATUS', False):
+        if getattr(settings, 'HEALTHCHECK_JSON_STATUS', False):
             return JsonResponse(
                 {
                     str(p.identifier()): {
@@ -62,9 +63,3 @@ class MainView(TemplateView):
         finally:
             from django.db import connection
             connection.close()
-
-    def _is_setting_enabled(self, setting, default):
-        if hasattr(settings, 'HEALTH_CHECK'):
-            return settings.HEALTH_CHECK.get(setting, default)
-        else:
-            return default
