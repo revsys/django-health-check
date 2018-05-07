@@ -1,10 +1,10 @@
 import json
-import urllib.request
 
+import urllib.request
 from django.conf import settings
 
 from health_check.backends import BaseHealthCheckBackend
-from health_check.exceptions import ServiceWarning, ServiceUnavailable
+from health_check.exceptions import ServiceUnavailable, ServiceWarning
 
 
 class TwilioHealthCheck(BaseHealthCheckBackend):
