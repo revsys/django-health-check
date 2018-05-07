@@ -65,7 +65,7 @@ class TestMainView:
         assert response.status_code == 200, response.content.decode('utf-8')
         assert json.loads(response.content.decode('utf-8')) == {
             "components": {
-                JSONSuccessBackend().identifier(): {"status": "operational", "description": "", "took": 2.1235}
+                JSONSuccessBackend().identifier(): {"description": "", "status": "working", "took": 2.1235}
             },
             "status": "operational"
         }
