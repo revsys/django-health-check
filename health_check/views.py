@@ -16,6 +16,7 @@ class MainView(TemplateView):
     @never_cache
     def get(self, request, *args, **kwargs):
         errors = []
+        warnings = []
 
         plugins = sorted((
             plugin_class(**copy.deepcopy(options))
@@ -23,8 +24,11 @@ class MainView(TemplateView):
         ), key=lambda plugin: plugin.identifier())
 
         with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-            for ers in executor.map(self._run, plugins):
-                errors.extend(ers)
+            for plugin, ers in zip(plugins, executor.map(self._run, plugins)):
+                if plugin.critical:
+                    errors.extend(ers)
+                else:
+                    warnings.extend(ers)
 
         status_code = 500 if errors else 200
 
