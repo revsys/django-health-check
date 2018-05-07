@@ -1,6 +1,6 @@
 import json
-
 import urllib.request
+
 from django.conf import settings
 
 from health_check.backends import BaseHealthCheckBackend
