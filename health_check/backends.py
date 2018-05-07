@@ -11,6 +11,8 @@ logger = logging.getLogger('health-check')
 class BaseHealthCheckBackend:
     def __init__(self):
         self.errors = []
+        self.critical = getattr(self, 'critical', True)
+        self.description = getattr(self, 'description', '')
 
     def check_status(self):
         raise NotImplementedError
