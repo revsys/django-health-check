@@ -32,7 +32,8 @@ class MainView(TemplateView):
 
         status_code = 500 if errors else 200
 
-        if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
+        if 'application/json' in request.META.get('HTTP_ACCEPT', '') or \
+           getattr(settings, 'HEALTHCHECK_JSON_RESPONSE_ONLY', False):
             return self.render_to_response_json(plugins, status_code)
 
         context = {'plugins': plugins, 'status_code': status_code}

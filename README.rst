@@ -155,6 +155,9 @@ The backend will return a JSON response:
         "S3BotoStorageHealthCheck": "working"
     }
 
+Optionally, the ``HEALTHCHECK_JSON_STATUS`` can be set to ``True`` in settings to output additional details about
+each plugin (for instance, response time).
+
 Overriding a health check
 -------------------------
 
