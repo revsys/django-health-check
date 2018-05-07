@@ -3,9 +3,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 from django.conf import settings
 from django.http import JsonResponse
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
-from django.utils.translation import ugettext_lazy as _
 
 from health_check.exceptions import ServiceWarning
 from health_check.plugins import plugin_dir
