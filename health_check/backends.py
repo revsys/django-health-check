@@ -50,6 +50,13 @@ class BaseHealthCheckBackend:
             return "\n".join(str(e) for e in self.errors)
         return _('working')
 
+    def highest_severity(self):
+        severity = 999
+        for error in self.errors:
+            if isinstance(error, HealthCheckException) and error.severity < severity:
+                severity = error.severity
+        return severity
+
     @property
     def status(self):
         return int(not self.errors)
