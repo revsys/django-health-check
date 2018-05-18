@@ -11,6 +11,7 @@ logger = logging.getLogger('health-check')
 class BaseHealthCheckBackend:
     def __init__(self):
         self.errors = []
+        self.warnings = []
         self.critical = getattr(self, 'critical', True)
         self.description = getattr(self, 'description', '')
 
@@ -45,9 +46,26 @@ class BaseHealthCheckBackend:
             logger.error(str(error))
         self.errors.append(error)
 
+    def add_warning(self, warning, cause=None):
+        if isinstance(warning, HealthCheckException):
+            pass
+        elif isinstance(warning, str):
+            msg = warning
+            warning = HealthCheckException(msg)
+        else:
+            msg = _("unknown error")
+            warning = HealthCheckException(msg)
+        if isinstance(cause, BaseException):
+            logger.exception(str(warning))
+        else:
+            logger.warning(str(warning))
+        self.warnings.append(warning)
+
     def pretty_status(self):
         if self.errors:
             return "\n".join(str(e) for e in self.errors)
+        elif self.warnings:
+            return "\n".join(str(w) for w in self.warnings)
         return _('working')
 
     @property

@@ -21,20 +21,12 @@ class MainView(TemplateView):
             for plugin_class, options in plugin_dir._registry
         ), key=lambda plugin: plugin.identifier())
 
-        def _run(plugin):
-            plugin.run_check()
-            try:
-                return plugin.errors
-            finally:
-                from django.db import connection
-                connection.close()
-
         with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-            for plugin, ers in zip(plugins, executor.map(_run, plugins)):
+            for plugin, (ers, wrns) in zip(plugins, executor.map(self._run, plugins)):
                 if plugin.critical:
                     errors.extend(ers)
                 else:
-                    warnings.extend(ers)
+                    warnings.extend(wrns)
 
         status_code = 500 if errors else 200
 
@@ -50,3 +42,11 @@ class MainView(TemplateView):
             {str(p.identifier()): str(p.pretty_status()) for p in plugins},
             status=status
         )
+
+    def _run(self, plugin):
+        plugin.run_check()
+        try:
+            return plugin.errors, plugin.warnings
+        finally:
+            from django.db import connection
+            connection.close()

@@ -18,7 +18,9 @@ The following health checks are bundled with this project:
 
 Writing your own custom health checks is also very quick and easy.
 
-We also like contributions, so don't be afraid to make a pull request.
+We also like contributions, so don't be afraid to make a pull request. Just be
+sure to test everything by installing and running `tox` before submitting the
+pull request.
 
 Use Cases
 ---------
