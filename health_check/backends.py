@@ -65,7 +65,6 @@ class BaseHealthCheckBackend:
         if self.errors:
             return "\n".join(str(e) for e in self.errors)
         elif not hide_uncritical and self.warnings:
-            print (hide_uncritical)
             return "\n".join(str(w) for w in self.warnings)
         return _('working')
 
