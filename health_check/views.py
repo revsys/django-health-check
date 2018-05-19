@@ -25,7 +25,6 @@ class MainView(TemplateView):
             for plugin, (ers, wrns) in zip(plugins, executor.map(self._run, plugins)):
                 if plugin.critical:
                     errors.extend(ers)
-                else:
                     warnings.extend(wrns)
 
         status_code = 500 if errors else 200

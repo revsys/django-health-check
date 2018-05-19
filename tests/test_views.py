@@ -27,6 +27,22 @@ class TestMainView:
         assert response.status_code == 500, response.content.decode('utf-8')
         assert b'Super Fail!' in response.content
 
+    def test_warning_uncritical(self, client):
+        class MyBackend(BaseHealthCheckBackend):
+            def __init__(self):
+                super().__init__()
+
+                self.critical = False
+
+            def run_check(self):
+                self.add_warning('No fail, since not critical!')
+
+        plugin_dir.reset()
+        plugin_dir.register(MyBackend)
+        response = client.get(self.url, HTTP_ACCEPT='application/json')
+        assert response.status_code == 200, response.content.decode('utf-8')
+        assert b'not critical' in response.content
+
     def test_success_json(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
             def run_check(self):

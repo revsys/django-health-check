@@ -95,3 +95,19 @@ class TestBaseHealthCheckBackend:
             assert 'Traceback' not in log
             assert 'Exception: bar' not in log
             logger.removeHandler(stream_handler)
+
+    def test_add_warning(self):
+        ht = BaseHealthCheckBackend()
+        e = HealthCheckException('foo')
+        ht.add_warning(e)
+        assert ht.warnings[0] is e
+
+        ht = BaseHealthCheckBackend()
+        ht.add_warning('bar')
+        assert isinstance(ht.warnings[0], HealthCheckException)
+        assert str(ht.warnings[0]) == 'unknown error: bar'
+
+        ht = BaseHealthCheckBackend()
+        ht.add_warning(type)
+        assert isinstance(ht.warnings[0], HealthCheckException)
+        assert str(ht.warnings[0]) == 'unknown error: unknown error'
