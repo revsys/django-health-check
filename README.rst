@@ -175,7 +175,7 @@ If you would like to customize an existing health check, for instance by changin
         def ready(self):
             from health_check.contrib.s3boto_storage.backends import S3BotoStorageHealthCheck
             plugin_dir.reregister(S3BotoStorageHealthCheck.__name__,
-                                  type('S3Backend', (S3BotoStorageHealthCheck,), {'critical': False, 'description': 'Attachment storage'}))
+                                  type('S3BotoStorageHealthCheck', (S3BotoStorageHealthCheck,), {'critical': False, '_identifier', 'S3Backend', 'description': 'Attachment storage'}))
 
 Writing a custom health check
 -----------------------------
@@ -190,11 +190,18 @@ Writing a health check is quick and easy:
         def __init__(self):
             super().__init__()
 
+            # Display name on the endpoint.
+            self.identifier = 'My HealthCheck'
+
+            # A useful description of the health check's purpose, which
+            # can be when the status is returned.
+            self.description = 'An awesome and useful health check!'
+
             # This flag indicates whether or not this plugin
             # failing with errors represents a critical health failure.
             # If False, a failure on this plugin will still
             # allow a status_code of 200 to be returned
-            self.critical = getattr(self, 'critical', False)
+            self.critical = False
 
         def check_status(self):
             # The test code goes here.
@@ -202,9 +209,6 @@ Writing a health check is quick and easy:
             # raise a `HealthCheckException`,
             # similar to Django's form validation.
             pass
-
-        def identifier(self):
-            return self.__class__.__name__  # Display name on the endpoint.
 
 After writing a custom checker, register it in your app configuration:
 

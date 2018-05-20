@@ -27,7 +27,7 @@ class TestMainView:
         assert response.status_code == 500, response.content.decode('utf-8')
         assert b'Super Fail!' in response.content
 
-    def test_warning_uncritical(self, client):
+    def test_error_uncritical(self, client):
         class MyBackend(BaseHealthCheckBackend):
             def __init__(self):
                 super().__init__()
@@ -35,7 +35,7 @@ class TestMainView:
                 self.critical = False
 
             def run_check(self):
-                self.add_warning('No fail, since not critical!')
+                self.add_error('No fail, since not critical!')
 
         plugin_dir.reset()
         plugin_dir.register(MyBackend)

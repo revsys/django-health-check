@@ -11,7 +11,7 @@ logger = logging.getLogger('health-check')
 class BaseHealthCheckBackend:
     def __init__(self):
         self.errors = []
-        self.warnings = []
+        self._identifier = getattr(self, '_identifier', self.__class__.__name__)
         self.critical = getattr(self, 'critical', True)
         self.description = getattr(self, 'description', '')
 
@@ -31,7 +31,7 @@ class BaseHealthCheckBackend:
         finally:
             self.time_taken = timer() - start
 
-    def _wrap_exception(self, error):
+    def add_error(self, error, cause=None):
         if isinstance(error, HealthCheckException):
             pass
         elif isinstance(error, str):
@@ -40,29 +40,15 @@ class BaseHealthCheckBackend:
         else:
             msg = _("unknown error")
             error = HealthCheckException(msg)
-        return error
-
-    def add_error(self, error, cause=None):
-        error = self._wrap_exception(error)
-
         if isinstance(cause, BaseException):
             logger.exception(str(error))
         else:
             logger.error(str(error))
         self.errors.append(error)
 
-    def add_warning(self, warning, cause=None):
-        warning = self._wrap_exception(warning)
-
-        if isinstance(cause, BaseException):
-            logger.warning(str(warning))
-        else:
-            logger.warning(str(warning))
-        self.warnings.append(warning)
-
     def pretty_status(self, hide_uncritical=False):
-        if not hide_uncritical and (self.errors or self.warnings):
-            return "\n".join(str(e) for e in (self.errors + self.warnings))
+        if not hide_uncritical and self.errors:
+            return "\n".join(str(e) for e in self.errors)
         return _('working')
 
     @property
@@ -70,4 +56,4 @@ class BaseHealthCheckBackend:
         return int(not self.errors)
 
     def identifier(self):
-        return self.__class__.__name__
+        return self._identifier

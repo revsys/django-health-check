@@ -14,7 +14,6 @@ class MainView(TemplateView):
     @never_cache
     def get(self, request, *args, **kwargs):
         errors = []
-        warnings = []
 
         plugins = sorted((
             plugin_class(**copy.deepcopy(options))
@@ -24,16 +23,15 @@ class MainView(TemplateView):
         def _run(plugin):
             plugin.run_check()
             try:
-                return plugin.errors, plugin.warnings
+                return plugin.errors
             finally:
                 from django.db import connection
                 connection.close()
 
         with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-            for plugin, (ers, wrns) in zip(plugins, executor.map(_run, plugins)):
+            for plugin, ers in zip(plugins, executor.map(_run, plugins)):
                 if plugin.critical:
                     errors.extend(ers)
-                    warnings.extend(wrns)
 
         status_code = 500 if errors else 200
 
