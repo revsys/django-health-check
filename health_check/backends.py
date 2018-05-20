@@ -31,7 +31,7 @@ class BaseHealthCheckBackend:
         finally:
             self.time_taken = timer() - start
 
-    def _get_error_type(self, error):
+    def _wrap_exception(self, error):
         if isinstance(error, HealthCheckException):
             pass
         elif isinstance(error, str):
@@ -43,7 +43,7 @@ class BaseHealthCheckBackend:
         return error
 
     def add_error(self, error, cause=None):
-        error = self._get_error_type(error)
+        error = self._wrap_exception(error)
 
         if isinstance(cause, BaseException):
             logger.exception(str(error))
@@ -52,7 +52,7 @@ class BaseHealthCheckBackend:
         self.errors.append(error)
 
     def add_warning(self, warning, cause=None):
-        warning = self._get_error_type(warning)
+        warning = self._wrap_exception(warning)
 
         if isinstance(cause, BaseException):
             logger.warning(str(warning))

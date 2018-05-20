@@ -192,9 +192,9 @@ Writing a health check is quick and easy:
 
             # This flag indicates whether or not this plugin
             # failing with errors represents a critical health failure.
-            # If False,  a failure on this plugin will still
+            # If False, a failure on this plugin will still
             # allow a status_code of 200 to be returned
-            self.critical = False
+            self.critical = getattr(self, 'critical', False)
 
         def check_status(self):
             # The test code goes here.
