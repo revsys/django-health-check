@@ -31,7 +31,7 @@ class BaseHealthCheckBackend:
         finally:
             self.time_taken = timer() - start
 
-    def add_error(self, error, cause=None):
+    def _get_error_type(self, error):
         if isinstance(error, HealthCheckException):
             pass
         elif isinstance(error, str):
@@ -40,6 +40,11 @@ class BaseHealthCheckBackend:
         else:
             msg = _("unknown error")
             error = HealthCheckException(msg)
+        return error
+
+    def add_error(self, error, cause=None):
+        error = self._get_error_type(error)
+
         if isinstance(cause, BaseException):
             logger.exception(str(error))
         else:
@@ -47,25 +52,17 @@ class BaseHealthCheckBackend:
         self.errors.append(error)
 
     def add_warning(self, warning, cause=None):
-        if isinstance(warning, HealthCheckException):
-            pass
-        elif isinstance(warning, str):
-            msg = warning
-            warning = HealthCheckException(msg)
-        else:
-            msg = _("unknown error")
-            warning = HealthCheckException(msg)
+        warning = self._get_error_type(warning)
+
         if isinstance(cause, BaseException):
-            logger.exception(str(warning))
+            logger.warning(str(warning))
         else:
             logger.warning(str(warning))
         self.warnings.append(warning)
 
     def pretty_status(self, hide_uncritical=False):
-        if self.errors:
-            return "\n".join(str(e) for e in self.errors)
-        elif not hide_uncritical and self.warnings:
-            return "\n".join(str(w) for w in self.warnings)
+        if not hide_uncritical and (self.errors or self.warnings):
+            return "\n".join(str(e) for e in (self.errors + self.warnings))
         return _('working')
 
     @property
