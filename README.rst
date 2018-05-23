@@ -157,26 +157,6 @@ The backend will return a JSON response:
         "S3BotoStorageHealthCheck": "working"
     }
 
-Overriding a health check
--------------------------
-
-If you would like to customize an existing health check, for instance by changing its name or overriding its
-``critical`` flag, you can do so by adding something similar to the following to your own AppConfig.
-
-.. code:: python
-
-    from django.apps import AppConfig
-
-    from health_check.plugins import plugin_dir
-
-    class MyAppConfig(AppConfig):
-        name = 'my_app'
-
-        def ready(self):
-            from health_check.contrib.s3boto_storage.backends import S3BotoStorageHealthCheck
-            plugin_dir.reregister(S3BotoStorageHealthCheck.__name__,
-                                  type('S3BotoStorageHealthCheck', (S3BotoStorageHealthCheck,), {'critical': False, '_identifier', 'S3Backend', 'description': 'Attachment storage'}))
-
 Writing a custom health check
 -----------------------------
 
@@ -189,9 +169,6 @@ Writing a health check is quick and easy:
     class MyHealthCheckBackend(BaseHealthCheckBackend):
         def __init__(self):
             super().__init__()
-
-            # Display name on the endpoint.
-            self.identifier = 'My HealthCheck'
 
             # A useful description of the health check's purpose, which
             # can be when the status is returned.

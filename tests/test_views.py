@@ -29,10 +29,10 @@ class TestMainView:
 
     def test_error_uncritical(self, client):
         class MyBackend(BaseHealthCheckBackend):
+            critical = False
+
             def __init__(self):
                 super().__init__()
-
-                self.critical = False
 
             def run_check(self):
                 self.add_error('No fail, since not critical!')
