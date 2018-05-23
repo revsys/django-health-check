@@ -18,7 +18,9 @@ The following health checks are bundled with this project:
 
 Writing your own custom health checks is also very quick and easy.
 
-We also like contributions, so don't be afraid to make a pull request.
+We also like contributions, so don't be afraid to make a pull request. Just be
+sure to test everything by installing and running ``tox`` before submitting the
+pull request.
 
 Use Cases
 ---------
@@ -165,15 +167,25 @@ Writing a health check is quick and easy:
     from health_check.backends import BaseHealthCheckBackend
 
     class MyHealthCheckBackend(BaseHealthCheckBackend):
+        # A useful description of the health check's purpose, which
+        # can be when the status is returned.
+        description = 'An awesome and useful health check!'
+
+        # This flag indicates whether or not this plugin
+        # failing with errors represents a critical health failure.
+        # If False, a failure on this plugin will still
+        # allow a status_code of 200 to be returned
+        critical = False
+
+        def __init__(self):
+            super().__init__()
+
         def check_status(self):
             # The test code goes here.
             # You can use `self.add_error` or
             # raise a `HealthCheckException`,
             # similar to Django's form validation.
             pass
-
-        def identifier(self):
-            return self.__class__.__name__  # Display name on the endpoint.
 
 After writing a custom checker, register it in your app configuration:
 

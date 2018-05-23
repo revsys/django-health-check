@@ -9,6 +9,9 @@ logger = logging.getLogger('health-check')
 
 
 class BaseHealthCheckBackend:
+    critical = True
+    description = ''
+
     def __init__(self):
         self.errors = []
 
@@ -43,8 +46,8 @@ class BaseHealthCheckBackend:
             logger.error(str(error))
         self.errors.append(error)
 
-    def pretty_status(self):
-        if self.errors:
+    def pretty_status(self, hide_uncritical=False):
+        if not hide_uncritical and self.errors:
             return "\n".join(str(e) for e in self.errors)
         return _('working')
 
