@@ -167,18 +167,18 @@ Writing a health check is quick and easy:
     from health_check.backends import BaseHealthCheckBackend
 
     class MyHealthCheckBackend(BaseHealthCheckBackend):
+        # A useful description of the health check's purpose, which
+        # can be when the status is returned.
+        description = 'An awesome and useful health check!'
+
+        # This flag indicates whether or not this plugin
+        # failing with errors represents a critical health failure.
+        # If False, a failure on this plugin will still
+        # allow a status_code of 200 to be returned
+        critical = False
+
         def __init__(self):
             super().__init__()
-
-            # A useful description of the health check's purpose, which
-            # can be when the status is returned.
-            self.description = 'An awesome and useful health check!'
-
-            # This flag indicates whether or not this plugin
-            # failing with errors represents a critical health failure.
-            # If False, a failure on this plugin will still
-            # allow a status_code of 200 to be returned
-            self.critical = False
 
         def check_status(self):
             # The test code goes here.
