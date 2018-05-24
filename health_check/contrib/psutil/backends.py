@@ -1,9 +1,9 @@
 import locale
 import socket
 
+import psutil
 from django.conf import settings
 
-import psutil
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import (
     ServiceReturnedUnexpectedResult, ServiceWarning
