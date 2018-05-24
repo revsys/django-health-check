@@ -165,6 +165,10 @@ Writing a health check is quick and easy:
     from health_check.backends import BaseHealthCheckBackend
 
     class MyHealthCheckBackend(BaseHealthCheckBackend):
+        #: The status endpoints will respond with a 200 status code
+        #: even if the check errors.
+        critical_service = False
+
         def check_status(self):
             # The test code goes here.
             # You can use `self.add_error` or

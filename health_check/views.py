@@ -1,11 +1,15 @@
 import copy
 from concurrent.futures import ThreadPoolExecutor
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
+from health_check.exceptions import ServiceWarning
 from health_check.plugins import plugin_dir
+
+WARNINGS_AS_ERRORS = getattr(settings, 'HEALTH_CHECK_WARNINGS_AS_ERRORS', True)
 
 
 class MainView(TemplateView):
@@ -23,14 +27,20 @@ class MainView(TemplateView):
         def _run(plugin):
             plugin.run_check()
             try:
-                return plugin.errors
+                return plugin.errors, plugin
             finally:
                 from django.db import connection
                 connection.close()
 
         with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-            for ers in executor.map(_run, plugins):
-                errors.extend(ers)
+            for plugin_errors, plugin in executor.map(_run, plugins):
+                if plugin.critical_service:
+                    if not WARNINGS_AS_ERRORS:
+                        plugin_errors = (
+                            e for e in plugin_errors
+                            if not isinstance(e, ServiceWarning)
+                        )
+                    errors.extend(plugin_errors)
 
         status_code = 500 if errors else 200
 

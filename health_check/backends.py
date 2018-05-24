@@ -9,6 +9,14 @@ logger = logging.getLogger('health-check')
 
 
 class BaseHealthCheckBackend:
+    critical_service = True
+    """
+    Define if service is critical to the operation of the site.
+
+    If set to ``False`` service failures will cause a 500 response code on the
+    health check endpoint.
+    """
+
     def __init__(self):
         self.errors = []
 
