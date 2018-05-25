@@ -25,20 +25,21 @@ class MainView(TemplateView):
         def _run(plugin):
             plugin.run_check()
             try:
-                return plugin.errors, plugin
+                return plugin
             finally:
                 from django.db import connection
                 connection.close()
 
         with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-            for plugin_errors, plugin in executor.map(_run, plugins):
+            for plugin in executor.map(_run, plugins):
                 if plugin.critical_service:
                     if not HEALTH_CHECK['WARNINGS_AS_ERRORS']:
-                        plugin_errors = (
-                            e for e in plugin_errors
+                        errors.extend(
+                            e for e in plugin.errors
                             if not isinstance(e, ServiceWarning)
                         )
-                    errors.extend(plugin_errors)
+                    else:
+                        errors.extend(plugin.errors)
 
         status_code = 500 if errors else 200
 
