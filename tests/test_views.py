@@ -1,6 +1,8 @@
 import json
 
 from health_check.backends import BaseHealthCheckBackend
+from health_check.conf import HEALTH_CHECK
+from health_check.exceptions import ServiceWarning
 from health_check.plugins import plugin_dir
 
 try:
@@ -18,13 +20,43 @@ class TestMainView:
 
     def test_error(self, client):
         class MyBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def check_status(self):
                 self.add_error('Super Fail!')
 
         plugin_dir.reset()
         plugin_dir.register(MyBackend)
         response = client.get(self.url)
         assert response.status_code == 500, response.content.decode('utf-8')
+        assert b'Super Fail!' in response.content
+
+    def test_warning(self, client):
+        class MyBackend(BaseHealthCheckBackend):
+            def check_status(self):
+                raise ServiceWarning('so so')
+
+        plugin_dir.reset()
+        plugin_dir.register(MyBackend)
+        response = client.get(self.url)
+        assert response.status_code == 500, response.content.decode('utf-8')
+        assert b'so so' in response.content, response.content
+
+        HEALTH_CHECK['WARNINGS_AS_ERRORS'] = False
+
+        response = client.get(self.url)
+        assert response.status_code == 200, response.content.decode('utf-8')
+        assert b'so so' in response.content, response.content
+
+    def test_non_critical(self, client):
+        class MyBackend(BaseHealthCheckBackend):
+            critical_service = False
+
+            def check_status(self):
+                self.add_error('Super Fail!')
+
+        plugin_dir.reset()
+        plugin_dir.register(MyBackend)
+        response = client.get(self.url)
+        assert response.status_code == 200, response.content.decode('utf-8')
         assert b'Super Fail!' in response.content
 
     def test_success_json(self, client):

@@ -2,21 +2,17 @@ import locale
 import socket
 
 import psutil
-from django.conf import settings
 
 from health_check.backends import BaseHealthCheckBackend
+from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import (
     ServiceReturnedUnexpectedResult, ServiceWarning
 )
 
 host = socket.gethostname()
 
-if hasattr(settings, 'HEALTH_CHECK'):
-    DISK_USAGE_MAX = settings.HEALTH_CHECK.get('DISK_USAGE_MAX', 90)  # in %
-    MEMORY_MIN = settings.HEALTH_CHECK.get('MEMORY_MIN', 100)  # in MB
-else:
-    DISK_USAGE_MAX = 90  # in %
-    MEMORY_MIN = 100  # in MB
+DISK_USAGE_MAX = HEALTH_CHECK['DISK_USAGE_MAX']
+MEMORY_MIN = HEALTH_CHECK['MEMORY_MIN']
 
 
 class DiskUsage(BaseHealthCheckBackend):

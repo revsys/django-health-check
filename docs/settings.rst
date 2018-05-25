@@ -3,6 +3,13 @@ Settings
 
 Settings can be configured via the ``HEALTH_CHECK`` dictionary.
 
+.. data:: WARNINGS_AS_ERRORS
+
+    Treats :class:`ServiceWarning` as errors, meaning they will case the views
+    to respond with a 500 status code. Default is ``True``. If set to
+    ``False`` warnings will be displayed in the template on in the JSON
+    response but the status code will remain a 200.
+
 Security
 --------
 
