@@ -18,5 +18,3 @@ class CacheBackend(BaseHealthCheckBackend):
             self.add_error(ServiceReturnedUnexpectedResult("ValueError"), e)
         except ConnectionError as e:
             self.add_error(ServiceReturnedUnexpectedResult("Connection Error"), e)
-        except Exception as e:
-            self.add_error(ServiceReturnedUnexpectedResult("Exception"), e)
