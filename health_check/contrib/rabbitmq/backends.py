@@ -24,9 +24,9 @@ class RabbitMQHealthCheck(BaseHealthCheckBackend):
         broker_url = getattr(settings, "BROKER_URL", None)
 
         if broker_url is None:
-            logger.info("Variable BROKER_URL not foudn on django.conf.settings...")
+            logger.info("Variable BROKER_URL not found on django.conf.settings...")
 
-            broker_host = getattr(settings, "BROKER_HOST", "locahost")
+            broker_host = getattr(settings, "BROKER_HOST", "localhost")
             broker_username = getattr(settings, "BROKER_USERNAME", "user")
             broker_password = getattr(settings, "BROKER_PASSWORD", "password")
             broker_port = getattr(settings, "BROKER_PORT", "5672")
@@ -75,7 +75,9 @@ class RabbitMQHealthCheck(BaseHealthCheckBackend):
             self.add_error(ServiceUnavailable("Unable to connect to RabbitMQ: Connection refused."), e)
 
         except ProbableAuthenticationError as e:
-            self.add_error(ServiceUnavailable("Unable to connect to RabbitMQ: Authentication error."), e)
+            self.add_error(
+                ServiceUnavailable("Unable to connect to RabbitMQ: Authentication error. Check your django config."), e
+            )
 
         except IOError as e:
             self.add_error(ServiceUnavailable("IOError"), e)
