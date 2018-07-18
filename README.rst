@@ -92,7 +92,6 @@ If using the DB check, run migrations:
 
     django-admin migrate
 
-
 To use the RabbitMQ healthcheck, please make sure that there is a variable named ``BROKER_URL``
 on django.conf.settings with the required format to connect to your rabbit server. For example:
 
@@ -100,10 +99,6 @@ on django.conf.settings with the required format to connect to your rabbit serve
 
     BROKER_URL = amqp://myuser:mypassword@localhost:5672/myvhost
 
-Another option is to use several variables to achive the same url: ``BROKER_HOST``, ``BROKER_USERNAME``,
-``BROKER_PASSWORD``, ``BROKER_PORT``, ``BROKER_VHOST`` which will build a similar url as the previous example.
-
-If ``BROKER_URL`` is not found on django.conf.settings, the healthcheck will look for the variables above.
 
 Setting up monitoring
 ---------------------

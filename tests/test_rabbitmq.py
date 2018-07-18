@@ -6,8 +6,7 @@ Module with unit tests for the RabbitMQ healthchecker.
 import unittest
 from unittest import mock
 
-from pika.exceptions import ConnectionClosed
-from pika.exceptions import ProbableAuthenticationError
+from amqp.exceptions import AccessRefused
 
 from health_check.contrib.rabbitmq.backends import RabbitMQHealthCheck
 
@@ -18,19 +17,18 @@ class TestRabbitMQHealthCheck(unittest.TestCase):
 
     """
 
-    @mock.patch("health_check.contrib.rabbitmq.backends.pika")
-    @mock.patch("health_check.contrib.rabbitmq.backends.RabbitMQHealthCheck._RabbitMQHealthCheck__get_broker_url")
-    def test_broker_connection_exception(self, mocked_get_broker_url, mocked_pika):
+    @mock.patch("health_check.contrib.rabbitmq.backends.getattr")
+    @mock.patch("health_check.contrib.rabbitmq.backends.Connection")
+    def test_broker_refused_connection(self, mocked_connection, mocked_getattr):
         """
         Test: case when the connection to RabbitMQ is refused.
-
         """
-        conn_exception = ConnectionClosed("Closed connection")
+        mocked_getattr.return_value = "broker_url"
+
+        conn_exception = ConnectionRefusedError("Refused connection")
 
         # mock returns
-        mocked_get_broker_url.return_value = "rabbit_url"
-        mocked_pika.BlockingConnection.side_effect = conn_exception  # raises an exception
-        mocked_pika.URLParameters.return_value = "rabbit_conn"
+        mocked_connection.side_effect = conn_exception
 
         # instantiates the class
         rabbitmq_healthchecker = RabbitMQHealthCheck()
@@ -40,22 +38,20 @@ class TestRabbitMQHealthCheck(unittest.TestCase):
         self.assertEqual(len(rabbitmq_healthchecker.errors), 1)
 
         # mock assertions
-        mocked_pika.URLParameters.assert_called_once_with("rabbit_url")
-        mocked_pika.BlockingConnection.assert_called_once_with("rabbit_conn")
+        mocked_connection.assert_called_once_with("broker_url")
 
-    @mock.patch("health_check.contrib.rabbitmq.backends.pika")
-    @mock.patch("health_check.contrib.rabbitmq.backends.RabbitMQHealthCheck._RabbitMQHealthCheck__get_broker_url")
-    def test_broker_auth_exception(self, mocked_get_broker_url, mocked_pika):
+    @mock.patch("health_check.contrib.rabbitmq.backends.getattr")
+    @mock.patch("health_check.contrib.rabbitmq.backends.Connection")
+    def test_broker_auth_error(self, mocked_connection, mocked_getattr):
         """
-        Test: case when there's an authentication error to connecto RabbitMQ.
+        Test: case when the connection to RabbitMQ has an authentication error.
+        """
+        mocked_getattr.return_value = "broker_url"
 
-        """
-        auth_exception = ProbableAuthenticationError("Auth error")
+        conn_exception = AccessRefused("Refused connection")
 
         # mock returns
-        mocked_get_broker_url.return_value = "rabbit_url"
-        mocked_pika.BlockingConnection.side_effect = auth_exception  # raises an exception
-        mocked_pika.URLParameters.return_value = "rabbit_conn"
+        mocked_connection.side_effect = conn_exception
 
         # instantiates the class
         rabbitmq_healthchecker = RabbitMQHealthCheck()
@@ -65,20 +61,21 @@ class TestRabbitMQHealthCheck(unittest.TestCase):
         self.assertEqual(len(rabbitmq_healthchecker.errors), 1)
 
         # mock assertions
-        mocked_pika.URLParameters.assert_called_once_with("rabbit_url")
-        mocked_pika.BlockingConnection.assert_called_once_with("rabbit_conn")
+        mocked_connection.assert_called_once_with("broker_url")
 
-    @mock.patch("health_check.contrib.rabbitmq.backends.pika")
-    @mock.patch("health_check.contrib.rabbitmq.backends.RabbitMQHealthCheck._RabbitMQHealthCheck__get_broker_url")
-    def test_broker_exception(self, mocked_get_broker_url, mocked_pika):
+    @mock.patch("health_check.contrib.rabbitmq.backends.getattr")
+    @mock.patch("health_check.contrib.rabbitmq.backends.Connection")
+    def test_broker_connection_upon_none_url(self, mocked_connection, mocked_getattr):
         """
-        Test: case when there's another exception raised.
+        Test: case when the connection to RabbitMQ has no broker_url.
+        """
+        mocked_getattr.return_value = None
 
-        """
+        # if the variable BROKER_URL is not set, AccessRefused exception is raised
+        conn_exception = AccessRefused("Refused connection")
+
         # mock returns
-        mocked_get_broker_url.return_value = "rabbit_url"
-        mocked_pika.BlockingConnection.side_effect = IOError("ERROR")  # raises an exception
-        mocked_pika.URLParameters.return_value = "rabbit_conn"
+        mocked_connection.side_effect = conn_exception
 
         # instantiates the class
         rabbitmq_healthchecker = RabbitMQHealthCheck()
@@ -88,9 +85,4 @@ class TestRabbitMQHealthCheck(unittest.TestCase):
         self.assertEqual(len(rabbitmq_healthchecker.errors), 1)
 
         # mock assertions
-        mocked_pika.URLParameters.assert_called_once_with("rabbit_url")
-        mocked_pika.BlockingConnection.assert_called_once_with("rabbit_conn")
-
-
-if __name__ == "__main__":
-    unittest.main()
+        mocked_connection.assert_called_once_with(None)

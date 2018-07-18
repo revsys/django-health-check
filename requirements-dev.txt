@@ -9,4 +9,3 @@ pydocstyle
 pep8-naming
 pytest
 pytest-django
-pika
