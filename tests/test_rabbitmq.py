@@ -3,15 +3,13 @@ Module with unit tests for the RabbitMQ healthchecker.
 
 """
 
-import unittest
-from unittest import mock
-
+import mock
 from amqp.exceptions import AccessRefused
 
 from health_check.contrib.rabbitmq.backends import RabbitMQHealthCheck
 
 
-class TestRabbitMQHealthCheck(unittest.TestCase):
+class TestRabbitMQHealthCheck:
     """
     Tests for the RabbitMQ healthchecker.
 
@@ -28,14 +26,16 @@ class TestRabbitMQHealthCheck(unittest.TestCase):
         conn_exception = ConnectionRefusedError("Refused connection")
 
         # mock returns
-        mocked_connection.side_effect = conn_exception
+        mocked_conn = mock.MagicMock()
+        mocked_connection.return_value.__enter__.return_value = mocked_conn
+        mocked_conn.connect.side_effect = conn_exception
 
         # instantiates the class
         rabbitmq_healthchecker = RabbitMQHealthCheck()
 
         # invokes the method check_status()
         rabbitmq_healthchecker.check_status()
-        self.assertEqual(len(rabbitmq_healthchecker.errors), 1)
+        assert len(rabbitmq_healthchecker.errors), 1
 
         # mock assertions
         mocked_connection.assert_called_once_with("broker_url")
@@ -51,14 +51,16 @@ class TestRabbitMQHealthCheck(unittest.TestCase):
         conn_exception = AccessRefused("Refused connection")
 
         # mock returns
-        mocked_connection.side_effect = conn_exception
+        mocked_conn = mock.MagicMock()
+        mocked_connection.return_value.__enter__.return_value = mocked_conn
+        mocked_conn.connect.side_effect = conn_exception
 
         # instantiates the class
         rabbitmq_healthchecker = RabbitMQHealthCheck()
 
         # invokes the method check_status()
         rabbitmq_healthchecker.check_status()
-        self.assertEqual(len(rabbitmq_healthchecker.errors), 1)
+        assert len(rabbitmq_healthchecker.errors), 1
 
         # mock assertions
         mocked_connection.assert_called_once_with("broker_url")
@@ -70,19 +72,20 @@ class TestRabbitMQHealthCheck(unittest.TestCase):
         Test: case when the connection to RabbitMQ has no broker_url.
         """
         mocked_getattr.return_value = None
-
         # if the variable BROKER_URL is not set, AccessRefused exception is raised
         conn_exception = AccessRefused("Refused connection")
 
         # mock returns
-        mocked_connection.side_effect = conn_exception
+        mocked_conn = mock.MagicMock()
+        mocked_connection.return_value.__enter__.return_value = mocked_conn
+        mocked_conn.connect.side_effect = conn_exception
 
         # instantiates the class
         rabbitmq_healthchecker = RabbitMQHealthCheck()
 
         # invokes the method check_status()
         rabbitmq_healthchecker.check_status()
-        self.assertEqual(len(rabbitmq_healthchecker.errors), 1)
+        assert len(rabbitmq_healthchecker.errors), 1
 
         # mock assertions
         mocked_connection.assert_called_once_with(None)
