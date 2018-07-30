@@ -11,9 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class RabbitMQHealthCheck(BaseHealthCheckBackend):
-    """
-    Healthchecker for RabbitMQ.
-    """
+    """Health check for RabbitMQ."""
 
     def check_status(self):
         """
