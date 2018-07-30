@@ -26,23 +26,21 @@ class RabbitMQHealthCheck(BaseHealthCheckBackend):
 
         logger.debug("Got %s as the broker_url. Connecting to rabbit...", broker_url)
 
-        # conn is used as a context to release opened resources later
-        with Connection(broker_url) as conn:
-
-            try:
-
-                logger.debug("Attempting to connect to rabbit...")
+        logger.debug("Attempting to connect to rabbit...")
+        try:
+            # conn is used as a context to release opened resources later
+            with Connection(broker_url) as conn:
                 conn.connect()  # exceptions may be raised upon calling connect
-                logger.debug("Connection estabilished. RabbitMQ is healthy.")
+        except ConnectionRefusedError as e:
+            self.add_error(ServiceUnavailable("Unable to connect to RabbitMQ: Connection was refused."), e)
 
-            except ConnectionRefusedError as e:
-                self.add_error(ServiceUnavailable("Unable to connect to RabbitMQ: Connection was refused."), e)
+        except AccessRefused as e:
+            self.add_error(ServiceUnavailable("Unable to connect to RabbitMQ: Authentication error."), e)
 
-            except AccessRefused as e:
-                self.add_error(ServiceUnavailable("Unable to connect to RabbitMQ: Authentication error."), e)
+        except IOError as e:
+            self.add_error(ServiceUnavailable("IOError"), e)
 
-            except IOError as e:
-                self.add_error(ServiceUnavailable("IOError"), e)
-
-            except BaseException as e:
-                self.add_error(ServiceUnavailable("Unknown error"), e)
+        except BaseException as e:
+            self.add_error(ServiceUnavailable("Unknown error"), e)
+        else:
+            logger.debug("Connection estabilished. RabbitMQ is healthy.")
