@@ -5,14 +5,12 @@ from health_check.contrib.rabbitmq.backends import RabbitMQHealthCheck
 
 
 class TestRabbitMQHealthCheck:
-    """Tests for the RabbitMQ healthchecker."""
+    """Test RabbitMQ health check."""
 
     @mock.patch("health_check.contrib.rabbitmq.backends.getattr")
     @mock.patch("health_check.contrib.rabbitmq.backends.Connection")
     def test_broker_refused_connection(self, mocked_connection, mocked_getattr):
-        """
-        Test: case when the connection to RabbitMQ is refused.
-        """
+        """Test when the connection to RabbitMQ is refused."""
         mocked_getattr.return_value = "broker_url"
 
         conn_exception = ConnectionRefusedError("Refused connection")
@@ -35,9 +33,7 @@ class TestRabbitMQHealthCheck:
     @mock.patch("health_check.contrib.rabbitmq.backends.getattr")
     @mock.patch("health_check.contrib.rabbitmq.backends.Connection")
     def test_broker_auth_error(self, mocked_connection, mocked_getattr):
-        """
-        Test: case when the connection to RabbitMQ has an authentication error.
-        """
+        """Test that the connection to RabbitMQ has an authentication error."""
         mocked_getattr.return_value = "broker_url"
 
         conn_exception = AccessRefused("Refused connection")
@@ -60,7 +56,7 @@ class TestRabbitMQHealthCheck:
     @mock.patch("health_check.contrib.rabbitmq.backends.getattr")
     @mock.patch("health_check.contrib.rabbitmq.backends.Connection")
     def test_broker_connection_upon_none_url(self, mocked_connection, mocked_getattr):
-        """Test: case when the connection to RabbitMQ has no broker_url."""
+        """Thest when the connection to RabbitMQ has no ``broker_url``."""
         mocked_getattr.return_value = None
         # if the variable BROKER_URL is not set, AccessRefused exception is raised
         conn_exception = AccessRefused("Refused connection")
