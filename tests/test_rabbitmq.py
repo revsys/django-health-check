@@ -1,8 +1,3 @@
-"""
-Module with unit tests for the RabbitMQ healthchecker.
-
-"""
-
 import mock
 from amqp.exceptions import AccessRefused
 
@@ -10,10 +5,7 @@ from health_check.contrib.rabbitmq.backends import RabbitMQHealthCheck
 
 
 class TestRabbitMQHealthCheck:
-    """
-    Tests for the RabbitMQ healthchecker.
-
-    """
+    """Tests for the RabbitMQ healthchecker."""
 
     @mock.patch("health_check.contrib.rabbitmq.backends.getattr")
     @mock.patch("health_check.contrib.rabbitmq.backends.Connection")
@@ -68,9 +60,7 @@ class TestRabbitMQHealthCheck:
     @mock.patch("health_check.contrib.rabbitmq.backends.getattr")
     @mock.patch("health_check.contrib.rabbitmq.backends.Connection")
     def test_broker_connection_upon_none_url(self, mocked_connection, mocked_getattr):
-        """
-        Test: case when the connection to RabbitMQ has no broker_url.
-        """
+        """Test: case when the connection to RabbitMQ has no broker_url."""
         mocked_getattr.return_value = None
         # if the variable BROKER_URL is not set, AccessRefused exception is raised
         conn_exception = AccessRefused("Refused connection")
