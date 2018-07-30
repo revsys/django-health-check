@@ -14,10 +14,7 @@ class RabbitMQHealthCheck(BaseHealthCheckBackend):
     """Health check for RabbitMQ."""
 
     def check_status(self):
-        """
-        Checks if RabbitMQ service is up by opening and closing
-        a broker channel.
-        """
+        """Check RabbitMQ service by opening and closing a broker channel."""
         logger.debug("Checking for a broker_url on django settings...")
 
         broker_url = getattr(settings, "BROKER_URL", None)
