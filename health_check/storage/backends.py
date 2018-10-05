@@ -53,6 +53,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
         with storage.open(file_name) as f:
             if not f.read() == file_content:
                 raise ServiceUnavailable('File content does not match')
+        return file_name
 
     def check_delete(self, file_name):
         storage = self.get_storage()
@@ -66,7 +67,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             # write the file to the storage backend
             file_name = self.get_file_name()
             file_content = self.get_file_content()
-            self.check_save(file_name, file_content)
+            file_name = self.check_save(file_name, file_content)
             self.check_delete(file_name)
             return True
         except Exception:
