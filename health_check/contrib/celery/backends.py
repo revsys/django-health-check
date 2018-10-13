@@ -23,5 +23,7 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
                 self.add_error(ServiceReturnedUnexpectedResult("Celery returned wrong result"))
         except IOError as e:
             self.add_error(ServiceUnavailable("IOError"), e)
+        except NotImplementedError as e:
+            self.add_error(ServiceUnavailable("NotImplementedError: Have you set your CELERY_RESULT_BACKEND?"), e)
         except BaseException as e:
             self.add_error(ServiceUnavailable("Unknown error"), e)
