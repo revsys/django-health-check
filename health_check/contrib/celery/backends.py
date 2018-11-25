@@ -1,14 +1,19 @@
 from django.conf import settings
 
 from health_check.backends import BaseHealthCheckBackend
+from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import (
     ServiceReturnedUnexpectedResult, ServiceUnavailable
 )
 
 from .tasks import add
 
+CRITICAL_CELERY = HEALTH_CHECK['CRITICAL_CELERY']
+
 
 class CeleryHealthCheck(BaseHealthCheckBackend):
+    critical_service = CRITICAL_CELERY
+
     def check_status(self):
         timeout = getattr(settings, 'HEALTHCHECK_CELERY_TIMEOUT', 3)
 

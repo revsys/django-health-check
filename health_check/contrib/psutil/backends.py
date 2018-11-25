@@ -13,9 +13,13 @@ host = socket.gethostname()
 
 DISK_USAGE_MAX = HEALTH_CHECK['DISK_USAGE_MAX']
 MEMORY_MIN = HEALTH_CHECK['MEMORY_MIN']
+CRITICAL_DISK_USAGE = HEALTH_CHECK['CRITICAL_DISK_USAGE']
+CRITICAL_MEMORY_USAGE = HEALTH_CHECK['CRITICAL_MEMORY_USAGE']
 
 
 class DiskUsage(BaseHealthCheckBackend):
+    critical_service = CRITICAL_DISK_USAGE
+
     def check_status(self):
         try:
             du = psutil.disk_usage('/')
@@ -29,6 +33,8 @@ class DiskUsage(BaseHealthCheckBackend):
 
 
 class MemoryUsage(BaseHealthCheckBackend):
+    critical_service = CRITICAL_MEMORY_USAGE
+
     def check_status(self):
         try:
             memory = psutil.virtual_memory()

@@ -1,6 +1,9 @@
 import logging
 
+from health_check.conf import HEALTH_CHECK
 from health_check.storage.backends import StorageHealthCheck
+
+CRITICAL_S3BOTO_STORAGE = HEALTH_CHECK['CRITICAL_S3BOTO_STORAGE']
 
 
 class S3BotoStorageHealthCheck(StorageHealthCheck):
@@ -14,6 +17,8 @@ class S3BotoStorageHealthCheck(StorageHealthCheck):
     ``django-storages`` can be found at https://git.io/v1lGx
     ``S3BotoStorage`` can be found at https://git.io/v1lGF
     """
+
+    critical_service = CRITICAL_S3BOTO_STORAGE
 
     logger = logging.getLogger(__name__)
     storage = 'storages.backends.s3boto.S3BotoStorage'
