@@ -13,7 +13,7 @@ class BaseHealthCheckBackend:
     """
     Define if service is critical to the operation of the site.
 
-    If set to ``False`` service failures will cause a 500 response code on the
+    If set to ``True`` service failures return 500 response code on the
     health check endpoint.
     """
 
