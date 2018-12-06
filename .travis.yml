@@ -32,7 +32,6 @@ jobs:
       script: echo "Deploying to PyPI ..."  # override regular test script; "skip" should also work
       env:
         - TOXENV=qa  # if not set explicitly, build matrix vars will use their first value
-        - DJANGO=20
       if: tag IS present
       deploy:
         provider: pypi
