@@ -1,7 +1,5 @@
 import copy
-
 from abc import ABC, abstractmethod
-
 from concurrent.futures import ThreadPoolExecutor
 
 from django.http import JsonResponse
