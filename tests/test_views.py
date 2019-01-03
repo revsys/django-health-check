@@ -26,7 +26,7 @@ class TestMainView:
         plugin_dir.reset()
         plugin_dir.register(MyBackend)
         response = client.get(self.url)
-        assert response.status_code == 500, 'Super Fail'
+        assert response.status_code == 500, response.content.decode('utf-8')
         assert b'Super Fail!' in response.content
 
     def test_warning(self, client):
