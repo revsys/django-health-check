@@ -1,6 +1,7 @@
 -e .
 celery
 coverage
+Django
 flake8
 isort
 mccabe

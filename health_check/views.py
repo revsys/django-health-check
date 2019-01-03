@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 import copy
 from concurrent.futures import ThreadPoolExecutor
 
@@ -10,11 +12,18 @@ from health_check.exceptions import ServiceWarning
 from health_check.plugins import plugin_dir
 
 
-class MainView(TemplateView):
-    template_name = 'health_check/index.html'
+class Status(object):
+    def __init__(self, plugins, status_code):
+        self.plugins = plugins
+        self.status_code = status_code
 
-    @never_cache
-    def get(self, request, *args, **kwargs):
+    def get_context(self):
+        return {'plugins': self.plugins, 'status_code': self.status_code}
+
+
+class AbstractMainView(ABC, TemplateView):
+    @staticmethod
+    def _get_status():
         errors = []
 
         plugins = sorted((
@@ -43,15 +52,41 @@ class MainView(TemplateView):
 
         status_code = 500 if errors else 200
 
-        if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
-            return self.render_to_response_json(plugins, status_code)
+        return Status(plugins, status_code)
 
-        context = {'plugins': plugins, 'status_code': status_code}
+    template_name = 'health_check/index.html'
 
-        return self.render_to_response(context, status=status_code)
+    def get_html_response(self):
+        status = self._get_status()
+        return self.render_to_response(status.get_context(), status=status.status_code)
 
-    def render_to_response_json(self, plugins, status):
+    def get_json_response(self):
+        status = self._get_status()
         return JsonResponse(
-            {str(p.identifier()): str(p.pretty_status()) for p in plugins},
-            status=status
+            {str(p.identifier()): str(p.pretty_status()) for p in status.plugins},
+            status=status.status_code
         )
+
+    @abstractmethod
+    def get(self, request, *args, **kwargs):
+        pass
+
+
+class HtmlFirstView(AbstractMainView):
+    @never_cache
+    def get(self, request, *args, **kwargs):
+        if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
+            return self.get_json_response()
+        return self.get_html_response()
+
+
+class JsonFirstView(AbstractMainView):
+    @never_cache
+    def get(self, request, *args, **kwargs):
+        if 'text/html' in request.META.get('HTTP_ACCEPT', ''):
+            return self.get_html_response()
+        return self.get_json_response()
+
+
+class MainView(HtmlFirstView):
+    pass
