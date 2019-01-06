@@ -1,12 +1,8 @@
 from django.conf import settings
 
+from celery.app import default_app as app
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
-
-try:
-    from celery.app import default_app as app
-except ImportError:
-    from celery import current_app as app
 
 
 class CeleryPingHealthCheck(BaseHealthCheckBackend):
