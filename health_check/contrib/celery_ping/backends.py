@@ -1,6 +1,6 @@
+from celery.app import default_app as app
 from django.conf import settings
 
-from celery.app import default_app as app
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
 

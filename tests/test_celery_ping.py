@@ -1,10 +1,9 @@
-from django.apps import apps
-
 import pytest
+from django.apps import apps
+from mock import patch
 
 from health_check.contrib.celery_ping.apps import HealthCheckConfig
 from health_check.contrib.celery_ping.backends import CeleryPingHealthCheck
-from mock import patch
 
 
 class TestCeleryPingHealthCheck:
