@@ -1,14 +1,12 @@
 import pytest
 
-from health_checks.contrib.celery_ping.backends import CeleryPingHealthCheck
-
-CELERY_HEALTH_CHECK_MODULE = 'apps.health_checks.backends.celery.'
+from health_check.contrib.celery_ping.backends import CeleryPingHealthCheck
 
 
 class TestCeleryWorkersHealthCheck:
     health_check_class = CeleryPingHealthCheck
     CELERY_HEALTH_CHECK_MODULE = \
-        'health_checks.contrib.celery_ping.backends.app.control.ping'
+        'health_check.contrib.celery_ping.backends.app.control.ping'
 
     def test_check_status_doesnt_add_errors_when_ping_successfull(
             self, mocker):
