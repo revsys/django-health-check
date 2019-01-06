@@ -1,7 +1,7 @@
 import pytest
+from mock import patch
 
 from health_check.contrib.celery_ping.backends import CeleryPingHealthCheck
-from mock import patch
 
 
 class TestCeleryWorkersHealthCheck:
