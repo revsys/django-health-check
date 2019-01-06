@@ -1,10 +1,13 @@
+from django.apps import apps
+
 import pytest
+
+from health_check.contrib.celery_ping.apps import HealthCheckConfig
+from health_check.contrib.celery_ping.backends import CeleryPingHealthCheck
 from mock import patch
 
-from health_check.contrib.celery_ping.backends import CeleryPingHealthCheck
 
-
-class TestCeleryWorkersHealthCheck:
+class TestCeleryPingHealthCheck:
     health_check_class = CeleryPingHealthCheck
     CELERY_HEALTH_CHECK_MODULE = \
         'health_check.contrib.celery_ping.backends.app.control.ping'
@@ -35,7 +38,7 @@ class TestCeleryWorkersHealthCheck:
         ValueError,
         SystemError,
         IndexError,
-        MemoryError,
+        MemoryError
     ])
     def test_check_status_add_error_when_any_exception_raised_from_ping(
             self, exception_to_raise):
@@ -46,6 +49,17 @@ class TestCeleryWorkersHealthCheck:
 
             assert len(health_check.errors) == 1
             assert health_check.errors[0].message.lower() == 'unknown error'
+
+    def test_check_status_when_raised_exception_notimplementederror(self):
+        msg = 'notimplementederror: make sure celery_result_backend is set'
+
+        with patch(self.CELERY_HEALTH_CHECK_MODULE,
+                   side_effect=NotImplementedError):
+            health_check = self.health_check_class()
+            health_check.check_status()
+
+            assert len(health_check.errors) == 1
+            assert health_check.errors[0].message.lower() == msg
 
     @pytest.mark.parametrize('ping_result', [
         None,
@@ -60,3 +74,12 @@ class TestCeleryWorkersHealthCheck:
 
             assert len(health_check.errors) == 1
             assert 'workers unavailable' in health_check.errors[0].message.lower()
+
+
+class TestCeleryPingHealthCheckApps:
+
+    def test_apps(self):
+        assert HealthCheckConfig.name == 'health_check.contrib.celery_ping'
+
+        celery_ping = apps.get_app_config('celery_ping')
+        assert celery_ping.name == 'health_check.contrib.celery_ping'
