@@ -7,5 +7,5 @@ mccabe
 mock
 pydocstyle
 pep8-naming
-pytest
+pytest<4
 pytest-django
