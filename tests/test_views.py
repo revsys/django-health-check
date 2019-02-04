@@ -12,7 +12,7 @@ except ImportError:
 
 
 class TestMainView:
-    url = reverse('health_check_home')
+    url = reverse('health_check:health_check_home')
 
     def test_success(self, client):
         response = client.get(self.url)
