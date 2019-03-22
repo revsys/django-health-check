@@ -1,5 +1,4 @@
-import datetime
-import random
+import uuid
 
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -33,10 +32,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             return self.storage
 
     def get_file_name(self):
-        return 'health_check_storage_test/test-{}-{}.txt'.format(
-            datetime.datetime.now().strftime('%Y%m%dT%H%M%SZ'),
-            random.randint(10000, 99999)
-        )
+        return 'health_check_storage_test/test-%s.txt' % uuid.uuid4()
 
     def get_file_content(self):
         return b'this is the healthtest file content'
