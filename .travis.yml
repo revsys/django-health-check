@@ -9,6 +9,8 @@ env:
   - TOXENV=docs
   - DJANGO=111
   - DJANGO=20
+  - DJANGO=21
+  - DJANGO=22
   - DJANGO=master
 matrix:
   fast_finish: true
