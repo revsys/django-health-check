@@ -22,33 +22,33 @@ matrix:
   - env: DJANGO=master
 
   include:
-    - env: TOXENV=qa
-    - env: TOXENV=docs
+  - env: TOXENV=qa
+  - env: TOXENV=docs
 
-    - env: DJANGO=111
-    - env: DJANGO=20
-    - env: DJANGO=21
+  - env: DJANGO=111
+  - env: DJANGO=20
+  - env: DJANGO=21
 
-    # Test the latest Django LTS release against all supported Pythons: 3.5, 3.6, 3.7
-    - env: DJANGO=22
-      python: '3.5'
-    - env: DJANGO=22
-      python: '3.6'
-    - env: DJANGO=22
-      python: '3.7'
+  # Test the latest Django LTS release against all supported Pythons: 3.5, 3.6, 3.7
+  - env: DJANGO=22
+    python: '3.5'
+  - env: DJANGO=22
+    python: '3.6'
+  - env: DJANGO=22
+    python: '3.7'
 
-    - env: DJANGO=master
+  - env: DJANGO=master
 
-    - stage: PyPI release  # will run after the default "test" stage succeeds
-      script: echo "Deploying to PyPI ..."  # override regular test script; "skip" should also work
-      if: tag IS present
-      deploy:
-        provider: pypi
-        user: codingjoe
-        password:
-          secure: jJyadofJm7F1Qco+EDCyN/aMZaYSbfQ0GAE02Bx7I499MkjPYvv38X2btg+PjdW3rzGD0d/kq24lfWLkgKncyQ/YMgLQ7H/GuCCHHYbKUklxllaoFXActBjstmKOvXyWWC5oEb+YEJ4HTwgkvS6wkp69B7C1d4BAOqGs5IKnCSo=
-        on:
-          tags: true
-          distributions: sdist bdist_wheel
-          repo: KristianOellegaard/django-health-check
-          branch: master
+  - stage: PyPI release  # will run after the default "test" stage succeeds
+    script: echo "Deploying to PyPI ..."  # override regular test script; "skip" should also work
+    if: tag IS present
+    deploy:
+      provider: pypi
+      user: codingjoe
+      password:
+        secure: jJyadofJm7F1Qco+EDCyN/aMZaYSbfQ0GAE02Bx7I499MkjPYvv38X2btg+PjdW3rzGD0d/kq24lfWLkgKncyQ/YMgLQ7H/GuCCHHYbKUklxllaoFXActBjstmKOvXyWWC5oEb+YEJ4HTwgkvS6wkp69B7C1d4BAOqGs5IKnCSo=
+      on:
+        tags: true
+        distributions: sdist bdist_wheel
+        repo: KristianOellegaard/django-health-check
+        branch: master
