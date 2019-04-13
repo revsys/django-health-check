@@ -1,21 +1,8 @@
 language: python
-sudo: false
+dist: xenial
 cache: pip
-python:
-- '3.6'
-env:
-  matrix:
-  - TOXENV=qa
-  - TOXENV=docs
-  - DJANGO=111
-  - DJANGO=20
-  - DJANGO=21
-  - DJANGO=22
-  - DJANGO=master
-matrix:
-  fast_finish: true
-  allow_failures:
-  - env: DJANGO=master
+python: '3.7'  # "Default" Python version
+
 install:
 - pip install --upgrade codecov tox
 before_script:
@@ -28,12 +15,32 @@ script:
 - tox -e $TOXENV
 after_success:
 - codecov
-jobs:
+
+matrix:
+  fast_finish: true
+  allow_failures:
+  - env: DJANGO=master
+
   include:
+    - env: TOXENV=qa
+    - env: TOXENV=docs
+
+    - env: DJANGO=111
+    - env: DJANGO=20
+    - env: DJANGO=21
+
+    # Test the latest Django LTS release against all supported Pythons: 3.5, 3.6, 3.7
+    - env: DJANGO=22
+      python: '3.5'
+    - env: DJANGO=22
+      python: '3.6'
+    - env: DJANGO=22
+      python: '3.7'
+
+    - env: DJANGO=master
+
     - stage: PyPI release  # will run after the default "test" stage succeeds
       script: echo "Deploying to PyPI ..."  # override regular test script; "skip" should also work
-      env:
-        - TOXENV=qa  # if not set explicitly, build matrix vars will use their first value
       if: tag IS present
       deploy:
         provider: pypi
