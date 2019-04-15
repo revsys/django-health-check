@@ -44,6 +44,7 @@ class TestMainView:
 
         response = client.get(self.url)
         assert response.status_code == 200, response.content.decode('utf-8')
+        assert response['content-type'] == 'text/html; charset=utf-8'
         assert b'so so' in response.content, response.content
 
     def test_non_critical(self, client):
@@ -68,6 +69,7 @@ class TestMainView:
         plugin_dir.register(JSONSuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/json')
         assert response.status_code == 200, response.content.decode('utf-8')
+        assert response['content-type'] == 'application/json'
         assert json.loads(response.content.decode('utf-8')) == \
             {JSONSuccessBackend().identifier(): JSONSuccessBackend().pretty_status()}
 
@@ -80,4 +82,5 @@ class TestMainView:
         plugin_dir.register(JSONErrorBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/json')
         assert response.status_code == 500, response.content.decode('utf-8')
+        assert response['content-type'] == 'application/json'
         assert 'JSON Error' in json.loads(response.content.decode('utf-8'))[JSONErrorBackend().identifier()]
