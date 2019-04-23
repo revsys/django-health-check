@@ -26,8 +26,12 @@ matrix:
   - env: TOXENV=docs
 
   - env: DJANGO=21
+    python: '3.5'
+  - env: DJANGO=21
+    python: '3.6'
+  - env: DJANGO=21
+    python: '3.7'
 
-  # Test the latest Django LTS release against all supported Pythons: 3.5, 3.6, 3.7
   - env: DJANGO=22
     python: '3.5'
   - env: DJANGO=22
