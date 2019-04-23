@@ -43,11 +43,11 @@ matrix:
     if: tag IS present
     deploy:
       provider: pypi
+      distributions: sdist bdist_wheel
       user: codingjoe
       password:
         secure: jJyadofJm7F1Qco+EDCyN/aMZaYSbfQ0GAE02Bx7I499MkjPYvv38X2btg+PjdW3rzGD0d/kq24lfWLkgKncyQ/YMgLQ7H/GuCCHHYbKUklxllaoFXActBjstmKOvXyWWC5oEb+YEJ4HTwgkvS6wkp69B7C1d4BAOqGs5IKnCSo=
       on:
         tags: true
-        distributions: sdist bdist_wheel
         repo: KristianOellegaard/django-health-check
         branch: master
