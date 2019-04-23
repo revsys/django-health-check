@@ -95,7 +95,7 @@ class TestMainView:
 
         plugin_dir.reset()
         plugin_dir.register(JSONSuccessBackend)
-        response = client.get(self.url, { 'format': 'json' })
+        response = client.get(self.url, {'format': 'json'})
         assert response.status_code == 200, response.content.decode('utf-8')
         assert response['content-type'] == 'application/json'
         assert json.loads(response.content.decode('utf-8')) == \
@@ -108,7 +108,7 @@ class TestMainView:
 
         plugin_dir.reset()
         plugin_dir.register(JSONErrorBackend)
-        response = client.get(self.url, { 'format': 'json' })
+        response = client.get(self.url, {'format': 'json'})
         assert response.status_code == 500, response.content.decode('utf-8')
         assert response['content-type'] == 'application/json'
         assert 'JSON Error' in json.loads(response.content.decode('utf-8'))[JSONErrorBackend().identifier()]
