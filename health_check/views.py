@@ -46,7 +46,7 @@ class MainView(TemplateView):
         accept_format = request.META.get('HTTP_ACCEPT', '')
         accepts_json = 'application/json' in accept_format
 
-        if accepts_json:
+        if accepts_json or request.GET.get('format') == 'json':
             return self.render_to_response_json(plugins, status_code)
         else:
             context = {'plugins': plugins, 'status_code': status_code}
