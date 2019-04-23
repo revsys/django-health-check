@@ -1,7 +1,7 @@
 import logging
 from timeit import default_timer as timer
 
-from django.utils.translation import ugettext_lazy as _  # noqa: N812
+from django.utils.translation import gettext_lazy as _  # noqa: N812
 
 from health_check.exceptions import HealthCheckException
 
