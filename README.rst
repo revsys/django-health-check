@@ -145,7 +145,7 @@ Getting machine readable JSON reports
 
 If you want machine readable status reports you can request the ``/ht/``
 endpoint with the ``Accept`` HTTP header set to ``application/json``
-or pass ``format=json`` as a query parameter.
+or pass ``json=1`` as a query parameter.
 
 The backend will return a JSON response:
 
@@ -166,9 +166,9 @@ The backend will return a JSON response:
         "S3BotoStorageHealthCheck": "working"
     }
 
-    $ curl -v -X GET http://www.example.com/ht/?format=json
+    $ curl -v -X GET http://www.example.com/ht/?json=1
 
-    > GET /ht/?format=json HTTP/1.1
+    > GET /ht/?json=1 HTTP/1.1
     > Host: www.example.com
     >
     < HTTP/1.1 200 OK
