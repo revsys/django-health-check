@@ -3,7 +3,6 @@ import uuid
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
-from django.utils.six import string_types
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
@@ -26,7 +25,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
     storage = None
 
     def get_storage(self):
-        if isinstance(self.storage, string_types):
+        if isinstance(self.storage, str):
             return get_storage_class(self.storage)()
         else:
             return self.storage
