@@ -10,12 +10,6 @@ Settings can be configured via the ``HEALTH_CHECK`` dictionary.
     ``False`` warnings will be displayed in the template on in the JSON
     response but the status code will remain a 200.
 
-.. data:: PREFERRED_FORMAT
-
-    Sets the response format used if the request has no Accept header
-    for ``text/html`` or ``application/json``. Default is ``html``; set to
-    ``json`` to prefer sending a JSON response.
-
 Security
 --------
 
