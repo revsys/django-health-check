@@ -10,6 +10,43 @@ from health_check.exceptions import ServiceWarning
 from health_check.plugins import plugin_dir
 
 
+class MediaType:
+    """
+    Sortable object representing HTTP's accept header.
+
+    .. seealso:: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
+    """
+
+    def __init__(self, mime_type, weight=1.0):
+        self.mime_type = mime_type
+        self.weight = float(weight)
+
+    @classmethod
+    def from_string(cls, value):
+        """Return single instance parsed from given accept header string."""
+        try:
+            return cls(*value.split(';'))
+        except ValueError:
+            return cls(value)
+
+    @classmethod
+    def parse_header(cls, value='*/*'):
+        """Parse HTTP accept header and return instances sorted by weight."""
+        yield from sorted((cls.from_string(token.strip()) for token in value.split(',')), reverse=True)
+
+    def __str__(self):
+        return "%s;%d" % (self.mime_type, self.weight)
+
+    def __repr__(self):
+        return "%s: %s" % (type(self).__name__, self.__str__())
+
+    def __eq__(self, other):
+        return self.weight == other.weight and self.mime_type == other.mime_type
+
+    def __lt__(self, other):
+        return self.weight.__lt__(other.weight)
+
+
 class MainView(TemplateView):
     template_name = 'health_check/index.html'
 
@@ -43,14 +80,18 @@ class MainView(TemplateView):
 
         status_code = 500 if errors else 200
 
-        accept_format = request.META.get('HTTP_ACCEPT', '')
-        accepts_json = 'application/json' in accept_format
+        format_override = request.GET.get('format')
 
-        if accepts_json or request.GET.get('json', False):
+        if format_override == 'json':
             return self.render_to_response_json(plugins, status_code)
-        else:
-            context = {'plugins': plugins, 'status_code': status_code}
-            return self.render_to_response(context, status=status_code)
+
+        accept_header = request.META.get('HTTP_ACCEPT', '*/*')
+        for media in MediaType.parse_header(accept_header):
+            if media.mime_type in ['text/html', '	application/xhtml+xml', '*/*']:
+                context = {'plugins': plugins, 'status_code': status_code}
+                return self.render_to_response(context, status=status_code)
+            if 'application/json' == media.mime_type:
+                return self.render_to_response_json(plugins, status_code)
 
     def render_to_response_json(self, plugins, status):
         return JsonResponse(

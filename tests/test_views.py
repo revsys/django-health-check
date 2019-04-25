@@ -4,11 +4,45 @@ from health_check.backends import BaseHealthCheckBackend
 from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceWarning
 from health_check.plugins import plugin_dir
+from health_check.views import MediaType
 
 try:
     from django.urls import reverse
 except ImportError:
     from django.core.urlresolvers import reverse
+
+
+class TestMediaType:
+
+    def test_lt(self):
+        assert not MediaType('*/*') < MediaType('*/*')
+        assert not MediaType('*/*') < MediaType('*/*', 0.9)
+        assert MediaType('*/*', 0.9) < MediaType('*/*')
+
+    def test_str(self):
+        assert str(MediaType('*/*')) == "*/*;1"
+
+    def test_repr(self):
+        assert repr(MediaType('*/*')) == "MediaType: */*;1"
+
+    def test_eq(self):
+        assert MediaType('*/*') == MediaType('*/*')
+        assert MediaType('*/*', 0.9) != MediaType('*/*')
+
+    def test_from_string(self):
+        assert MediaType.from_string('*/*') == MediaType('*/*')
+        assert MediaType.from_string('*/*;0.9') == MediaType('*/*', 0.9)
+        assert MediaType.from_string('*/*;0.9') == MediaType('*/*', 0.9)
+
+    def test_parse_header(self):
+        assert list(MediaType.parse_header()) == [
+            MediaType('*/*'),
+        ]
+        assert list(MediaType.parse_header('text/html;0.1,application/xhtml+xml;0.1,application/json')) == [
+            MediaType('application/json'),
+            MediaType('text/html', 0.1),
+            MediaType('application/xhtml+xml', 0.1),
+        ]
 
 
 class TestMainView:
@@ -71,10 +105,48 @@ class TestMainView:
         plugin_dir.reset()
         plugin_dir.register(JSONSuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/json')
-        assert response.status_code == 200, response.content.decode('utf-8')
         assert response['content-type'] == 'application/json'
-        assert json.loads(response.content.decode('utf-8')) == \
-            {JSONSuccessBackend().identifier(): JSONSuccessBackend().pretty_status()}
+
+    def test_success_accept_order(self, client):
+        class JSONSuccessBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                pass
+
+        plugin_dir.reset()
+        plugin_dir.register(JSONSuccessBackend)
+        response = client.get(self.url, HTTP_ACCEPT='text/html,application/xhtml+xml,application/json;0.9,*/*;0.1')
+        assert response['content-type'] == 'text/html; charset=utf-8'
+
+    def test_success_accept_order__reverse(self, client):
+        class JSONSuccessBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                pass
+
+        plugin_dir.reset()
+        plugin_dir.register(JSONSuccessBackend)
+        response = client.get(self.url, HTTP_ACCEPT='text/html;0.1,application/xhtml+xml;0.1,application/json')
+        assert response['content-type'] == 'application/json'
+
+    def test_format_override(self, client):
+        class JSONSuccessBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                pass
+
+        plugin_dir.reset()
+        plugin_dir.register(JSONSuccessBackend)
+        response = client.get(self.url + '?format=json', HTTP_ACCEPT='text/html')
+        assert response['content-type'] == 'application/json'
+
+    def test_format_no_accept_header(self, client):
+        class JSONSuccessBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                pass
+
+        plugin_dir.reset()
+        plugin_dir.register(JSONSuccessBackend)
+        response = client.get(self.url)
+        assert response.status_code == 200, response.content.decode('utf-8')
+        assert response['content-type'] == 'text/html; charset=utf-8'
 
     def test_error_accept_json(self, client):
         class JSONErrorBackend(BaseHealthCheckBackend):
@@ -95,7 +167,7 @@ class TestMainView:
 
         plugin_dir.reset()
         plugin_dir.register(JSONSuccessBackend)
-        response = client.get(self.url, {'json': 1})
+        response = client.get(self.url, {'format': 'json'})
         assert response.status_code == 200, response.content.decode('utf-8')
         assert response['content-type'] == 'application/json'
         assert json.loads(response.content.decode('utf-8')) == \
@@ -108,7 +180,7 @@ class TestMainView:
 
         plugin_dir.reset()
         plugin_dir.register(JSONErrorBackend)
-        response = client.get(self.url, {'json': 1})
+        response = client.get(self.url, {'format': 'json'})
         assert response.status_code == 500, response.content.decode('utf-8')
         assert response['content-type'] == 'application/json'
         assert 'JSON Error' in json.loads(response.content.decode('utf-8'))[JSONErrorBackend().identifier()]
