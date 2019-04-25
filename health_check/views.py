@@ -1,4 +1,5 @@
 import copy
+import re
 from concurrent.futures import ThreadPoolExecutor
 
 from django.http import JsonResponse
@@ -17,6 +18,8 @@ class MediaType:
     .. seealso:: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
     """
 
+    pattern = re.compile(r'^(?P<mime_type>(\w+|\*)/([\w\d\-+.]+|\*))(; ?q=(?P<weight>[01](\.[\d3])?))?$')
+
     def __init__(self, mime_type, weight=1.0):
         self.mime_type = mime_type
         self.weight = float(weight)
@@ -24,8 +27,11 @@ class MediaType:
     @classmethod
     def from_string(cls, value):
         """Return single instance parsed from given accept header string."""
+        match = cls.pattern.search(value)
+        if match is None:
+            raise ValueError('"%s" is not a valid media type' % value)
         try:
-            return cls(*value.split(';'))
+            return cls(match.group('mime_type'), float(match.group('weight') or 1))
         except ValueError:
             return cls(value)
 
@@ -35,7 +41,7 @@ class MediaType:
         yield from sorted((cls.from_string(token.strip()) for token in value.split(',')), reverse=True)
 
     def __str__(self):
-        return "%s;%d" % (self.mime_type, self.weight)
+        return "%s; q=%s" % (self.mime_type, self.weight)
 
     def __repr__(self):
         return "%s: %s" % (type(self).__name__, self.__str__())
@@ -87,10 +93,10 @@ class MainView(TemplateView):
 
         accept_header = request.META.get('HTTP_ACCEPT', '*/*')
         for media in MediaType.parse_header(accept_header):
-            if media.mime_type in ['text/html', '	application/xhtml+xml', '*/*']:
+            if media.mime_type in ('text/html', '	application/xhtml+xml', 'text/*','*/*'):
                 context = {'plugins': plugins, 'status_code': status_code}
                 return self.render_to_response(context, status=status_code)
-            if 'application/json' == media.mime_type:
+            if media.mime_type in ('application/json', 'application/*'):
                 return self.render_to_response_json(plugins, status_code)
 
     def render_to_response_json(self, plugins, status):
