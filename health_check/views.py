@@ -93,7 +93,7 @@ class MainView(TemplateView):
 
         accept_header = request.META.get('HTTP_ACCEPT', '*/*')
         for media in MediaType.parse_header(accept_header):
-            if media.mime_type in ('text/html', 'application/xhtml+xml', 'text/*','*/*'):
+            if media.mime_type in ('text/html', 'application/xhtml+xml', 'text/*', '*/*'):
                 context = {'plugins': plugins, 'status_code': status_code}
                 return self.render_to_response(context, status=status_code)
             if media.mime_type in ('application/json', 'application/*'):
