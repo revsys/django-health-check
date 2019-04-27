@@ -124,6 +124,16 @@ class TestMainView:
         response = client.get(self.url, HTTP_ACCEPT='application/xhtml+xml')
         assert response['content-type'] == 'text/html; charset=utf-8'
 
+    def test_success_unsupported_accept(self, client):
+        class SuccessBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                pass
+
+        plugin_dir.reset()
+        plugin_dir.register(SuccessBackend)
+        response = client.get(self.url, HTTP_ACCEPT='application/octet-stream')
+        assert response['content-type'] == 'text/html; charset=utf-8'
+
     def test_success_accept_order(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
             def run_check(self):

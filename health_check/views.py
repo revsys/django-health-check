@@ -92,12 +92,14 @@ class MainView(TemplateView):
             return self.render_to_response_json(plugins, status_code)
 
         accept_header = request.META.get('HTTP_ACCEPT', '*/*')
+        context = {'plugins': plugins, 'status_code': status_code}
         for media in MediaType.parse_header(accept_header):
             if media.mime_type in ('text/html', 'application/xhtml+xml', 'text/*', '*/*'):
-                context = {'plugins': plugins, 'status_code': status_code}
                 return self.render_to_response(context, status=status_code)
-            if media.mime_type in ('application/json', 'application/*'):
+            elif media.mime_type in ('application/json', 'application/*'):
                 return self.render_to_response_json(plugins, status_code)
+            else:
+                return self.render_to_response(context, status=status_code)
 
     def render_to_response_json(self, plugins, status):
         return JsonResponse(
