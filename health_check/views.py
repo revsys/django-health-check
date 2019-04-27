@@ -38,7 +38,11 @@ class MediaType:
     @classmethod
     def parse_header(cls, value='*/*'):
         """Parse HTTP accept header and return instances sorted by weight."""
-        yield from sorted((cls.from_string(token.strip()) for token in value.split(',')), reverse=True)
+        yield from sorted((
+            cls.from_string(token.strip())
+            for token in value.split(',')
+            if token.strip()
+        ), reverse=True)
 
     def __str__(self):
         return "%s; q=%s" % (self.mime_type, self.weight)
