@@ -36,6 +36,9 @@ class TestMediaType:
         assert MediaType.from_string('*/*') == MediaType('*/*')
         assert MediaType.from_string('*/*; q=0.9') == MediaType('*/*', 0.9)
         assert MediaType.from_string('*/*;q=0.9') == MediaType('*/*', 0.9)
+        assert MediaType.from_string('*/* ;q=0.9') == MediaType('*/*', 0.9)
+        assert MediaType.from_string('*/* ; q=0.9') == MediaType('*/*', 0.9)
+        assert MediaType.from_string('*/* ;   q=0.9') == MediaType('*/*', 0.9)
 
         with pytest.raises(ValueError) as e:
             MediaType.from_string('*/*;0.9')
