@@ -35,6 +35,13 @@ class TestMediaType:
     def test_from_string(self):
         assert MediaType.from_string('*/*') == MediaType('*/*')
         assert MediaType.from_string('*/*; q=0.9') == MediaType('*/*', 0.9)
+        assert MediaType.from_string('*/*; q=0') == MediaType('*/*', 0.0)
+        assert MediaType.from_string('*/*; q=0.0') == MediaType('*/*', 0.0)
+        assert MediaType.from_string('*/*; q=0.1') == MediaType('*/*', 0.1)
+        assert MediaType.from_string('*/*; q=0.12') == MediaType('*/*', 0.12)
+        assert MediaType.from_string('*/*; q=0.123') == MediaType('*/*', 0.123)
+        assert MediaType.from_string('*/*; q=1.000') == MediaType('*/*', 1.0)
+        assert MediaType.from_string('*/*; q=1') == MediaType('*/*', 1.0)
         assert MediaType.from_string('*/*;q=0.9') == MediaType('*/*', 0.9)
         assert MediaType.from_string('*/* ;q=0.9') == MediaType('*/*', 0.9)
         assert MediaType.from_string('*/* ; q=0.9') == MediaType('*/*', 0.9)
