@@ -18,7 +18,29 @@ class MediaType:
     .. seealso:: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
     """
 
-    pattern = re.compile(r"^(?P<mime_type>(\w+|\*)/([\w\d\-+.]+|\*))(\s*;\s*q=(?P<weight>(1([.]0{1,3})?|0([.]\d{1,3})?)))?(\s*;\s*[-!#$%&'*+.^_`|~0-9a-zA-Z]+=[-!#$%&'*+.^_`|~0-9a-zA-Z]+)*$")
+    pattern = re.compile(
+        r"""
+          ^
+          (?P<mime_type>
+            (\w+|\*)
+            /
+            ([\w\d\-+.]+|\*)
+          )
+          (
+            \s*;\s*
+            q=
+            (?P<weight>
+              (1([.]0{1,3})?|0([.]\d{1,3})?)
+            )
+          )?
+          (
+            \s*;\s*
+            [-!#$%&'*+.^_`|~0-9a-zA-Z]+
+            =
+            [-!#$%&'*+.^_`|~0-9a-zA-Z]+
+          )*
+          $
+        """, re.VERBOSE)
 
     def __init__(self, mime_type, weight=1.0):
         self.mime_type = mime_type
