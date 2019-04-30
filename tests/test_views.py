@@ -55,6 +55,9 @@ class TestMediaType:
 
     invalid_strings = [
         '*/*;0.9',
+        'text/html;z=""',
+        'text/html; xxx',
+        'text/html;  =a',
     ]
     @pytest.mark.parametrize("type", invalid_strings)
     def test_from_invalid_strings(self, type):
