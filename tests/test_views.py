@@ -32,26 +32,36 @@ class TestMediaType:
         assert MediaType('*/*') == MediaType('*/*')
         assert MediaType('*/*', 0.9) != MediaType('*/*')
 
-    def test_from_string(self):
-        assert MediaType.from_string('*/*') == MediaType('*/*')
-        assert MediaType.from_string('*/*; q=0.9') == MediaType('*/*', 0.9)
-        assert MediaType.from_string('*/*; q=0') == MediaType('*/*', 0.0)
-        assert MediaType.from_string('*/*; q=0.0') == MediaType('*/*', 0.0)
-        assert MediaType.from_string('*/*; q=0.1') == MediaType('*/*', 0.1)
-        assert MediaType.from_string('*/*; q=0.12') == MediaType('*/*', 0.12)
-        assert MediaType.from_string('*/*; q=0.123') == MediaType('*/*', 0.123)
-        assert MediaType.from_string('*/*; q=1.000') == MediaType('*/*', 1.0)
-        assert MediaType.from_string('*/*; q=1') == MediaType('*/*', 1.0)
-        assert MediaType.from_string('*/*;q=0.9') == MediaType('*/*', 0.9)
-        assert MediaType.from_string('*/* ;q=0.9') == MediaType('*/*', 0.9)
-        assert MediaType.from_string('*/* ; q=0.9') == MediaType('*/*', 0.9)
-        assert MediaType.from_string('*/* ;   q=0.9') == MediaType('*/*', 0.9)
-        assert MediaType.from_string('*/*;v=b3') == MediaType('*/*')
-        assert MediaType.from_string('*/*; q=0.5; v=b3') == MediaType('*/*', 0.5)
+    valid_strings = [
+        ('*/*', MediaType('*/*')),
+        ('*/*; q=0.9', MediaType('*/*', 0.9)),
+        ('*/*; q=0', MediaType('*/*', 0.0)),
+        ('*/*; q=0.0', MediaType('*/*', 0.0)),
+        ('*/*; q=0.1', MediaType('*/*', 0.1)),
+        ('*/*; q=0.12', MediaType('*/*', 0.12)),
+        ('*/*; q=0.123', MediaType('*/*', 0.123)),
+        ('*/*; q=1.000', MediaType('*/*', 1.0)),
+        ('*/*; q=1', MediaType('*/*', 1.0)),
+        ('*/*;q=0.9', MediaType('*/*', 0.9)),
+        ('*/* ;q=0.9', MediaType('*/*', 0.9)),
+        ('*/* ; q=0.9', MediaType('*/*', 0.9)),
+        ('*/* ;   q=0.9', MediaType('*/*', 0.9)),
+        ('*/*;v=b3', MediaType('*/*')),
+        ('*/*; q=0.5; v=b3', MediaType('*/*', 0.5)),
+    ]
+    @pytest.mark.parametrize("type, expected", valid_strings)
+    def test_from_valid_strings(self, type, expected):
+        assert MediaType.from_string(type) == expected
 
+    invalid_strings = [
+        '*/*;0.9',
+    ]
+    @pytest.mark.parametrize("type", invalid_strings)
+    def test_from_invalid_strings(self, type):
         with pytest.raises(ValueError) as e:
-            MediaType.from_string('*/*;0.9')
-        assert 'ValueError: "*/*;0.9" is not a valid media type' in str(e)
+            MediaType.from_string(type)
+        expected_error = 'ValueError: "%s" is not a valid media type' % type
+        assert expected_error in str(e)
 
     def test_parse_header(self):
         assert list(MediaType.parse_header()) == [
