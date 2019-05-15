@@ -126,8 +126,7 @@ class MainView(TemplateView):
                 return self.render_to_response(context, status=status_code)
             elif media.mime_type in ('application/json', 'application/*'):
                 return self.render_to_response_json(plugins, status_code)
-            else:
-                return self.render_to_response(context, status=status_code)
+        return self.render_to_response(context, status=status_code)
 
     def render_to_response_json(self, plugins, status):
         return JsonResponse(
