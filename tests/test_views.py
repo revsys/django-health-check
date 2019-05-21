@@ -170,8 +170,9 @@ class TestMainView:
         plugin_dir.reset()
         plugin_dir.register(SuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/octet-stream')
-        assert response['content-type'] == 'text/html; charset=utf-8'
-        assert response.status_code == 200
+        assert response['content-type'] == 'text/plain'
+        assert response.status_code == 406
+        assert response.content == 'Only HTML and JSON responses are supported'
 
     def test_success_unsupported_and_supported_accept(self, client):
         class SuccessBackend(BaseHealthCheckBackend):
