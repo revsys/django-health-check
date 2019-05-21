@@ -172,7 +172,7 @@ class TestMainView:
         response = client.get(self.url, HTTP_ACCEPT='application/octet-stream')
         assert response['content-type'] == 'text/plain'
         assert response.status_code == 406
-        assert response.content == 'Only HTML and JSON responses are supported'
+        assert response.content == b'Only HTML and JSON responses are supported'
 
     def test_success_unsupported_and_supported_accept(self, client):
         class SuccessBackend(BaseHealthCheckBackend):
