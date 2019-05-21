@@ -138,6 +138,7 @@ class TestMainView:
         plugin_dir.register(JSONSuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/json')
         assert response['content-type'] == 'application/json'
+        assert response.status_code == 200
 
     def test_success_prefer_json(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
@@ -148,6 +149,7 @@ class TestMainView:
         plugin_dir.register(JSONSuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/json; q=0.8, text/html; q=0.5')
         assert response['content-type'] == 'application/json'
+        assert response.status_code == 200
 
     def test_success_accept_xhtml(self, client):
         class SuccessBackend(BaseHealthCheckBackend):
@@ -158,6 +160,7 @@ class TestMainView:
         plugin_dir.register(SuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/xhtml+xml')
         assert response['content-type'] == 'text/html; charset=utf-8'
+        assert response.status_code == 200
 
     def test_success_unsupported_accept(self, client):
         class SuccessBackend(BaseHealthCheckBackend):
@@ -168,6 +171,7 @@ class TestMainView:
         plugin_dir.register(SuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/octet-stream')
         assert response['content-type'] == 'text/html; charset=utf-8'
+        assert response.status_code == 200
 
     def test_success_unsupported_and_supported_accept(self, client):
         class SuccessBackend(BaseHealthCheckBackend):
@@ -178,6 +182,7 @@ class TestMainView:
         plugin_dir.register(SuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/octet-stream, application/json; q=0.9')
         assert response['content-type'] == 'application/json'
+        assert response.status_code == 200
 
     def test_success_accept_order(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
@@ -191,6 +196,7 @@ class TestMainView:
             HTTP_ACCEPT='text/html, application/xhtml+xml, application/json; q=0.9, */*; q=0.1'
         )
         assert response['content-type'] == 'text/html; charset=utf-8'
+        assert response.status_code == 200
 
     def test_success_accept_order__reverse(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
@@ -201,6 +207,7 @@ class TestMainView:
         plugin_dir.register(JSONSuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='text/html; q=0.1, application/xhtml+xml; q=0.1, application/json')
         assert response['content-type'] == 'application/json'
+        assert response.status_code == 200
 
     def test_format_override(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
@@ -211,6 +218,7 @@ class TestMainView:
         plugin_dir.register(JSONSuccessBackend)
         response = client.get(self.url + '?format=json', HTTP_ACCEPT='text/html')
         assert response['content-type'] == 'application/json'
+        assert response.status_code == 200
 
     def test_format_no_accept_header(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
