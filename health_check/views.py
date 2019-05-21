@@ -2,8 +2,7 @@ import copy
 import re
 from concurrent.futures import ThreadPoolExecutor
 
-from django.http import JsonResponse
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
