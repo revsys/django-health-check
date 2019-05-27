@@ -2,7 +2,7 @@ import copy
 import re
 from concurrent.futures import ThreadPoolExecutor
 
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
@@ -126,8 +126,11 @@ class MainView(TemplateView):
                 return self.render_to_response(context, status=status_code)
             elif media.mime_type in ('application/json', 'application/*'):
                 return self.render_to_response_json(plugins, status_code)
-            else:
-                return self.render_to_response(context, status=status_code)
+        return HttpResponse(
+            'Not Acceptable: Supported content types: text/html, application/json',
+            status=406,
+            content_type='text/plain'
+        )
 
     def render_to_response_json(self, plugins, status):
         return JsonResponse(
