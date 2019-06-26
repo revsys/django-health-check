@@ -166,7 +166,7 @@ The backend will return a JSON response:
         "S3BotoStorageHealthCheck": "working"
     }
 
-    $ curl -v -X GET http://www.example.com/ht/?json=1
+    $ curl -v -X GET http://www.example.com/ht/?format=json
 
     > GET /ht/?format=json HTTP/1.1
     > Host: www.example.com
