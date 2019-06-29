@@ -8,9 +8,9 @@ class TestRabbitMQHealthCheck:
 
     @mock.patch("health_check.contrib.redis.backends.getattr")
     @mock.patch("health_check.contrib.redis.backends.Connection")
-    def test_broker_refused_connection(self, mocked_connection, mocked_getattr):
+    def test_redis_refused_connection(self, mocked_connection, mocked_getattr):
         """Test when the connection to Redis is refused."""
-        mocked_getattr.return_value = "celery_broker_url"
+        mocked_getattr.return_value = "redis_url"
 
         conn_exception = ConnectionRefusedError("Refused connection")
 
@@ -27,4 +27,4 @@ class TestRabbitMQHealthCheck:
         assert len(redis_healthchecker.errors), 1
 
         # mock assertions
-        mocked_connection.assert_called_once_with("celery_broker_url")
+        mocked_connection.assert_called_once_with("redis_url")
