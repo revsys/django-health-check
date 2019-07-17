@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 from kombu import Connection
+from kombu.exceptions import TimeoutError, ConnectionLimitExceeded
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
@@ -27,11 +28,10 @@ class RedisHealthCheck(BaseHealthCheckBackend):
                 conn.connect()  # exceptions may be raised upon calling connect
         except ConnectionRefusedError as e:
             self.add_error(ServiceUnavailable("Unable to connect to Redis: Connection was refused."), e)
-
-        except IOError as e:
-            self.add_error(ServiceUnavailable("IOError"), e)
-
-        except BaseException as e:
-            self.add_error(ServiceUnavailable("Unknown error"), e)
+        except TimeoutError as e:
+            self.add_error(ServiceUnavailable("Unable to connect to Redis: Timeout."), e)
+        except ConnectionLimitExceeded as e:
+            self.add_error(ServiceUnavailable("Unable to connect to Redis: "
+                                              "Maximum number of simultaneous connections exceeded"), e)
         else:
             logger.debug("Connection established. Redis is healthy.")
