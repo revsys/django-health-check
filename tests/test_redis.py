@@ -1,7 +1,7 @@
 import mock
+from kombu.exceptions import ConnectionLimitExceeded, TimeoutError
 
 from health_check.contrib.redis.backends import RedisHealthCheck
-from kombu.exceptions import TimeoutError, ConnectionLimitExceeded
 
 
 class TestRedisHealthCheck:
