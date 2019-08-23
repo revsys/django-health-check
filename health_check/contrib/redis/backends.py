@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from kombu import Connection, exceptions
+from redis import from_url, exceptions
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
@@ -23,14 +23,15 @@ class RedisHealthCheck(BaseHealthCheckBackend):
         logger.debug("Attempting to connect to redis...")
         try:
             # conn is used as a context to release opened resources later
-            with Connection(redis_url) as conn:
-                conn.connect()  # exceptions may be raised upon calling connect
+            with from_url(redis_url) as conn:
+                conn.ping()  # exceptions may be raised upon ping
         except ConnectionRefusedError as e:
             self.add_error(ServiceUnavailable("Unable to connect to Redis: Connection was refused."), e)
         except exceptions.TimeoutError as e:
             self.add_error(ServiceUnavailable("Unable to connect to Redis: Timeout."), e)
-        except exceptions.ConnectionLimitExceeded as e:
-            self.add_error(ServiceUnavailable("Unable to connect to Redis: "
-                                              "Maximum number of simultaneous connections exceeded"), e)
+        except exceptions.ConnectionError as e:
+            self.add_error(ServiceUnavailable("Unable to connect to Redis: Connection Error"), e)
+        except BaseException as e:
+            self.add_error(ServiceUnavailable("Unknown error"), e)
         else:
-            logger.debug("Connection established. Redis is healthy.")
+            logger.info("Connection established. Redis is healthy.")
