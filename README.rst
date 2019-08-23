@@ -73,6 +73,7 @@ Add the ``health_check`` applications to your ``INSTALLED_APPS``:
         'health_check.contrib.psutil',              # disk and memory utilization; requires psutil
         'health_check.contrib.s3boto_storage',      # requires boto and S3BotoStorage backend
         'health_check.contrib.rabbitmq',            # requires RabbitMQ broker
+        'health_check.contrib.redis',               # required Redis broker
     ]
 
 (Optional) If using the ``psutil`` app, you can configure disk and memory
@@ -99,6 +100,12 @@ on django.conf.settings with the required format to connect to your rabbit serve
 
     BROKER_URL = amqp://myuser:mypassword@localhost:5672/myvhost
 
+To use the Redis healthcheck, please make sure that there is a variable named ``REDIS_URL``
+on django.conf.settings with the required format to connect to your redis server. For example:
+
+.. code::
+
+    REDIS_URL = redis://localhost:6370
 
 Setting up monitoring
 ---------------------
