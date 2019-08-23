@@ -86,4 +86,3 @@ class TestRedisHealthCheck:
 
         # mock assertions
         mocked_connection.assert_called_once_with("redis_url")
-
