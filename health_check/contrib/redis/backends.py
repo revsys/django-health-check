@@ -24,10 +24,7 @@ class RedisHealthCheck(BaseHealthCheckBackend):
         try:
             # conn is used as a context to release opened resources later
             with from_url(redis_url) as conn:
-                print('conn', conn)
                 conn.ping()  # exceptions may be raised upon ping
-                print(conn.ping())
-                print('got here')
         except ConnectionRefusedError as e:
             self.add_error(ServiceUnavailable("Unable to connect to Redis: Connection was refused."), e)
         except exceptions.TimeoutError as e:
