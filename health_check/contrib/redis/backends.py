@@ -18,8 +18,7 @@ class RedisHealthCheck(BaseHealthCheckBackend):
         self.redis_url = getattr(settings, "REDIS_URL", None)
 
     def check_status(self):
-        """Check Redis service by pinging the redis instance with a redis connection"""
-
+        """Check Redis service by pinging the redis instance with a redis connection."""
         logger.debug("Got %s as the redis_url. Connecting to redis...", self.redis_url)
 
         logger.debug("Attempting to connect to redis...")
