@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from redis import from_url, exceptions
+from redis import exceptions, from_url
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
