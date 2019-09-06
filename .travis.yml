@@ -1,14 +1,14 @@
 language: python
-sudo: false
 cache: pip
+dist: xenial
 python:
 - '3.6'
+- '3.7'
 env:
   matrix:
-  - TOXENV=qa
   - TOXENV=docs
   - DJANGO=111
-  - DJANGO=20
+  - DJANGO=22
   - DJANGO=master
 matrix:
   fast_finish: true
@@ -34,6 +34,7 @@ jobs:
         - TOXENV=qa  # if not set explicitly, build matrix vars will use their first value
       if: tag IS present
       deploy:
+        python: 3.7
         provider: pypi
         distributions: sdist bdist_wheel
         user: codingjoe

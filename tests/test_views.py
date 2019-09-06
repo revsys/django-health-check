@@ -63,8 +63,8 @@ class TestMediaType:
     def test_from_invalid_strings(self, type):
         with pytest.raises(ValueError) as e:
             MediaType.from_string(type)
-        expected_error = 'ValueError: "%s" is not a valid media type' % type
-        assert expected_error in str(e)
+        expected_error = '"%s" is not a valid media type' % type
+        assert expected_error in str(e.value)
 
     def test_parse_header(self):
         assert list(MediaType.parse_header()) == [
