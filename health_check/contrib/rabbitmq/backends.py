@@ -38,4 +38,4 @@ class RabbitMQHealthCheck(BaseHealthCheckBackend):
         except BaseException as e:
             self.add_error(ServiceUnavailable("Unknown error"), e)
         else:
-            logger.debug("Connection estabilished. RabbitMQ is healthy.")
+            logger.debug("Connection established. RabbitMQ is healthy.")
