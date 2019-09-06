@@ -10,6 +10,8 @@ env:
   - DJANGO=111
   - DJANGO=22
   - DJANGO=master
+services:
+  - redis-server
 matrix:
   fast_finish: true
   allow_failures:
