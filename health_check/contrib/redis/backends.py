@@ -12,10 +12,7 @@ logger = logging.getLogger(__name__)
 class RedisHealthCheck(BaseHealthCheckBackend):
     """Health check for Redis."""
 
-    def __init__(self):
-        super(RedisHealthCheck, self).__init__()
-        logger.debug("Checking for a redis_url in django settings...")
-        self.redis_url = getattr(settings, "REDIS_URL", None)
+    redis_url = getattr(settings, "REDIS_URL", None)
 
     def check_status(self):
         """Check Redis service by pinging the redis instance with a redis connection."""
