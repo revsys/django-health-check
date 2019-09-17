@@ -100,12 +100,23 @@ on django.conf.settings with the required format to connect to your rabbit serve
 
     BROKER_URL = amqp://myuser:mypassword@localhost:5672/myvhost
 
-To use the Redis healthcheck, please make sure that there is a variable named ``REDIS_URL``
-on django.conf.settings with the required format to connect to your redis server. For example:
+To use the Redis healthcheck, please make sure that there is a variable named ``REDIS_HOST``
+on django.conf.settings with the required format to connect to your redis server. If your redis is running on some port other than 6379, make sure to add a variable ``REDIS_PORT`` with its value set to the the port on which redis server is running. For example:
 
 .. code::
 
-    REDIS_URL = redis://localhost:6370
+    REDIS_HOST = localhost
+
+To use the Celery healthcheck, if checking just for default celery queue, no need to do any changes.
+
+But if you want to check for some more queues along with default ones, please make sure that there
+are 2 variables named ``USE_DEFAULT_QUEUE`` and ``CELERY_QUEUES`` on django.conf.settings and set the value of ``USE_DEFAULT_QUEUE`` to False and ``CELERY_QUEUES`` to ['A', 'B'] where 'A' and 'B' are celery queues.
+please make sure that there is a variable named ``REDIS_HOST``
+
+.. code::
+
+    USE_DEFAULT_QUEUE = False
+    CELERY_QUEUES = ['A', 'B']
 
 Setting up monitoring
 ---------------------
