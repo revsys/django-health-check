@@ -110,12 +110,10 @@ on django.conf.settings with the required format to connect to your redis server
 To use the Celery healthcheck, if checking just for default celery queue, no need to do any changes.
 
 But if you want to check for some more queues along with default ones, please make sure that there
-are 2 variables named ``USE_DEFAULT_QUEUE`` and ``CELERY_QUEUES`` on django.conf.settings and set the value of ``USE_DEFAULT_QUEUE`` to False and ``CELERY_QUEUES`` to ['A', 'B'] where 'A' and 'B' are celery queues.
-please make sure that there is a variable named ``REDIS_HOST``
+is a variables named ``CELERY_QUEUES`` on django.conf.settings and set its value to ['A', 'B'] where 'A' and 'B' are celery queues.
 
 .. code::
 
-    USE_DEFAULT_QUEUE = False
     CELERY_QUEUES = ['A', 'B']
 
 Setting up monitoring

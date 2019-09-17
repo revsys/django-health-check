@@ -13,20 +13,14 @@ class HealthCheckConfig(AppConfig):
 
         # To check if we want to check just for default celery queue which is
         # 'celery', you don't need to define anything, else
-        # USE_DEFAULT_QUEUE = True and CELERY_QUEUES = [queues used in your project]
-        use_default_queue = getattr(settings, 'USE_DEFAULT_QUEUE', True)
+        # CELERY_QUEUES = [queues used in your project]
+        queues = getattr(settings, 'CELERY_QUEUES', [])
 
-        if use_default_queue:
-            for queue in current_app.amqp.queues:
-                celery_class_name = 'CeleryHealthCheck - ' + queue.title()
+        if not queues:
+            queues = [queue for queue in current_app.amqp.queues]
 
-                celery_class = type(celery_class_name, (CeleryHealthCheck,), {'queue': queue})
-                plugin_dir.register(celery_class)
+        for queue in queues:
+            celery_class_name = 'CeleryHealthCheck - ' + queue.title()
 
-        else:
-            queues = getattr(settings, 'CELERY_QUEUES', [])
-            for queue in queues:
-                celery_class_name = 'CeleryHealthCheck - ' + queue.title()
-
-                celery_class = type(celery_class_name, (CeleryHealthCheck,), {'queue': queue})
-                plugin_dir.register(celery_class)
+            celery_class = type(celery_class_name, (CeleryHealthCheck,), {'queue': queue})
+            plugin_dir.register(celery_class)
