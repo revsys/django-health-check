@@ -280,7 +280,7 @@ Other resources
    :target: https://codecov.io/gh/KristianOellegaard/django-health-check
 .. |health| image:: https://landscape.io/github/KristianOellegaard/django-health-check/master/landscape.svg?style=flat
    :target: https://landscape.io/github/KristianOellegaard/django-health-check/master
-.. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
+.. |license| image:: https://img.shields.io/badge/license-MIT-blue.svg
    :target: LICENSE
 
 .. _Pingdom: https://www.pingdom.com/
