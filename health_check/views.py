@@ -1,14 +1,10 @@
-import copy
 import re
-from concurrent.futures import ThreadPoolExecutor
 
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
-from health_check.conf import HEALTH_CHECK
-from health_check.exceptions import ServiceWarning
-from health_check.plugins import plugin_dir
+from health_check.mixins import CheckMixin
 
 
 class MediaType:
@@ -81,51 +77,25 @@ class MediaType:
         return self.weight.__lt__(other.weight)
 
 
-class MainView(TemplateView):
+class MainView(CheckMixin, TemplateView):
     template_name = 'health_check/index.html'
 
     @never_cache
     def get(self, request, *args, **kwargs):
-        errors = []
-
-        plugins = sorted((
-            plugin_class(**copy.deepcopy(options))
-            for plugin_class, options in plugin_dir._registry
-        ), key=lambda plugin: plugin.identifier())
-
-        def _run(plugin):
-            plugin.run_check()
-            try:
-                return plugin
-            finally:
-                from django.db import connection
-                connection.close()
-
-        with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-            for plugin in executor.map(_run, plugins):
-                if plugin.critical_service:
-                    if not HEALTH_CHECK['WARNINGS_AS_ERRORS']:
-                        errors.extend(
-                            e for e in plugin.errors
-                            if not isinstance(e, ServiceWarning)
-                        )
-                    else:
-                        errors.extend(plugin.errors)
-
-        status_code = 500 if errors else 200
+        status_code = 500 if self.errors else 200
 
         format_override = request.GET.get('format')
 
         if format_override == 'json':
-            return self.render_to_response_json(plugins, status_code)
+            return self.render_to_response_json(self.plugins, status_code)
 
         accept_header = request.META.get('HTTP_ACCEPT', '*/*')
-        context = {'plugins': plugins, 'status_code': status_code}
         for media in MediaType.parse_header(accept_header):
             if media.mime_type in ('text/html', 'application/xhtml+xml', 'text/*', '*/*'):
+                context = {'plugins': self.plugins, 'status_code': status_code}
                 return self.render_to_response(context, status=status_code)
             elif media.mime_type in ('application/json', 'application/*'):
-                return self.render_to_response_json(plugins, status_code)
+                return self.render_to_response_json(self.plugins, status_code)
         return HttpResponse(
             'Not Acceptable: Supported content types: text/html, application/json',
             status=406,
