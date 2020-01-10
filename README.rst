@@ -266,6 +266,26 @@ and customizing the ``template_name``, ``get``, ``render_to_response`` and ``ren
         url(r'^ht/$', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
     ]
 
+Django command
+--------------
+
+You can run the Django command `health_check` to perform your health checks via the command line,
+or periodically with a cron, as follow:
+
+.. code::
+
+    django-admin health_check
+
+This should yield the following output:
+
+.. code::
+
+    DatabaseHealthCheck      ... working
+    CustomHealthCheck        ... unavailable: Something went wrong!
+
+Similar to the http version, a critical error will case the command to quit with the exit code `1`.
+
+
 Other resources
 ---------------
 
