@@ -1,11 +1,10 @@
 from io import StringIO
 
 import pytest
+from django.core.management import call_command
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.plugins import plugin_dir
-
-from django.core.management import call_command
 
 
 class FailPlugin(BaseHealthCheckBackend):

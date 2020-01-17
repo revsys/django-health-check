@@ -1,5 +1,4 @@
 import copy
-
 from concurrent.futures import ThreadPoolExecutor
 
 from health_check.conf import HEALTH_CHECK
