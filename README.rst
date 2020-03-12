@@ -283,7 +283,7 @@ This should yield the following output:
     DatabaseHealthCheck      ... working
     CustomHealthCheck        ... unavailable: Something went wrong!
 
-Similar to the http version, a critical error will case the command to quit with the exit code `1`.
+Similar to the http version, a critical error will cause the command to quit with the exit code `1`.
 
 
 Other resources
