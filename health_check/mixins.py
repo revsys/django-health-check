@@ -33,8 +33,8 @@ class CheckMixin:
             try:
                 return plugin
             finally:
-                from django.db import connection
-                connection.close()
+                from django.db import connections
+                connections.close_all()
 
         with ThreadPoolExecutor(max_workers=len(self.plugins) or 1) as executor:
             for plugin in executor.map(_run, self.plugins):
