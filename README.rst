@@ -244,6 +244,7 @@ and customizing the ``template_name``, ``get``, ``render_to_response`` and ``ren
 
         def get(self, request, *args, **kwargs):
             plugins = []
+            status = 200 # needs to be filled status you need
             # ...
             if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
                 return self.render_to_response_json(plugins, status)
@@ -254,7 +255,7 @@ and customizing the ``template_name``, ``get``, ``render_to_response`` and ``ren
 
         def render_to_response_json(self, plugins, status):  # customize JSON output
             return JsonResponse(
-                {str(p.identifier()): 'COOL' if status == 200 else 'SWEATY' for p in plugins}
+                {str(p.identifier()): 'COOL' if status == 200 else 'SWEATY' for p in plugins},
                 status=status
             )
 
