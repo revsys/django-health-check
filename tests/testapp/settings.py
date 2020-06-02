@@ -27,6 +27,7 @@ INSTALLED_APPS = (
     'health_check.db',
     'health_check.storage',
     'health_check.contrib.celery',
+    'health_check.contrib.migrations',
     'health_check.contrib.s3boto_storage',
     'tests',
 )
