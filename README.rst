@@ -16,6 +16,7 @@ The following health checks are bundled with this project:
 - AWS S3 storage
 - Celery task queue
 - RabbitMQ
+- Migrations
 
 Writing your own custom health checks is also very quick and easy.
 
