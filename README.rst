@@ -72,10 +72,12 @@ Add the ``health_check`` applications to your ``INSTALLED_APPS``:
         'health_check.storage',
         'health_check.contrib.celery',              # requires celery
         'health_check.contrib.psutil',              # disk and memory utilization; requires psutil
-        'health_check.contrib.s3boto_storage',      # requires boto and S3BotoStorage backend
+        'health_check.contrib.s3boto3_storage',     # requires boto3 and S3BotoStorage backend
         'health_check.contrib.rabbitmq',            # requires RabbitMQ broker
         'health_check.contrib.redis',               # required Redis broker
     ]
+
+Note : If using ``boto 2.x.x`` use ``health_check.contrib.s3boto_storage``
 
 (Optional) If using the ``psutil`` app, you can configure disk and memory
 threshold settings; otherwise below defaults are assumed. If you want to disable
