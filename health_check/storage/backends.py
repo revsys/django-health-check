@@ -5,7 +5,10 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 
 from health_check.backends import BaseHealthCheckBackend
+from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceUnavailable
+
+CRITICAL_STORAGE = HEALTH_CHECK['CRITICAL_STORAGE']
 
 
 class StorageHealthCheck(BaseHealthCheckBackend):
@@ -21,6 +24,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
     storage must be either a string pointing to a storage class
     (e.g 'django.core.files.storage.FileSystemStorage') or a Storage instance.
     """
+    critical_service = CRITICAL_STORAGE
 
     storage = None
 

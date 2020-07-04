@@ -5,13 +5,16 @@ from django.conf import settings
 from kombu import Connection
 
 from health_check.backends import BaseHealthCheckBackend
+from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceUnavailable
 
 logger = logging.getLogger(__name__)
+CRITICAL_RABBITMQ = HEALTH_CHECK['CRITICAL_RABBITMQ']
 
 
 class RabbitMQHealthCheck(BaseHealthCheckBackend):
     """Health check for RabbitMQ."""
+    critical_service = CRITICAL_RABBITMQ
 
     def check_status(self):
         """Check RabbitMQ service by opening and closing a broker channel."""
