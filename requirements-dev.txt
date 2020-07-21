@@ -10,3 +10,4 @@ pep8-naming
 pytest<4
 pytest-django
 redis==3.3.8
+pymongo
