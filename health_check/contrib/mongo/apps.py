@@ -7,6 +7,6 @@ class HealthCheckConfig(AppConfig):
     name = "health_check.contrib.mongo"
 
     def ready(self):
-        from .backends import RedisHealthCheck
+        from .backends import MongoHealthCheck
 
-        plugin_dir.register(RedisHealthCheck)
+        plugin_dir.register(MongoHealthCheck)
