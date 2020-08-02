@@ -9,6 +9,7 @@ class HealthCheckConfig(AppConfig):
 
     def ready(self):
         from .backends import DiskUsage, MemoryUsage
+
         # Ensure checks haven't been explicitly disabled before registering
         if (hasattr(settings, 'HEALTH_CHECK') and
                 ('DISK_USAGE_MAX' in settings.HEALTH_CHECK) and
