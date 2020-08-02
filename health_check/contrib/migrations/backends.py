@@ -1,8 +1,9 @@
 import logging
 
 from django.conf import settings
-from django.db import connections, DEFAULT_DB_ALIAS, DatabaseError
+from django.db import DEFAULT_DB_ALIAS, DatabaseError, connections
 from django.db.migrations.executor import MigrationExecutor
+
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
 
@@ -25,4 +26,3 @@ class MigrationsHealthCheck(BaseHealthCheckBackend):
             self.add_error(ServiceUnavailable("Database is not ready"), e)
         except Exception as e:
             self.add_error(ServiceUnavailable("Unexpected error"), e)
-
