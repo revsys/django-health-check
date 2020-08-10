@@ -92,15 +92,20 @@ class MainView(CheckMixin, TemplateView):
         accept_header = request.META.get('HTTP_ACCEPT', '*/*')
         for media in MediaType.parse_header(accept_header):
             if media.mime_type in ('text/html', 'application/xhtml+xml', 'text/*', '*/*'):
-                context = {'plugins': self.plugins, 'status_code': status_code}
+                context = self.get_context_data(**kwargs)
                 return self.render_to_response(context, status=status_code)
             elif media.mime_type in ('application/json', 'application/*'):
                 return self.render_to_response_json(self.plugins, status_code)
         return HttpResponse(
             'Not Acceptable: Supported content types: text/html, application/json',
             status=406,
-            content_type='text/plain'
+            content_type='text/plain',
         )
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['plugins'] = self.plugins
+        return context_data
 
     def render_to_response_json(self, plugins, status):
         return JsonResponse(
