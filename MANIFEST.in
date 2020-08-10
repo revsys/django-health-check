@@ -1,3 +1,4 @@
 include LICENSE
-recursive-include health_check
-prune tests docs
+recursive-include health_check *
+prune tests
+prune docs
