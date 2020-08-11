@@ -103,9 +103,7 @@ class MainView(CheckMixin, TemplateView):
         )
 
     def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data['plugins'] = self.plugins
-        return context_data
+        return {**super().get_context_data(**kwargs), "plugins": self.plugins}
 
     def render_to_response_json(self, plugins, status):
         return JsonResponse(
