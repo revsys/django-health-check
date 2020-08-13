@@ -40,8 +40,6 @@ Supported Versions
 We officially only support the latest version of Python as well as the
 latest version of Django and the latest Django LTS version.
 
-.. note:: The latest version to support Python 2 is 2.4.0
-
 Installation
 ------------
 

@@ -1,32 +1,35 @@
 <html>
 <head>
-  <title>System status</title>
+  <title>{% block title %}System status{% endblock title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  {% block extra_head %}{% endblock extra_head %}
 </head>
 <body class="w3-content">
-<h1 class="w3-center">System status</h1>
-<table class="w3-table w3-striped w3-white">
-  <tr class="w3-blue">
-    <th colspan="2">Service</th>
-    <th>Status</th>
-    <th class="w3-hide-small w3-hide-medium w3-right">Time Taken</th>
-  </tr>
-  {% for plugin in plugins %}
-  <tr>
-    <td class="w3-center" style="width: 50px">
-      {% if plugin.status %}
-      <i class="w3-text-green fa fa-check" aria-hidden="true"></i>
-      {% else %}
-      <i class="w3-text-red fa fa-close" aria-hidden="true"></i>
-      {% endif %}
-    </td>
-    <td>{{ plugin.identifier }}</td>
-    <td>{{ plugin.pretty_status }}</td>
-    <td class="w3-hide-small w3-hide-medium w3-right">{{ plugin.time_taken|floatformat:4 }} seconds</td>
-  </tr>
-  {% endfor %}
-</table>
+  {% block content %}
+    <h1 class="w3-center">System status</h1>
+    <table class="w3-table w3-striped w3-white">
+      <tr class="w3-blue">
+        <th colspan="2">Service</th>
+        <th>Status</th>
+        <th class="w3-hide-small w3-hide-medium w3-right">Time Taken</th>
+      </tr>
+      {% for plugin in plugins %}
+        <tr>
+          <td class="w3-center" style="width: 50px">
+            {% if plugin.status %}
+              <i class="w3-text-green fa fa-check" aria-hidden="true"></i>
+            {% else %}
+              <i class="w3-text-red fa fa-close" aria-hidden="true"></i>
+            {% endif %}
+          </td>
+          <td>{{ plugin.identifier }}</td>
+          <td>{{ plugin.pretty_status }}</td>
+          <td class="w3-hide-small w3-hide-medium w3-right">{{ plugin.time_taken|floatformat:4 }} seconds</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endblock content %}
 </body>
 </html>
