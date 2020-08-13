@@ -295,17 +295,17 @@ Advanced Configuration
 Using `django.settings` you may exert more fine-grained control over the behavior of `django-health-check`.
 
 .. list-table:: Additional Settings
-   :widths 25 10 10 55
-   :header-rows 1
+   :widths: 25 10 10 55
+   :header-rows: 1
 
-   * - Variable Name
+   * - Name
      - Type
      - Default
      - Description
    * - `HEALTHCHECK_CELERY_TIMEOUT`
      - Number
      - 3
-     - Base timeout, in seconds, for a celery task to complete. Depricated in favor of `HEALTHCHECK_CELERY_RESULT_TIMEOUT`
+     - Base timeout, in seconds, for a celery task to complete. Depricated.
    * - `HEALTHCHECK_CELERY_QUEUE_TIMEOUT`
      - Number
      - `HEALTHCHECK_CELERY_TIMEOUT` (3)

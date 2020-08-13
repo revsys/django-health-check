@@ -15,7 +15,8 @@ class HealthCheckConfig(AppConfig):
         if hasattr(settings, "HEALTHCHECK_CELERY_TIMEOUT"):
             logger = logging.getLogger('health-check')
             logger.warn("HEALTHCHECK_CELERY_TIMEOUT is depricated and may be removed in the "
-                        "future. Please use HEALTHCHECK_CELERY_RESULT_TIMEOUT instead.")
+                        "future. Please use HEALTHCHECK_CELERY_RESULT_TIMEOUT and "
+                        "HEALTHCHECK_CELERY_QUEUE_TIMEOUT instead.")
 
         for queue in current_app.amqp.queues:
             celery_class_name = 'CeleryHealthCheck' + queue.title()
