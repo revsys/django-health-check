@@ -30,7 +30,8 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
         except NotImplementedError as e:
             self.add_error(ServiceUnavailable("NotImplementedError: Make sure CELERY_RESULT_BACKEND is set"), e)
         except TaskRevokedError as e:
-            self.add_error(ServiceUnavailable("TaskRevokedError: The task was revoked, likely because it spent too long in the queue"), e)
+            self.add_error(ServiceUnavailable("TaskRevokedError: The task was revoked, likely because it spent "
+                                              "too long in the queue"), e)
         except TimeoutError as e:
             self.add_error(ServiceUnavailable("TimeoutError: The task took too long to return a result"), e)
         except BaseException as e:
