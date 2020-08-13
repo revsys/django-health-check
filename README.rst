@@ -291,7 +291,7 @@ Similar to the http version, a critical error will cause the command to quit wit
 
 
 Advanced Configuration
---------------
+----------------------
 Using `django.settings` you may exert more fine-grained control over the behavior of `django-health-check`.
 
 .. list-table:: Additional Settings
