@@ -1,0 +1,54 @@
+---
+name: ci
+'on': [push, pull_request]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.continue-on-error }}
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+        django-version: [
+          '111',
+          '22',
+          '30',
+          '31',
+        ]
+        continue-on-error: [false]
+        include:
+          - python-version: 3.8
+            django-version: 'master'
+            continue-on-error: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: populate output with python version slug
+        run: |
+          PYTHON_VERSION="${{ matrix.python-version }}"
+          echo "::set-env name=PYTHON_TOX_VERSION::${PYTHON_VERSION/./}"
+      - name: install tox
+        run: pip install wheel && pip install tox && tox --version
+      - name: run unit tests
+        run: >-
+          tox \
+            -e py${{ env.PYTHON_TOX_VERSION }}-dj${{ matrix.django-version }}
+      - name: upload coverage data to codecov.io
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: install tox
+        run: pip install wheel && pip install tox
+      - name: check docs
+        run: tox -e docs

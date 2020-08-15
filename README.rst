@@ -296,8 +296,8 @@ Other resources
 
 .. |version| image:: https://img.shields.io/pypi/v/django-health-check.svg
    :target: https://pypi.python.org/pypi/django-health-check/
-.. |ci| image:: https://api.travis-ci.org/KristianOellegaard/django-health-check.svg?branch=master
-   :target: https://travis-ci.org/KristianOellegaard/django-health-check
+.. |ci| image:: https://github.com/KristianOellegaard/django-health-check/workflows/ci/badge.svg
+   :target: https://github.com/KristianOellegaard/django-health-check/actions
 .. |coverage| image:: https://codecov.io/gh/KristianOellegaard/django-health-check/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/KristianOellegaard/django-health-check
 .. |health| image:: https://landscape.io/github/KristianOellegaard/django-health-check/master/landscape.svg?style=flat
