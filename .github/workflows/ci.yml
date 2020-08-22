@@ -26,13 +26,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: install django
-        run: pip install "${{ matrix.django-version }}"
+        run: pip install --upgrade "${{ matrix.django-version }}"
       - name: run unit tests
         run: python setup.py test
       - name: upload coverage data to codecov.io
-        uses: codecov/codecov-action@v1
-        with:
-          file: ./coverage.xml
+        run: pip install --upgrade codecov && codecov
 
   docs:
     runs-on: ubuntu-latest
