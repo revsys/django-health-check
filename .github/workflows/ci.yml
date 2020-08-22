@@ -9,15 +9,15 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8]
         django-version: [
-          '111',
-          '22',
-          '30',
-          '31',
+          'Django~=1.11.0',
+          'Django~=2.2.0',
+          'Django~=3.0.0',
+          'Django~=3.1.0',
         ]
         continue-on-error: [false]
         include:
           - python-version: 3.8
-            django-version: 'master'
+            django-version: 'https://github.com/django/django/archive/master.zip'
             continue-on-error: true
     steps:
       - uses: actions/checkout@v2
@@ -25,16 +25,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: populate output with python version slug
-        run: |
-          PYTHON_VERSION="${{ matrix.python-version }}"
-          echo "::set-env name=PYTHON_TOX_VERSION::${PYTHON_VERSION/./}"
-      - name: install tox
-        run: pip install wheel && pip install tox && tox --version
+      - name: install django
+        run: pip install "${{ matrix.django-version }}"
       - name: run unit tests
-        run: >-
-          tox \
-            -e py${{ env.PYTHON_TOX_VERSION }}-dj${{ matrix.django-version }}
+        run: python setup.py test
       - name: upload coverage data to codecov.io
         uses: codecov/codecov-action@v1
         with:
@@ -48,7 +42,5 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      - name: install tox
-        run: pip install wheel && pip install tox
       - name: check docs
-        run: tox -e docs
+        run: python setup.py build_sphinx
