@@ -68,6 +68,7 @@ Add the ``health_check`` applications to your ``INSTALLED_APPS``:
         'health_check.db',                          # stock Django health checkers
         'health_check.cache',
         'health_check.storage',
+        'health_check.contrib.migrations',
         'health_check.contrib.celery',              # requires celery
         'health_check.contrib.psutil',              # disk and memory utilization; requires psutil
         'health_check.contrib.s3boto3_storage',     # requires boto3 and S3BotoStorage backend
