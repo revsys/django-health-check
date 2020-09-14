@@ -1,4 +1,4 @@
-from django.core.cache import CacheKeyWarning, cache
+from django.core.cache import CacheKeyWarning, caches
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import (
@@ -7,7 +7,16 @@ from health_check.exceptions import (
 
 
 class CacheBackend(BaseHealthCheckBackend):
+    def __init__(self, backend=''):
+        super().__init__()
+        self.backend = backend or 'default'
+
+    def identifier(self):
+        return "Cache backend: %s" % self.backend
+
     def check_status(self):
+        cache = caches[self.backend]
+
         try:
             cache.set('djangohealtcheck_test', 'itworks', 1)
             if not cache.get("djangohealtcheck_test") == "itworks":
