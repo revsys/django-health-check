@@ -7,9 +7,9 @@ from health_check.exceptions import (
 
 
 class CacheBackend(BaseHealthCheckBackend):
-    def __init__(self, backend=''):
+    def __init__(self, backend='default'):
         super().__init__()
-        self.backend = backend or 'default'
+        self.backend = backend
 
     def identifier(self):
         return f"Cache backend: {self.backend}"
