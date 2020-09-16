@@ -12,7 +12,7 @@ class CacheBackend(BaseHealthCheckBackend):
         self.backend = backend or 'default'
 
     def identifier(self):
-        return "Cache backend: %s" % self.backend
+        return f"Cache backend: {self.backend}"
 
     def check_status(self):
         cache = caches[self.backend]
