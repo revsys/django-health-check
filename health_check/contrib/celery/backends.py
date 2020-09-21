@@ -21,7 +21,6 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
             result.get(timeout=timeout)
             if result.result != 8:
                 self.add_error(ServiceReturnedUnexpectedResult("Celery returned wrong result"))
-            add.forget()
         except IOError as e:
             self.add_error(ServiceUnavailable("IOError"), e)
         except NotImplementedError as e:
