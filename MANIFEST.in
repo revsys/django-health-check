@@ -1,3 +1,10 @@
 include LICENSE
-prune tests
-prune docs
+include *.txt
+include *.yml
+recursive-include health_check *.html
+recursive-include health_check *.py
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include tests *.py
+exclude .*
+prune .github
