@@ -2,6 +2,8 @@
 import os.path
 import uuid
 
+from kombu import Queue
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DEBUG = True
 
@@ -60,7 +62,7 @@ SECRET_KEY = uuid.uuid4().hex
 
 USE_L10N = True
 
-CELERY_TASK_QUEUES = {
-    'default': {},
-    'queue2': {}
-}
+CELERY_QUEUES = [
+    Queue('default'),
+    Queue('queue2'),
+]

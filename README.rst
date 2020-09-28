@@ -15,6 +15,7 @@ The following health checks are bundled with this project:
 - disk and memory utilization (via ``psutil``)
 - AWS S3 storage
 - Celery task queue
+- Celery ping
 - RabbitMQ
 - Migrations
 
