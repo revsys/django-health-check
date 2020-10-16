@@ -18,7 +18,7 @@ class CacheBackend(BaseHealthCheckBackend):
         cache = caches[self.backend]
 
         try:
-            cache.set('djangohealtcheck_test', 'itworks', 1)
+            cache.set('djangohealtcheck_test', 'itworks')
             if not cache.get("djangohealtcheck_test") == "itworks":
                 raise ServiceUnavailable("Cache key does not match")
         except CacheKeyWarning as e:
