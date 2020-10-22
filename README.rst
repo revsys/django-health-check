@@ -287,32 +287,6 @@ This should yield the following output:
 
 Similar to the http version, a critical error will cause the command to quit with the exit code `1`.
 
-
-Advanced Configuration
-----------------------
-Using `django.settings` you may exert more fine-grained control over the behavior of `django-health-check`.
-
-.. list-table:: Additional Settings
-   :widths: 25 10 10 55
-   :header-rows: 1
-
-   * - Name
-     - Type
-     - Default
-     - Description
-   * - `HEALTHCHECK_CELERY_TIMEOUT`
-     - Number
-     - 3
-     - Base timeout, in seconds, for a celery task to complete. Depricated.
-   * - `HEALTHCHECK_CELERY_QUEUE_TIMEOUT`
-     - Number
-     - `HEALTHCHECK_CELERY_TIMEOUT` (3)
-     - Overrides `HEALTHCHECK_CELERY_TIMEOUT`, specifying the maximum amount of time a task may spend in the queue before being automatically revoked with a `TaskRevokedError`.
-   * - `HEALTHCHECK_CELERY_RESULT_TIMEOUT`
-     - Number
-     - `HEALTHCHECK_CELERY_TIMEOUT` (3)
-     - Overrides `HEALTHCHECK_CELERY_TIMEOUT`, specifying the maximum total time for a task to complete and return a result.
-
 Other resources
 ---------------
 
