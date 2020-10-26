@@ -287,6 +287,7 @@ This should yield the following output:
 
 Similar to the http version, a critical error will cause the command to quit with the exit code `1`.
 
+
 Other resources
 ---------------
 
