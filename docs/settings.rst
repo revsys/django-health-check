@@ -82,15 +82,11 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Type
      - Default
      - Description
-   * - `HEALTHCHECK_CELERY_TIMEOUT`
-     - Number
-     - 3
-     - Base timeout, in seconds, for a celery task to complete. Depricated.
    * - `HEALTHCHECK_CELERY_QUEUE_TIMEOUT`
      - Number
-     - `HEALTHCHECK_CELERY_TIMEOUT` (3)
-     - Overrides `HEALTHCHECK_CELERY_TIMEOUT`, specifying the maximum amount of time a task may spend in the queue before being automatically revoked with a `TaskRevokedError`.
+     - 3
+     - Specifies the maximum amount of time a task may spend in the queue before being automatically revoked with a `TaskRevokedError`.
    * - `HEALTHCHECK_CELERY_RESULT_TIMEOUT`
      - Number
-     - `HEALTHCHECK_CELERY_TIMEOUT` (3)
-     - Overrides `HEALTHCHECK_CELERY_TIMEOUT`, specifying the maximum total time for a task to complete and return a result.
+     - 3
+     - Specifies the maximum total time for a task to complete and return a result, including queue time.
