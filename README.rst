@@ -15,6 +15,7 @@ The following health checks are bundled with this project:
 - disk and memory utilization (via ``psutil``)
 - AWS S3 storage
 - Celery task queue
+- Celery ping
 - RabbitMQ
 - Migrations
 
@@ -70,6 +71,7 @@ Add the ``health_check`` applications to your ``INSTALLED_APPS``:
         'health_check.storage',
         'health_check.contrib.migrations',
         'health_check.contrib.celery',              # requires celery
+        'health_check.contrib.celery_ping',         # requires celery
         'health_check.contrib.psutil',              # disk and memory utilization; requires psutil
         'health_check.contrib.s3boto3_storage',     # requires boto3 and S3BotoStorage backend
         'health_check.contrib.rabbitmq',            # requires RabbitMQ broker
