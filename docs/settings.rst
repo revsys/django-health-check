@@ -69,3 +69,24 @@ exceeds 90% or available memory drops below 100 MB.
 
    Specify the desired memory utilization threshold, in megabytes. When available
    memory falls below the specified value, a warning will be reported.
+
+Celery Health Check
+----------------------
+Using `django.settings` you may exert more fine-grained control over the behavior of the celery health check
+
+.. list-table:: Additional Settings
+   :widths: 25 10 10 55
+   :header-rows: 1
+
+   * - Name
+     - Type
+     - Default
+     - Description
+   * - `HEALTHCHECK_CELERY_QUEUE_TIMEOUT`
+     - Number
+     - 3
+     - Specifies the maximum amount of time a task may spend in the queue before being automatically revoked with a `TaskRevokedError`.
+   * - `HEALTHCHECK_CELERY_RESULT_TIMEOUT`
+     - Number
+     - 3
+     - Specifies the maximum total time for a task to complete and return a result, including queue time.
