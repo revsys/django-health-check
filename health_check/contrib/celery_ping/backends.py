@@ -35,7 +35,8 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
     def _check_ping_result(self, ping_result):
         active_workers = []
 
-        for worker, response in ping_result[0].items():
+        for result in ping_result:
+            worker, response = list(result.items())[0]
             if response != self.CORRECT_PING_RESPONSE:
                 self.add_error(
                     ServiceUnavailable(

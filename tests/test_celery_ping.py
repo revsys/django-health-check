@@ -24,7 +24,10 @@ class TestCeleryPingHealthCheck:
 
         with patch(
             self.CELERY_APP_CONTROL_PING,
-            return_value=[{celery_worker: CeleryPingHealthCheck.CORRECT_PING_RESPONSE}],
+            return_value=[
+                {celery_worker: CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
+                {f"{celery_worker}-2": CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
+            ],
         ), patch(
             self.CELERY_APP_CONTROL_INSPECT_ACTIVE_QUEUES,
             return_value={
@@ -43,11 +46,9 @@ class TestCeleryPingHealthCheck:
         with patch(
             self.CELERY_APP_CONTROL_PING,
             return_value=[
-                {
-                    "celery1@4cc150a7b49b": CeleryPingHealthCheck.CORRECT_PING_RESPONSE,
-                    "celery2@4cc150a7b49b": {},
-                    "celery3@4cc150a7b49b": {"error": "pong"},
-                }
+                {"celery1@4cc150a7b49b": CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
+                {"celery2@4cc150a7b49b": {}},
+                {"celery3@4cc150a7b49b": {"error": "pong"}},
             ],
         ):
             health_check.check_status()
