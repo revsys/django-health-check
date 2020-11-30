@@ -110,3 +110,6 @@ class MainView(CheckMixin, TemplateView):
             {str(p.identifier()): str(p.pretty_status()) for p in plugins},
             status=status
         )
+
+def ping(request):
+    return HttpResponse('pong')
