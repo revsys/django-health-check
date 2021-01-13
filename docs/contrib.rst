@@ -54,5 +54,9 @@ which don't require that tasks are executed almost instantly but require that th
 to be executed in sometime the future i.e. that the worker process is alive and processing tasks
 all the time.
 
+`health_check.contrib.celery_beat` allows you monitoring celery beat process using the Scheduler
+backend specified by `HEALTHCHECK_CELERY_SCHEDULER`. This check inspects if there is any entry
+expired or not.
+
 You may also use both of them. To use these checks add them to `INSTALLED_APPS` in your
 Django settings module.

@@ -90,3 +90,20 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Number
      - 3
      - Specifies the maximum total time for a task to complete and return a result, including queue time.
+
+Celery Beat Health Check
+------------------------
+Using `django.settings` you may exert more fine-grained control over the behavior of the celery health check
+
+.. list-table:: Additional Settings
+   :widths: 25 10 10 55
+   :header-rows: 1
+
+   * - Name
+     - Type
+     - Default
+     - Description
+   * - `HEALTHCHECK_CELERY_SCHEDULER`
+     - String
+     - celery.beat.PersistentScheduler
+     - Specifies the Celery Beat backend scheduler used on run beat process.
