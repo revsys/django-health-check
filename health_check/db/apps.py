@@ -4,6 +4,7 @@ from health_check.plugins import plugin_dir
 
 
 class HealthCheckConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
     name = 'health_check.db'
 
     def ready(self):
