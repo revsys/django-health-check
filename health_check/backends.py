@@ -19,6 +19,7 @@ class BaseHealthCheckBackend:
 
     def __init__(self):
         self.errors = []
+        self.context = {}
 
     def check_status(self):
         raise NotImplementedError
@@ -55,6 +56,9 @@ class BaseHealthCheckBackend:
         if self.errors:
             return "\n".join(str(e) for e in self.errors)
         return _('working')
+
+    def set_context(self, context):
+        self.context = context
 
     @property
     def status(self):

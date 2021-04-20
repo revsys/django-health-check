@@ -29,6 +29,8 @@ class CheckMixin:
         errors = []
 
         def _run(plugin):
+            if hasattr(plugin, "set_context") and callable(plugin.set_context):
+                plugin.set_context(self.get_plugin_context(plugin_name=plugin.identifier()))
             plugin.run_check()
             try:
                 return plugin
@@ -48,3 +50,7 @@ class CheckMixin:
                         errors.extend(plugin.errors)
 
         return errors
+
+    def get_plugin_context(self, plugin_name):
+        context = {}
+        return context
