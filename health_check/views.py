@@ -1,9 +1,15 @@
+import logging
+import pprint
 import re
 
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
+from rest_framework import generics
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+from rest_framework.response import Response
 
+from health_check.health_serializer import HealthSerializer
 from health_check.mixins import CheckMixin
 
 
@@ -77,36 +83,12 @@ class MediaType:
         return self.weight.__lt__(other.weight)
 
 
-class MainView(CheckMixin, TemplateView):
+class MainView(CheckMixin, generics.RetrieveAPIView):
     template_name = 'health_check/index.html'
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+    serializer_class = HealthSerializer
 
-    @never_cache
     def get(self, request, *args, **kwargs):
         status_code = 500 if self.errors else 200
-
-        format_override = request.GET.get('format')
-
-        if format_override == 'json':
-            return self.render_to_response_json(self.plugins, status_code)
-
-        accept_header = request.META.get('HTTP_ACCEPT', '*/*')
-        for media in MediaType.parse_header(accept_header):
-            if media.mime_type in ('text/html', 'application/xhtml+xml', 'text/*', '*/*'):
-                context = self.get_context_data(**kwargs)
-                return self.render_to_response(context, status=status_code)
-            elif media.mime_type in ('application/json', 'application/*'):
-                return self.render_to_response_json(self.plugins, status_code)
-        return HttpResponse(
-            'Not Acceptable: Supported content types: text/html, application/json',
-            status=406,
-            content_type='text/plain',
-        )
-
-    def get_context_data(self, **kwargs):
-        return {**super().get_context_data(**kwargs), "plugins": self.plugins}
-
-    def render_to_response_json(self, plugins, status):
-        return JsonResponse(
-            {str(p.identifier()): str(p.pretty_status()) for p in plugins},
-            status=status
-        )
+        serializer = self.get_serializer(self.plugins)
+        return Response(serializer.data, template_name=self.template_name, status=status_code)
