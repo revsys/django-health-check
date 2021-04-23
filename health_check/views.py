@@ -1,10 +1,5 @@
-import logging
-import pprint
 import re
 
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.cache import never_cache
-from django.views.generic import TemplateView
 from rest_framework import generics
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response

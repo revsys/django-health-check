@@ -16,8 +16,8 @@ except ImportError:
 class TestMediaType:
 
     def test_lt(self):
-        assert not MediaType('*/*') < MediaType('*/*')
-        assert not MediaType('*/*') < MediaType('*/*', 0.9)
+        assert MediaType('*/*') >= MediaType('*/*')
+        assert MediaType('*/*') >= MediaType('*/*', 0.9)
         assert MediaType('*/*', 0.9) < MediaType('*/*')
 
     def test_str(self):
@@ -50,8 +50,8 @@ class TestMediaType:
     ]
 
     @pytest.mark.parametrize("type, expected", valid_strings)
-    def test_from_valid_strings(self, type, expected):
-        assert MediaType.from_string(type) == expected
+    def test_from_valid_strings(self, type_arg, expected):
+        assert MediaType.from_string(type_arg) == expected
 
     invalid_strings = [
         '*/*;0.9',
@@ -61,10 +61,10 @@ class TestMediaType:
     ]
 
     @pytest.mark.parametrize("type", invalid_strings)
-    def test_from_invalid_strings(self, type):
+    def test_from_invalid_strings(self, type_arg):
         with pytest.raises(ValueError) as e:
-            MediaType.from_string(type)
-        expected_error = '"%s" is not a valid media type' % type
+            MediaType.from_string(type_arg)
+        expected_error = '"%s" is not a valid media type' % type_arg
         assert expected_error in str(e.value)
 
     def test_parse_header(self):
@@ -255,15 +255,15 @@ class TestMainView:
         response = client.get(self.url, {'format': 'json'})
         assert response.status_code == 200, response.content.decode('utf-8')
         assert response['content-type'] == 'application/json'
-        assert json.loads(response.content.decode('utf-8')) == \
-            {
-                "data": [
-                    {
-                "name": JSONSuccessBackend().identifier(),
-             "status": JSONSuccessBackend().pretty_status(),
-             "time_taken": None
-            }]
-             }
+        assert json.loads(response.content.decode('utf-8')) == {
+            "data": [
+                {
+                    "name": JSONSuccessBackend().identifier(),
+                    "status": JSONSuccessBackend().pretty_status(),
+                    "time_taken": None
+                }
+            ]
+        }
 
     def test_error_param_json(self, client):
         class JSONErrorBackend(BaseHealthCheckBackend):
