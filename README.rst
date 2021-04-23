@@ -16,9 +16,11 @@ The following health checks are bundled with this project:
 - AWS S3 storage
 - Celery task queue
 - Celery ping
+- Celery Beat Health Check (via `django_celery_beat`)
 - RabbitMQ
 - Migrations
 
+View use instructions for contrib health checks in `docs/contrib.rst` and `docs/settings.rst`
 Writing your own custom health checks is also very quick and easy.
 
 We also like contributions, so don't be afraid to make a pull request.
@@ -72,6 +74,7 @@ Add the ``health_check`` applications to your ``INSTALLED_APPS``:
         'health_check.contrib.migrations',
         'health_check.contrib.celery',              # requires celery
         'health_check.contrib.celery_ping',         # requires celery
+        'health_check.contrib.beat_health_check',   # requires django_celery_beat
         'health_check.contrib.psutil',              # disk and memory utilization; requires psutil
         'health_check.contrib.s3boto3_storage',     # requires boto3 and S3BotoStorage backend
         'health_check.contrib.rabbitmq',            # requires RabbitMQ broker
