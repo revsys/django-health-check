@@ -233,17 +233,17 @@ class TestMainView:
         assert response.status_code == 200, response.content.decode('utf-8')
         assert response['content-type'] == 'text/html; charset=utf-8'
 
-    # def test_error_accept_json(self, client):
-    #     class JSONErrorBackend(BaseHealthCheckBackend):
-    #         def run_check(self):
-    #             self.add_error('JSON Error')
-    #
-    #     plugin_dir.reset()
-    #     plugin_dir.register(JSONErrorBackend)
-    #     response = client.get(self.url, HTTP_ACCEPT='application/json')
-    #     assert response.status_code == 500, response.content.decode('utf-8')
-    #     assert response['content-type'] == 'application/json'
-    #     assert 'JSON Error' in json.loads(response.content.decode('utf-8'))[JSONErrorBackend().identifier()]
+    def test_error_accept_json(self, client):
+        class JSONErrorBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                self.add_error('JSON Error')
+
+        plugin_dir.reset()
+        plugin_dir.register(JSONErrorBackend)
+        response = client.get(self.url, HTTP_ACCEPT='application/json')
+        assert response.status_code == 500, response.content.decode('utf-8')
+        assert response['content-type'] == 'application/json'
+        assert 'JSON Error' in json.loads(response.content.decode('utf-8'))["data"][0]["status"]
 
     def test_success_param_json(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
@@ -261,17 +261,18 @@ class TestMainView:
                     {
                 "name": JSONSuccessBackend().identifier(),
              "status": JSONSuccessBackend().pretty_status(),
-             "time_taken": None}]
+             "time_taken": None
+            }]
              }
 
-    # def test_error_param_json(self, client):
-    #     class JSONErrorBackend(BaseHealthCheckBackend):
-    #         def run_check(self):
-    #             self.add_error('JSON Error')
-    #
-    #     plugin_dir.reset()
-    #     plugin_dir.register(JSONErrorBackend)
-    #     response = client.get(self.url, {'format': 'json'})
-    #     assert response.status_code == 500, response.content.decode('utf-8')
-    #     assert response['content-type'] == 'application/json'
-    #     assert 'JSON Error' in json.loads(response.content.decode('utf-8'))[JSONErrorBackend().identifier()]
+    def test_error_param_json(self, client):
+        class JSONErrorBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                self.add_error('JSON Error')
+
+        plugin_dir.reset()
+        plugin_dir.register(JSONErrorBackend)
+        response = client.get(self.url, {'format': 'json'})
+        assert response.status_code == 500, response.content.decode('utf-8')
+        assert response['content-type'] == 'application/json'
+        assert 'JSON Error' in json.loads(response.content.decode('utf-8'))["data"][0]["status"]
