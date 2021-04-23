@@ -56,7 +56,7 @@ Add the health checker to a URL you want to use:
 
     urlpatterns = [
         # ...
-        url(r'^ht/', include('health_check.urls')),
+        path('ht/', include('health_check.urls')),
     ]
 
 Add the ``health_check`` applications to your ``INSTALLED_APPS``:
@@ -172,23 +172,18 @@ The backend will return a JSON response:
     < Content-Type: application/json
 
     {
-        "CacheBackend": "working",
-        "DatabaseBackend": "working",
-        "S3BotoStorageHealthCheck": "working"
-    }
-
-    $ curl -v -X GET http://www.example.com/ht/?format=json
-
-    > GET /ht/?format=json HTTP/1.1
-    > Host: www.example.com
-    >
-    < HTTP/1.1 200 OK
-    < Content-Type: application/json
-
-    {
-        "CacheBackend": "working",
-        "DatabaseBackend": "working",
-        "S3BotoStorageHealthCheck": "working"
+        "data": [
+            {
+                "name": "DatabaseBackend",
+                "status": "working",
+                "time_taken": 9.352453e-05
+            },
+            {
+                "name": "S3BotoStorageHealthCheck",
+                "status": "working",
+                "time_taken": 0.001234231
+            }
+        ]
     }
 
 Writing a custom health check
