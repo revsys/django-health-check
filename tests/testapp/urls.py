@@ -1,5 +1,6 @@
-from django.conf.urls import include, url
+from django.conf.urls import include
+from django.urls import path
 
 urlpatterns = [
-    url(r'^ht/', include('health_check.urls')),
+    path('ht/', include('health_check.urls')),
 ]

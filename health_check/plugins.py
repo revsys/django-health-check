@@ -19,6 +19,10 @@ class HealthCheckPluginDirectory:
     def register(self, plugin, **options):
         """Add the given plugin from the registry."""
         # Instantiate the admin class to save in the registry
+        print("!!!!!!!!!!!!!!!!!!!11111111111111!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        p = plugin()
+        print(p.identifier())
+        print(p.pretty_status())
         self._registry.append((plugin, options))
 
 
