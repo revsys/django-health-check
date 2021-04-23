@@ -85,7 +85,7 @@ class MediaType:
 
 class MainView(CheckMixin, generics.RetrieveAPIView):
     template_name = 'health_check/index.html'
-    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
     serializer_class = HealthSerializer
 
     def get(self, request, *args, **kwargs):
