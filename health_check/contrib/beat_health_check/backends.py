@@ -1,4 +1,4 @@
-from datetime import timedelta, timezone
+from datetime import timedelta
 from typing import Any, Dict, List, Union
 
 from celery.beat import Service
