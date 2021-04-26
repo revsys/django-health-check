@@ -16,8 +16,8 @@ except ImportError:
 class TestMediaType:
 
     def test_lt(self):
-        assert MediaType('*/*') >= MediaType('*/*')
-        assert MediaType('*/*') >= MediaType('*/*', 0.9)
+        assert not MediaType('*/*') < MediaType('*/*')
+        assert not MediaType('*/*') < MediaType('*/*', 0.9)
         assert MediaType('*/*', 0.9) < MediaType('*/*')
 
     def test_str(self):
@@ -49,7 +49,7 @@ class TestMediaType:
         ('*/*; q=0.5; v=b3', MediaType('*/*', 0.5)),
     ]
 
-    @pytest.mark.parametrize("type, expected", valid_strings)
+    @pytest.mark.parametrize("type_arg, expected", valid_strings)
     def test_from_valid_strings(self, type_arg, expected):
         assert MediaType.from_string(type_arg) == expected
 
@@ -60,7 +60,7 @@ class TestMediaType:
         'text/html;  =a',
     ]
 
-    @pytest.mark.parametrize("type", invalid_strings)
+    @pytest.mark.parametrize("type_arg", invalid_strings)
     def test_from_invalid_strings(self, type_arg):
         with pytest.raises(ValueError) as e:
             MediaType.from_string(type_arg)
