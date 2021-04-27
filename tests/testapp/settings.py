@@ -23,7 +23,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-
+    'rest_framework',
     'health_check',
     'health_check.cache',
     'health_check.db',
