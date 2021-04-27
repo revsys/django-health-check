@@ -6,5 +6,5 @@ app_name = 'health_check'
 
 urlpatterns = [
     path('', MainView.as_view(), name='health_check_home'),
-    path('v2', DRFView.as_view(), name="health_check_home_v2")
+    path('v2/', DRFView.as_view(), name="health_check_home_v2")
 ]
