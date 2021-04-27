@@ -84,6 +84,9 @@ Note : If using ``boto 2.x.x`` use ``health_check.contrib.s3boto_storage``
 threshold settings; otherwise below defaults are assumed. If you want to disable
 one of these checks, set its value to ``None``.
 
+(Optional) If you want to use Version 2 of the API (more about that below), you must install
+djangorestframework and add it to the installed apps.
+
 .. code:: python
 
     HEALTH_CHECK = {
@@ -156,9 +159,46 @@ Getting machine readable JSON reports
 
 If you want machine readable status reports you can request the ``/ht/``
 endpoint with the ``Accept`` HTTP header set to ``application/json``
-or pass ``format=json`` as a query parameter.
+or pass ``format=json`` as a query parameter (only in Version 1 of the API,
+Version 2 must have the ``Accept`` HTTP header set to ``application/json``).
 
 The backend will return a JSON response:
+
+Version 1:
+
+.. code::
+
+    $ curl -v -X GET -H "Accept: application/json" http://www.example.com/ht/
+
+    > GET /ht/ HTTP/1.1
+    > Host: www.example.com
+    > Accept: application/json
+    >
+    < HTTP/1.1 200 OK
+    < Content-Type: application/json
+
+    {
+        "CacheBackend": "working",
+        "DatabaseBackend": "working",
+        "S3BotoStorageHealthCheck": "working"
+    }
+
+    $ curl -v -X GET http://www.example.com/ht/?format=json
+
+    > GET /ht/?format=json HTTP/1.1
+    > Host: www.example.com
+    >
+    < HTTP/1.1 200 OK
+    < Content-Type: application/json
+
+    {
+        "CacheBackend": "working",
+        "DatabaseBackend": "working",
+        "S3BotoStorageHealthCheck": "working"
+    }
+
+
+Version 2:
 
 .. code::
 
@@ -185,6 +225,9 @@ The backend will return a JSON response:
             }
         ]
     }
+
+At the moment, Version 1 is the default API endpoint. If you want to use Version 2,
+request the ``/ht/v2/`` endpoint instead of ``/ht/``.
 
 Writing a custom health check
 -----------------------------
