@@ -84,6 +84,16 @@ class TestMediaType:
 class TestMainView:
     url = reverse('health_check:health_check_home')
 
+    @classmethod
+    def setup_class(cls):
+        cls.registry = plugin_dir._registry.copy()
+        HEALTH_CHECK['WARNINGS_AS_ERRORS'] = True
+
+    @classmethod
+    def teardown_class(cls):
+        plugin_dir._registry = cls.registry.copy()
+        HEALTH_CHECK['WARNINGS_AS_ERRORS'] = True
+
     def test_success(self, client):
         response = client.get(self.url)
         assert response.status_code == 200, response.content.decode('utf-8')

@@ -87,6 +87,16 @@ def api_client():
 class TestDRFView:
     url = reverse('health_check:health_check_home_v2')
 
+    @classmethod
+    def setup_class(cls):
+        cls.registry = plugin_dir._registry.copy()
+        HEALTH_CHECK['WARNINGS_AS_ERRORS'] = True
+
+    @classmethod
+    def teardown_class(cls):
+        plugin_dir._registry = cls.registry.copy()
+        HEALTH_CHECK['WARNINGS_AS_ERRORS'] = True
+
     def test_success(self, api_client):
         response = api_client.get(self.url)
         assert response.status_code == 200, response.content.decode('utf-8')
