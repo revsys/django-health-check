@@ -18,6 +18,7 @@ The following health checks are bundled with this project:
 - Celery ping
 - RabbitMQ
 - Migrations
+- Http Ping (check via http GET request the status from related microservices)
 
 Writing your own custom health checks is also very quick and easy.
 
@@ -76,6 +77,7 @@ Add the ``health_check`` applications to your ``INSTALLED_APPS``:
         'health_check.contrib.s3boto3_storage',     # requires boto3 and S3BotoStorage backend
         'health_check.contrib.rabbitmq',            # requires RabbitMQ broker
         'health_check.contrib.redis',               # requires Redis broker
+        'health_check.contrib.http_ping',
     ]
 
 Note : If using ``boto 2.x.x`` use ``health_check.contrib.s3boto_storage``
@@ -110,6 +112,16 @@ on django.conf.settings with the required format to connect to your redis server
 .. code::
 
     REDIS_URL = redis://localhost:6370
+
+Tou use Http-Ping to check the status of microservices via HTTP GET request, please make
+sure that there is a variable named ``HTTP_ENDPOINTS_HEALTH_CHECK``(array with all related microservices urls), optional you can define
+``HTTP_TIMEOUT_HEALTH_CHECK`` with the max timeout to wait a request (by default 1 second).
+
+.. code::
+
+    HTTP_ENDPOINTS_HEALTH_CHECK = ["https://github.com"]
+    HTTP_TIMEOUT_HEALTH_CHECK = 1
+
 
 Setting up monitoring
 ---------------------
