@@ -24,15 +24,22 @@ class HTTPPingHealthCheck(BaseHealthCheckBackend):
         logger.debug("Got %s as the http_endpoints. ", http_endpoints)
 
         for http_endpoint in http_endpoints:
+            
             try:
-                requests.get(http_endpoint, timeout=timeout)
+                response = requests.get(http_endpoint, timeout=timeout)
+
             except Timeout as e:
                 self.add_error(ServiceUnavailable(f"Timeout conecting to {http_endpoint}"), e)
                 return
+
             except Exception as e:
                 self.add_error(ServiceUnavailable(f"Unexpected error conecting to {http_endpoint}"), e)
                 return     
-            else:
-                logger.debug(f"{http_endpoint} endpoint is healthy.")
+            
+            if response.status_code >= 300:
+                self.add_error(ServiceUnavailable(f"Invalid response status code in {http_endpoint}"))
+                return
+
+            logger.debug(f"{http_endpoint} endpoint is healthy.")
         
         logger.debug("All endpoints are healthy.")
