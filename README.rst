@@ -56,7 +56,7 @@ Add the health checker to a URL you want to use:
 
     urlpatterns = [
         # ...
-        url(r'^ht/', include('health_check.urls')),
+        path('ht/', include('health_check.urls')),
     ]
 
 Add the ``health_check`` applications to your ``INSTALLED_APPS``:
@@ -268,7 +268,7 @@ and customizing the ``template_name``, ``get``, ``render_to_response`` and ``ren
 
     urlpatterns = [
         # ...
-        url(r'^ht/$', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
+        path('ht/', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
     ]
 
 Django command
