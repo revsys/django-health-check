@@ -16,6 +16,7 @@ The following health checks are bundled with this project:
 - AWS S3 storage
 - Celery task queue
 - Celery ping
+- Redis
 - RabbitMQ
 - Migrations
 
@@ -110,6 +111,8 @@ on django.conf.settings with the required format to connect to your redis server
 .. code::
 
     REDIS_URL = redis://localhost:6370
+
+Additional connection options may be specified by defining a variable ``HEALTHCHECK_REDIS_URL_OPTIONS`` on the settings module.
 
 Setting up monitoring
 ---------------------

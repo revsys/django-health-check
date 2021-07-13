@@ -90,3 +90,21 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Number
      - 3
      - Specifies the maximum total time for a task to complete and return a result, including queue time.
+
+Redis Health Check
+------------------
+
+The Redis health check allows customising the underlying connection:
+
+.. list-table:: Additional Settings
+   :widths: 25 10 10 55
+   :header-rows: 1
+
+   * - Name
+     - Type
+     - Default
+     - Description
+   * - `HEALTHCHECK_REDIS_URL_OPTIONS`
+     - Dict
+     - {}
+     - Additional arguments which will be passed as keyword arguments to the Redis connection class initialiser.

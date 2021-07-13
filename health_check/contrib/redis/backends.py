@@ -13,6 +13,7 @@ class RedisHealthCheck(BaseHealthCheckBackend):
     """Health check for Redis."""
 
     redis_url = getattr(settings, "REDIS_URL", 'redis://localhost/1')
+    redis_url_options = getattr(settings, "HEALTHCHECK_REDIS_URL_OPTIONS", {})
 
     def check_status(self):
         """Check Redis service by pinging the redis instance with a redis connection."""
@@ -21,7 +22,7 @@ class RedisHealthCheck(BaseHealthCheckBackend):
         logger.debug("Attempting to connect to redis...")
         try:
             # conn is used as a context to release opened resources later
-            with from_url(self.redis_url) as conn:
+            with from_url(self.redis_url, **self.redis_url_options) as conn:
                 conn.ping()  # exceptions may be raised upon ping
         except ConnectionRefusedError as e:
             self.add_error(ServiceUnavailable("Unable to connect to Redis: Connection was refused."), e)
