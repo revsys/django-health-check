@@ -291,6 +291,87 @@ This should yield the following output:
 Similar to the http version, a critical error will cause the command to quit with the exit code `1`.
 
 
+Prometheus Support
+------------------
+
+You can get metrics and healthcheck status in Prometheus format.
+It supports official package for Prometheus - prometheus-client_.
+
+If you want to enable this format, set value:
+
+.. code:: python
+
+    HEALTH_CHECK = {
+        'USE_PROMETHEUS': True,
+    }
+
+To get metrics in Prometheus format:
+
+.. code::
+
+    $ curl -v -X GET "http://example.com/ht/" -H  "Accept: text/plain"
+
+    < HTTP/1.1 200 OK
+    < Date: Tue, 16 Nov 2021 10:44:40 GMT
+    < Server: WSGIServer/0.2 CPython/3.8.2
+    < Content-Type: text/plain; version=0.0.4; charset=utf-8
+    < Expires: Tue, 16 Nov 2021 10:44:40 GMT
+    < Cache-Control: max-age=0, no-cache, no-store, must-revalidate, private
+    < X-Frame-Options: DENY
+    < Content-Length: 2050
+    < X-Content-Type-Options: nosniff
+    < Referrer-Policy: same-origin
+
+    # HELP python_gc_objects_collected_total Objects collected during gc
+    # TYPE python_gc_objects_collected_total counter
+    python_gc_objects_collected_total{generation="0"} 51643.0
+    python_gc_objects_collected_total{generation="1"} 4985.0
+    python_gc_objects_collected_total{generation="2"} 209.0
+    # HELP python_gc_objects_uncollectable_total Uncollectable object found during GC
+    # TYPE python_gc_objects_uncollectable_total counter
+    python_gc_objects_uncollectable_total{generation="0"} 0.0
+    python_gc_objects_uncollectable_total{generation="1"} 0.0
+    python_gc_objects_uncollectable_total{generation="2"} 0.0
+    # HELP python_gc_collections_total Number of times this generation was collected
+    # TYPE python_gc_collections_total counter
+    python_gc_collections_total{generation="0"} 441.0
+    python_gc_collections_total{generation="1"} 40.0
+    python_gc_collections_total{generation="2"} 3.0
+    # HELP python_info Python platform information
+    # TYPE python_info gauge
+    python_info{implementation="CPython",major="3",minor="8",patchlevel="2",version="3.8.2"} 1.0
+    # HELP app_disk_usage_status Check status of DiskUsage
+    # TYPE app_disk_usage_status gauge
+    app_disk_usage_status 1.0
+    # HELP app_memory_usage_status Check status of MemoryUsage
+    # TYPE app_memory_usage_status gauge
+    app_memory_usage_status 1.0
+    # HELP app_rabbit_m_q_health_check_status Check status of RabbitMQHealthCheck
+    # TYPE app_rabbit_m_q_health_check_status gauge
+    app_rabbit_m_q_health_check_status 1.0
+    # HELP app_database_backend_status Check status of DatabaseBackend
+    # TYPE app_database_backend_status gauge
+    app_database_backend_status 1.0
+
+
+Second way:
+
+.. code::
+
+    $ curl -v -X GET http://www.example.com/ht/?format=prometheus
+
+
+Metrics with `python_` prefix are default metrics from prometheus-client_. Metrics with `app_` prefix are custom metrics from healthchecks.
+
+If you need to change the base path to metrics, then you can do this in urls.py in your Django application:
+
+.. code:: python
+
+    urlpatterns = [
+        # ...
+        url(r'^metrics/', include('health_check.urls')),
+    ]
+
 Other resources
 ---------------
 
@@ -309,3 +390,4 @@ Other resources
 .. _Pingdom: https://www.pingdom.com/
 .. _django-watchman: https://github.com/mwarkentin/django-watchman
 .. _weblog: https://www.vincit.fi/en/blog/deploying-django-to-elastic-beanstalk-with-https-redirects-and-functional-health-checks/
+.. _prometheus-client: https://github.com/prometheus/client_python

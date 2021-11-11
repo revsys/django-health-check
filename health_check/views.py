@@ -1,8 +1,11 @@
+import os
 import re
 
+import prometheus_client
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
+from prometheus_client import multiprocess
 
 from health_check.mixins import CheckMixin
 
@@ -89,9 +92,14 @@ class MainView(CheckMixin, TemplateView):
         if format_override == 'json':
             return self.render_to_response_json(self.plugins, status_code)
 
+        if format_override == 'prometheus':
+            return self.render_to_response_prometheus(self.plugins, status_code)
+
         accept_header = request.META.get('HTTP_ACCEPT', '*/*')
         for media in MediaType.parse_header(accept_header):
-            if media.mime_type in ('text/html', 'application/xhtml+xml', 'text/*', '*/*'):
+            if media.mime_type in ('text/plain',):
+                return self.render_to_response_prometheus(self.plugins, status_code)
+            elif media.mime_type in ('text/html', 'application/xhtml+xml', 'text/*', '*/*'):
                 context = self.get_context_data(**kwargs)
                 return self.render_to_response(context, status=status_code)
             elif media.mime_type in ('application/json', 'application/*'):
@@ -109,4 +117,16 @@ class MainView(CheckMixin, TemplateView):
         return JsonResponse(
             {str(p.identifier()): str(p.pretty_status()) for p in plugins},
             status=status
+        )
+
+    def render_to_response_prometheus(self, *_):
+        if "prometheus_multiproc_dir" in os.environ:
+            registry = prometheus_client.CollectorRegistry()
+            multiprocess.MultiProcessCollector(registry)
+        else:
+            registry = prometheus_client.REGISTRY
+        metrics_page = prometheus_client.generate_latest(registry)
+        return HttpResponse(
+            metrics_page,
+            content_type=prometheus_client.CONTENT_TYPE_LATEST,
         )

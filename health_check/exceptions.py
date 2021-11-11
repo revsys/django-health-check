@@ -28,3 +28,7 @@ class ServiceUnavailable(HealthCheckException):
 
 class ServiceReturnedUnexpectedResult(HealthCheckException):
     message_type = _("unexpected result")
+
+
+class BadPrometheusMetricType(Exception):
+    pass

@@ -1,5 +1,6 @@
 from celery.app import default_app as app
 from django.conf import settings
+from prometheus_client import Gauge
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
@@ -7,6 +8,10 @@ from health_check.exceptions import ServiceUnavailable
 
 class CeleryPingHealthCheck(BaseHealthCheckBackend):
     CORRECT_PING_RESPONSE = {"ok": "pong"}
+
+    @property
+    def prometheus_active_queues_amount(self) -> Gauge:
+        return self.get_prometheus_metric(Gauge, "celery_active_queues", "Amount of active queues")
 
     def check_status(self):
         timeout = getattr(settings, "HEALTHCHECK_CELERY_PING_TIMEOUT", 1)
@@ -47,13 +52,15 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
             active_workers.append(worker)
 
         if not self.errors:
-            self._check_active_queues(active_workers)
+            amount_queues = self._check_active_queues(active_workers)
+            if self.use_prometheus:
+                self.prometheus_active_queues_amount.set(amount_queues)
 
-    def _check_active_queues(self, active_workers):
+    def _check_active_queues(self, active_workers) -> int:
         defined_queues = app.conf.CELERY_QUEUES
 
         if not defined_queues:
-            return
+            return 0
 
         defined_queues = set([queue.name for queue in defined_queues])
         active_queues = set()
@@ -65,3 +72,4 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
             self.add_error(
                 ServiceUnavailable(f"No worker for Celery task queue {queue}"),
             )
+        return len(active_queues)

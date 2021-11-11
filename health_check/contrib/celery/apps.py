@@ -1,8 +1,8 @@
+import warnings
+
 from celery import current_app
 from django.apps import AppConfig
 from django.conf import settings
-import warnings
-
 
 from health_check.plugins import plugin_dir
 

@@ -24,3 +24,23 @@ class TestMigrationsHealthCheck(TestCase):
             backend = MigrationsHealthCheck()
             backend.run_check()
             self.assertTrue(backend.errors)
+
+    def test_prometheus_check_status_work(self):
+        with patch('health_check.contrib.migrations.backends.MigrationsHealthCheck.get_migration_plan',
+                   return_value=[]):
+            backend = MigrationsHealthCheck()
+            backend.use_prometheus = True
+            backend.run_check()
+            self.assertFalse(backend.errors)
+            self.assertEquals(backend.prometheus_status_metric_name, 'migrations_health_check_status')
+            self.assertEquals(backend.prometheus_status_metric._value.get(), 1.0)
+
+    def test_prometheus_check_status_raises_error_if_there_are_migrations(self):
+        with patch('health_check.contrib.migrations.backends.MigrationsHealthCheck.get_migration_plan',
+                   return_value=[(MockMigration, False)]):
+            backend = MigrationsHealthCheck()
+            backend.use_prometheus = True
+            backend.run_check()
+            self.assertTrue(backend.errors)
+            self.assertEquals(backend.prometheus_status_metric_name, 'migrations_health_check_status')
+            self.assertEquals(backend.prometheus_status_metric._value.get(), 0.0)
