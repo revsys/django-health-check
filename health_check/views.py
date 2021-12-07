@@ -1,6 +1,7 @@
 import re
 
 from django.http import HttpResponse, JsonResponse
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
@@ -80,7 +81,7 @@ class MediaType:
 class MainView(CheckMixin, TemplateView):
     template_name = 'health_check/index.html'
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         status_code = 500 if self.errors else 200
 
