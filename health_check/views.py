@@ -1,9 +1,21 @@
 import re
 
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
+
+try:
+    import rest_framework
+    from rest_framework.generics import RetrieveAPIView
+    from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+    from rest_framework.response import Response
+    from health_check.health_serializer import HealthSerializer
+except ImportError:
+    from django.views.generic import TemplateView as RetrieveAPIView
+    rest_framework = None
+
 
 from health_check.mixins import CheckMixin
 
@@ -78,6 +90,24 @@ class MediaType:
         return self.weight.__lt__(other.weight)
 
 
+class DRFView(CheckMixin, RetrieveAPIView):
+    template_name = 'health_check/drf.html'
+    renderer_classes = [TemplateHTMLRenderer, JSONRenderer] if rest_framework else None
+
+    @never_cache
+    def get(self, request, *args, **kwargs):
+        if not rest_framework:
+            raise ImproperlyConfigured("Django rest framework not installed")
+
+        status_code = 500 if self.errors else 200
+        serializer = self.get_serializer(self.plugins)
+        return Response(serializer.data, template_name=self.template_name, status=status_code)
+
+    def get_serializer_class(self):
+        if rest_framework:
+            return HealthSerializer
+
+
 class MainView(CheckMixin, TemplateView):
     template_name = 'health_check/index.html'
 
@@ -111,3 +141,4 @@ class MainView(CheckMixin, TemplateView):
             {str(p.identifier()): str(p.pretty_status()) for p in plugins},
             status=status
         )
+

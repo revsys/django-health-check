@@ -56,7 +56,7 @@ Add the health checker to a URL you want to use:
 
     urlpatterns = [
         # ...
-        url(r'^ht/', include('health_check.urls')),
+        path('ht/', include('health_check.urls')),
     ]
 
 Add the ``health_check`` applications to your ``INSTALLED_APPS``:
@@ -83,6 +83,9 @@ Note : If using ``boto 2.x.x`` use ``health_check.contrib.s3boto_storage``
 (Optional) If using the ``psutil`` app, you can configure disk and memory
 threshold settings; otherwise below defaults are assumed. If you want to disable
 one of these checks, set its value to ``None``.
+
+(Optional) If you want to use Version 2 of the API (more about that below), you must install
+djangorestframework and add it to the installed apps.
 
 .. code:: python
 
@@ -156,9 +159,12 @@ Getting machine readable JSON reports
 
 If you want machine readable status reports you can request the ``/ht/``
 endpoint with the ``Accept`` HTTP header set to ``application/json``
-or pass ``format=json`` as a query parameter.
+or pass ``format=json`` as a query parameter (only in Version 1 of the API,
+Version 2 must have the ``Accept`` HTTP header set to ``application/json``).
 
 The backend will return a JSON response:
+
+Version 1:
 
 .. code::
 
@@ -190,6 +196,38 @@ The backend will return a JSON response:
         "DatabaseBackend": "working",
         "S3BotoStorageHealthCheck": "working"
     }
+
+
+Version 2:
+
+.. code::
+
+    $ curl -v -X GET -H "Accept: application/json" http://www.example.com/ht/
+
+    > GET /ht/ HTTP/1.1
+    > Host: www.example.com
+    > Accept: application/json
+    >
+    < HTTP/1.1 200 OK
+    < Content-Type: application/json
+
+    {
+        "data": [
+            {
+                "name": "DatabaseBackend",
+                "status": "working",
+                "time_taken": 9.352453e-05
+            },
+            {
+                "name": "S3BotoStorageHealthCheck",
+                "status": "working",
+                "time_taken": 0.001234231
+            }
+        ]
+    }
+
+At the moment, Version 1 is the default API endpoint. If you want to use Version 2,
+request the ``/ht/v2/`` endpoint instead of ``/ht/``.
 
 Writing a custom health check
 -----------------------------

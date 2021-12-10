@@ -15,18 +15,18 @@
         <th>Status</th>
         <th class="w3-hide-small w3-hide-medium w3-right w3-right-align">Time Taken</th>
       </tr>
-      {% for plugin in plugins %}
+      {% for entry in data %}
         <tr>
           <td class="w3-center" style="width: 50px">
-            {% if plugin.status %}
+            {% if entry.status %}
               <i class="w3-text-green fa fa-check" aria-hidden="true"></i>
             {% else %}
               <i class="w3-text-red fa fa-close" aria-hidden="true"></i>
             {% endif %}
           </td>
-          <td>{{ plugin.name }}</td>
-          <td>{{ plugin.pretty_status }}</td>
-          <td class="w3-hide-small w3-hide-medium w3-right w3-right-align">{{ plugin.time_taken|floatformat:4 }} seconds</td>
+          <td>{{ entry.name }}</td>
+          <td>{{ entry.status }}</td>
+          <td class="w3-hide-small w3-hide-medium w3-right w3-right-align">{{ entry.time_taken|floatformat:4 }} seconds</td>
         </tr>
       {% endfor %}
     </table>
