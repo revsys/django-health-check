@@ -53,9 +53,9 @@ class BaseHealthCheckBackend:
     def check_status(self):
         raise NotImplementedError
 
-    def run_check(self):
+    def run_check(self, external_errors=None):
         start = timer()
-        self.errors = []
+        self.errors = external_errors or []
         try:
             self.check_status()
         except HealthCheckException as e:
@@ -77,15 +77,18 @@ class BaseHealthCheckBackend:
         else:
             msg = _("unknown error")
             error = HealthCheckException(msg)
-        if isinstance(cause, BaseException):
-            logger.exception(str(error))
-        else:
-            logger.error(str(error))
+
+        if HEALTH_CHECK['VERBOSE']:
+            if isinstance(cause, BaseException):
+                logger.exception(str(error))
+            else:
+                logger.error(str(error))
+
         self.errors.append(error)
 
     def pretty_status(self):
         if self.errors:
-            return "\n".join(str(e) for e in self.errors)
+            return "; ".join(str(e) for e in self.errors)
         return _('working')
 
     @property
@@ -94,3 +97,9 @@ class BaseHealthCheckBackend:
 
     def identifier(self):
         return self.__class__.__name__
+
+
+class CommonHealth(BaseHealthCheckBackend):
+
+    def check_status(self):
+        pass
