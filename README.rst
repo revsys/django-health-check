@@ -2,7 +2,7 @@
 django-health-check
 ===================
 
-|version| |coverage| |health| |license|
+|version| |pyversion| |djversion| |coverage| |health| |license|
 
 This project checks for various conditions and provides reports when anomalous
 behavior is detected.
@@ -298,6 +298,10 @@ Other resources
 - See this weblog_ about configuring Django and health checking with AWS Elastic Load Balancer.
 
 .. |version| image:: https://img.shields.io/pypi/v/django-health-check.svg
+   :target: https://pypi.python.org/pypi/django-health-check/
+.. |pyversion| image:: https://img.shields.io/pypi/pyversions/django-health-check.svg
+   :target: https://pypi.python.org/pypi/django-health-check/
+.. |djversion| image:: https://img.shields.io/pypi/djversions/django-health-check.svg
    :target: https://pypi.python.org/pypi/django-health-check/
 .. |coverage| image:: https://codecov.io/gh/KristianOellegaard/django-health-check/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/KristianOellegaard/django-health-check
