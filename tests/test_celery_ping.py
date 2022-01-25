@@ -122,6 +122,30 @@ class TestCeleryPingHealthCheck:
             assert len(health_check.errors) == 1
             assert "workers unavailable" in health_check.errors[0].message.lower()
 
+    def test_prometheus_check_status_doesnt_add_errors_when_ping_successfull(self, health_check):
+        celery_worker = "celery@4cc150a7b49b"
+
+        with patch(
+            self.CELERY_APP_CONTROL_PING,
+            return_value=[
+                {celery_worker: CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
+                {f"{celery_worker}-2": CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
+            ],
+        ), patch(
+            self.CELERY_APP_CONTROL_INSPECT_ACTIVE_QUEUES,
+            return_value={
+                celery_worker: [
+                    {"name": queue.name} for queue in settings.CELERY_QUEUES
+                ]
+            },
+        ):
+            health_check.use_prometheus = True
+            health_check.check_status()
+
+            assert not health_check.errors
+            assert health_check.prometheus_active_queues_amount._name == 'app_celery_active_queues'
+            assert health_check.prometheus_active_queues_amount._value.get() == 2.0
+
 
 class TestCeleryPingHealthCheckApps:
     def test_apps(self):

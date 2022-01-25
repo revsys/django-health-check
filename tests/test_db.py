@@ -67,3 +67,30 @@ class HealthCheckDatabaseTests(TestCase):
         db_backend = DatabaseBackend()
         with self.assertRaises(Exception):
             db_backend.run_check()
+
+    @patch('health_check.db.backends.TestModel.objects.create',
+           lambda title=None: MockDBModel())
+    def test_prometheus_check_status_works(self):
+        db_backend = DatabaseBackend()
+        db_backend.use_prometheus = True
+
+        db_backend.run_check()
+
+        self.assertFalse(db_backend.errors)
+
+        self.assertEquals(db_backend.prometheus_status_metric_name, 'database_backend_status')
+        self.assertEquals(db_backend.prometheus_status_metric._value.get(), 1.0)
+
+    @patch('health_check.db.backends.TestModel.objects.create',
+           lambda title=None: raise_(IntegrityError))
+    def test_prometheus_raise_integrity_error(self):
+        db_backend = DatabaseBackend()
+        db_backend.use_prometheus = True
+
+        db_backend.run_check()
+
+        self.assertTrue(db_backend.errors)
+        self.assertIn('unexpected result: Integrity Error', db_backend.pretty_status())
+
+        self.assertEquals(db_backend.prometheus_status_metric_name, 'database_backend_status')
+        self.assertEquals(db_backend.prometheus_status_metric._value.get(), 0.0)

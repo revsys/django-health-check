@@ -1,5 +1,6 @@
 import json
 
+import prometheus_client
 import pytest
 
 from health_check.backends import BaseHealthCheckBackend
@@ -162,6 +163,17 @@ class TestMainView:
         plugin_dir.register(SuccessBackend)
         response = client.get(self.url, HTTP_ACCEPT='application/xhtml+xml')
         assert response['content-type'] == 'text/html; charset=utf-8'
+        assert response.status_code == 200
+
+    def test_success_accept_plain(self, client):
+        class SuccessBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                pass
+
+        plugin_dir.reset()
+        plugin_dir.register(SuccessBackend)
+        response = client.get(self.url, HTTP_ACCEPT='text/plain')
+        assert response['content-type'] == prometheus_client.CONTENT_TYPE_LATEST
         assert response.status_code == 200
 
     def test_success_unsupported_accept(self, client):
