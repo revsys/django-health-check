@@ -94,7 +94,4 @@ class CeleryBeatHealthCheck(BaseHealthCheckBackend):
 
         next_due_buffered_seconds = (due_in + timedelta(seconds=buffer_seconds)).total_seconds()
         # If the task is due in the past, even with the buffer, we consider it due.
-        if next_due_buffered_seconds < 0:
-            return True
-        else:
-            return False
+        return next_due_buffered_seconds < 0
