@@ -55,7 +55,7 @@ class CeleryBeatHealthCheck(BaseHealthCheckBackend):
     @staticmethod
     def is_overdue(task: ModelEntry) -> bool:
         """Determines if a task is overdue by checking if a task is overdue more than x seconds.
-        Use BEAT_HEALTH_CHECK_BUFFER_SECONDS or defaults to 30 second, when checking if a task should
+        Use `BEAT_HEALTH_CHECK_BUFFER_SECONDS` (defaults to 30 seconds) when checking if a task should
         be considered overdue.
         Uses the ScheduleEntry.last run at, and the task's schedule in seconds to calculate the
         next time the task is due. If the time that the task is due is less than the current time
