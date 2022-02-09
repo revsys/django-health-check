@@ -20,7 +20,7 @@ The following health checks are bundled with this project:
 - RabbitMQ
 - Migrations
 
-View use instructions for contrib health checks in `docs/contrib.rst` and `docs/settings.rst`
+View usage instructions of contrib health checks in `docs/contrib.rst` and `docs/settings.rst`
 Writing your own custom health checks is also very quick and easy.
 
 We also like contributions, so don't be afraid to make a pull request.
