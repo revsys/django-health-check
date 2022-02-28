@@ -1,4 +1,4 @@
-from celery.app import default_app as app
+from celery.app import app_or_default
 from django.conf import settings
 
 from health_check.backends import BaseHealthCheckBackend
@@ -12,6 +12,7 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
         timeout = getattr(settings, "HEALTHCHECK_CELERY_PING_TIMEOUT", 1)
 
         try:
+            app = app_or_default(None)
             ping_result = app.control.ping(timeout=timeout)
         except IOError as e:
             self.add_error(ServiceUnavailable("IOError"), e)
@@ -50,6 +51,8 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
             self._check_active_queues(active_workers)
 
     def _check_active_queues(self, active_workers):
+        app = app_or_default(None)
+
         defined_queues = app.conf.CELERY_QUEUES
 
         if not defined_queues:
