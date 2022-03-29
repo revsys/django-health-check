@@ -18,7 +18,7 @@ class OkPlugin(BaseHealthCheckBackend):
 
 
 class TestCommand:
-    @pytest.yield_fixture(autouse=True)
+    @pytest.fixture(autouse=True)
     def setup(self):
         plugin_dir.reset()
         plugin_dir.register(FailPlugin)

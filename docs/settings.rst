@@ -33,7 +33,7 @@ Add it to your URL:
 
     urlpatterns = [
         # ...
-        url(r'^ht/super_secret_token/'), include('health_check.urls')),
+        path('ht/super_secret_token/'), include('health_check.urls')),
     ]
 
 You can still use any uptime bot that is URL based while enjoying token protection.
