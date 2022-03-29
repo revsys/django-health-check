@@ -1,1 +1,4 @@
-default_app_config = 'health_check.storage.apps.HealthCheckConfig'
+import django
+
+if django.VERSION < (3, 2):
+    default_app_config = 'health_check.storage.apps.HealthCheckConfig'
