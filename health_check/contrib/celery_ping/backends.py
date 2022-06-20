@@ -65,3 +65,6 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
             self.add_error(
                 ServiceUnavailable(f"No worker for Celery task queue {queue}"),
             )
+
+    def identifier(self):
+        return f"Celery Ping: {self.__class__.__name__}"

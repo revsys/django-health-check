@@ -26,3 +26,6 @@ class MigrationsHealthCheck(BaseHealthCheckBackend):
             self.add_error(ServiceUnavailable("Database is not ready"), e)
         except Exception as e:
             self.add_error(ServiceUnavailable("Unexpected error"), e)
+
+    def identifier(self):
+        return f"Migration: {self.__class__.__name__}"

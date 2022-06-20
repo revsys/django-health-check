@@ -39,3 +39,6 @@ class RabbitMQHealthCheck(BaseHealthCheckBackend):
             self.add_error(ServiceUnavailable("Unknown error"), e)
         else:
             logger.debug("Connection established. RabbitMQ is healthy.")
+
+    def identifier(self):
+        return f"RabbitMQ: {self.__class__.__name__}"

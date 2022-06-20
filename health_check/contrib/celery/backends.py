@@ -35,3 +35,6 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
             self.add_error(ServiceUnavailable("TimeoutError: The task took too long to return a result"), e)
         except BaseException as e:
             self.add_error(ServiceUnavailable("Unknown error"), e)
+
+    def identifier(self):
+        return f"Celery: {self.__class__.__name__}"

@@ -68,6 +68,10 @@ class StorageHealthCheck(BaseHealthCheckBackend):
         except Exception as e:
             raise ServiceUnavailable('Unknown exception') from e
 
+    def identifier(self):
+        return f"File Storage: {self.__class__.__name__}"
+
 
 class DefaultFileStorageHealthCheck(StorageHealthCheck):
     storage = settings.DEFAULT_FILE_STORAGE
+
