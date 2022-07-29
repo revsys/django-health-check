@@ -26,7 +26,7 @@
             {% endif %}
           </td>
           <td>{{ plugin.identifier }}</td>
-          <td>{{ plugin.pretty_status }}</td>
+          <td>{{ plugin.pretty_status | linebreaks }}</td>
           <td class="w3-hide-small w3-hide-medium w3-right w3-right-align">{{ plugin.time_taken|floatformat:4 }} seconds</td>
         </tr>
       {% endfor %}
