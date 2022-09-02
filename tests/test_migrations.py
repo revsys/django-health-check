@@ -1,6 +1,7 @@
+from unittest.mock import patch
+
 from django.db.migrations import Migration
 from django.test import TestCase
-from mock import patch
 
 from health_check.contrib.migrations.backends import MigrationsHealthCheck
 

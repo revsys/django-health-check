@@ -1,7 +1,8 @@
+from unittest.mock import patch
+
 import pytest
 from django.apps import apps
 from django.conf import settings
-from mock import patch
 
 from health_check.contrib.celery_ping.apps import HealthCheckConfig
 from health_check.contrib.celery_ping.backends import CeleryPingHealthCheck
@@ -19,7 +20,7 @@ class TestCeleryPingHealthCheck:
     def health_check(self):
         return CeleryPingHealthCheck()
 
-    def test_check_status_doesnt_add_errors_when_ping_successfull(self, health_check):
+    def test_check_status_doesnt_add_errors_when_ping_successful(self, health_check):
         celery_worker = "celery@4cc150a7b49b"
 
         with patch(

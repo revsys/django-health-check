@@ -1,4 +1,5 @@
-import mock
+from unittest import mock
+
 from amqp.exceptions import AccessRefused
 
 from health_check.contrib.rabbitmq.backends import RabbitMQHealthCheck

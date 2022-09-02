@@ -58,7 +58,7 @@ TEMPLATES = [
 
 SECRET_KEY = uuid.uuid4().hex
 
-USE_L10N = True
+USE_TZ = True
 
 CELERY_QUEUES = [
     Queue("default"),

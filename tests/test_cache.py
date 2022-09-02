@@ -1,6 +1,7 @@
+from unittest.mock import patch
+
 from django.core.cache.backends.base import BaseCache, CacheKeyWarning
 from django.test import TestCase
-from mock import patch
 
 from health_check.cache.backends import CacheBackend
 
