@@ -17,7 +17,7 @@ class S3Boto3StorageHealthCheck(StorageHealthCheck):
     """
 
     logger = logging.getLogger(__name__)
-    storage = 'storages.backends.s3boto3.S3Boto3Storage'
+    storage = "storages.backends.s3boto3.S3Boto3Storage"
 
     def check_delete(self, file_name):
         storage = self.get_storage()

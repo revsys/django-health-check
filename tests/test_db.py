@@ -38,31 +38,39 @@ class HealthCheckDatabaseTests(TestCase):
     Ensures check_status returns/raises the expected result when the database works or raises exceptions.
     """
 
-    @patch('health_check.db.backends.TestModel.objects.create',
-           lambda title=None: MockDBModel())
+    @patch(
+        "health_check.db.backends.TestModel.objects.create",
+        lambda title=None: MockDBModel(),
+    )
     def test_check_status_works(self):
         db_backend = DatabaseBackend()
         db_backend.check_status()
         self.assertFalse(db_backend.errors)
 
-    @patch('health_check.db.backends.TestModel.objects.create',
-           lambda title=None: raise_(IntegrityError))
+    @patch(
+        "health_check.db.backends.TestModel.objects.create",
+        lambda title=None: raise_(IntegrityError),
+    )
     def test_raise_integrity_error(self):
         db_backend = DatabaseBackend()
         db_backend.run_check()
         self.assertTrue(db_backend.errors)
-        self.assertIn('unexpected result: Integrity Error', db_backend.pretty_status())
+        self.assertIn("unexpected result: Integrity Error", db_backend.pretty_status())
 
-    @patch('health_check.db.backends.TestModel.objects.create',
-           lambda title=None: MockDBModel(error_thrown=DatabaseError))
+    @patch(
+        "health_check.db.backends.TestModel.objects.create",
+        lambda title=None: MockDBModel(error_thrown=DatabaseError),
+    )
     def test_raise_database_error(self):
         db_backend = DatabaseBackend()
         db_backend.run_check()
         self.assertTrue(db_backend.errors)
-        self.assertIn('unavailable: Database error', db_backend.pretty_status())
+        self.assertIn("unavailable: Database error", db_backend.pretty_status())
 
-    @patch('health_check.db.backends.TestModel.objects.create',
-           lambda title=None: MockDBModel(error_thrown=Exception))
+    @patch(
+        "health_check.db.backends.TestModel.objects.create",
+        lambda title=None: MockDBModel(error_thrown=Exception),
+    )
     def test_raise_exception(self):
         db_backend = DatabaseBackend()
         with self.assertRaises(Exception):

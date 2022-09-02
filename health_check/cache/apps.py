@@ -5,7 +5,7 @@ from health_check.plugins import plugin_dir
 
 
 class HealthCheckConfig(AppConfig):
-    name = 'health_check.cache'
+    name = "health_check.cache"
 
     def ready(self):
         from .backends import CacheBackend

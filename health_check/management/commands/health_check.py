@@ -16,8 +16,7 @@ class Command(CheckMixin, BaseCommand):
             style_func = self.style.SUCCESS if not plugin.errors else self.style.ERROR
             self.stdout.write(
                 "{:<24} ... {}\n".format(
-                    plugin.identifier(),
-                    style_func(plugin.pretty_status())
+                    plugin.identifier(), style_func(plugin.pretty_status())
                 )
             )
 

@@ -19,10 +19,13 @@ class CheckMixin:
     @property
     def plugins(self):
         if not self._plugins:
-            self._plugins = sorted((
-                plugin_class(**copy.deepcopy(options))
-                for plugin_class, options in plugin_dir._registry
-            ), key=lambda plugin: plugin.identifier())
+            self._plugins = sorted(
+                (
+                    plugin_class(**copy.deepcopy(options))
+                    for plugin_class, options in plugin_dir._registry
+                ),
+                key=lambda plugin: plugin.identifier(),
+            )
         return self._plugins
 
     def run_check(self):
@@ -34,14 +37,16 @@ class CheckMixin:
                 return plugin
             finally:
                 from django.db import connections
+
                 connections.close_all()
 
         with ThreadPoolExecutor(max_workers=len(self.plugins) or 1) as executor:
             for plugin in executor.map(_run, self.plugins):
                 if plugin.critical_service:
-                    if not HEALTH_CHECK['WARNINGS_AS_ERRORS']:
+                    if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
                         errors.extend(
-                            e for e in plugin.errors
+                            e
+                            for e in plugin.errors
                             if not isinstance(e, ServiceWarning)
                         )
                     else:
