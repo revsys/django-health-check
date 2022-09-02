@@ -1,3 +1,4 @@
+from celery.exceptions import TaskRevokedError, TimeoutError
 from django.conf import settings
 
 from health_check.backends import BaseHealthCheckBackend
@@ -6,7 +7,6 @@ from health_check.exceptions import (
 )
 
 from .tasks import add
-from celery.exceptions import TaskRevokedError, TimeoutError
 
 
 class CeleryHealthCheck(BaseHealthCheckBackend):
