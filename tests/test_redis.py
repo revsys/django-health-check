@@ -1,4 +1,5 @@
-import mock
+from unittest import mock
+
 from redis.exceptions import ConnectionError, TimeoutError
 
 from health_check.contrib.redis.backends import RedisHealthCheck
