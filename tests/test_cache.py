@@ -12,6 +12,7 @@ class MockCache(BaseCache):
     set_works - set to False to make the mocked set method fail, but not raise
     set_raises - The Exception to be raised when set() is called, if any
     """
+
     key = None
     value = None
     set_works = None
@@ -51,39 +52,59 @@ class HealthCheckCacheTests(TestCase):
         cache_backend.run_check()
         self.assertFalse(cache_backend.errors)
 
-    @patch("health_check.cache.backends.caches", dict(default=MockCache(), broken=MockCache(set_works=False)))
+    @patch(
+        "health_check.cache.backends.caches",
+        dict(default=MockCache(), broken=MockCache(set_works=False)),
+    )
     def test_multiple_backends_check_default(self):
         # default backend works while other is broken
-        cache_backend = CacheBackend('default')
+        cache_backend = CacheBackend("default")
         cache_backend.run_check()
         self.assertFalse(cache_backend.errors)
 
-    @patch("health_check.cache.backends.caches", dict(default=MockCache(), broken=MockCache(set_works=False)))
+    @patch(
+        "health_check.cache.backends.caches",
+        dict(default=MockCache(), broken=MockCache(set_works=False)),
+    )
     def test_multiple_backends_check_broken(self):
-        cache_backend = CacheBackend('broken')
+        cache_backend = CacheBackend("broken")
         cache_backend.run_check()
         self.assertTrue(cache_backend.errors)
-        self.assertIn('unavailable: Cache key does not match', cache_backend.pretty_status())
+        self.assertIn(
+            "unavailable: Cache key does not match", cache_backend.pretty_status()
+        )
 
     # check_status should raise ServiceUnavailable when values at cache key do not match
-    @patch("health_check.cache.backends.caches", dict(default=MockCache(set_works=False)))
+    @patch(
+        "health_check.cache.backends.caches", dict(default=MockCache(set_works=False))
+    )
     def test_set_fails(self):
         cache_backend = CacheBackend()
         cache_backend.run_check()
         self.assertTrue(cache_backend.errors)
-        self.assertIn('unavailable: Cache key does not match', cache_backend.pretty_status())
+        self.assertIn(
+            "unavailable: Cache key does not match", cache_backend.pretty_status()
+        )
 
     # check_status should catch generic exceptions raised by set and convert to ServiceUnavailable
-    @patch("health_check.cache.backends.caches", dict(default=MockCache(set_raises=Exception)))
+    @patch(
+        "health_check.cache.backends.caches",
+        dict(default=MockCache(set_raises=Exception)),
+    )
     def test_set_raises_generic(self):
         cache_backend = CacheBackend()
         with self.assertRaises(Exception):
             cache_backend.run_check()
 
     # check_status should catch CacheKeyWarning and convert to ServiceReturnedUnexpectedResult
-    @patch("health_check.cache.backends.caches", dict(default=MockCache(set_raises=CacheKeyWarning)))
+    @patch(
+        "health_check.cache.backends.caches",
+        dict(default=MockCache(set_raises=CacheKeyWarning)),
+    )
     def test_set_raises_cache_key_warning(self):
         cache_backend = CacheBackend()
         cache_backend.check_status()
         cache_backend.run_check()
-        self.assertIn('unexpected result: Cache key warning', cache_backend.pretty_status())
+        self.assertIn(
+            "unexpected result: Cache key warning", cache_backend.pretty_status()
+        )

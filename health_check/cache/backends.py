@@ -1,13 +1,11 @@
 from django.core.cache import CacheKeyWarning, caches
 
 from health_check.backends import BaseHealthCheckBackend
-from health_check.exceptions import (
-    ServiceReturnedUnexpectedResult, ServiceUnavailable
-)
+from health_check.exceptions import ServiceReturnedUnexpectedResult, ServiceUnavailable
 
 
 class CacheBackend(BaseHealthCheckBackend):
-    def __init__(self, backend='default'):
+    def __init__(self, backend="default"):
         super().__init__()
         self.backend = backend
 
@@ -18,7 +16,7 @@ class CacheBackend(BaseHealthCheckBackend):
         cache = caches[self.backend]
 
         try:
-            cache.set('djangohealtcheck_test', 'itworks')
+            cache.set("djangohealtcheck_test", "itworks")
             if not cache.get("djangohealtcheck_test") == "itworks":
                 raise ServiceUnavailable("Cache key does not match")
         except CacheKeyWarning as e:

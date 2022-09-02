@@ -11,12 +11,11 @@ logger = logging.getLogger(__name__)
 
 
 class MigrationsHealthCheck(BaseHealthCheckBackend):
-
     def get_migration_plan(self, executor):
         return executor.migration_plan(executor.loader.graph.leaf_nodes())
 
     def check_status(self):
-        db_alias = getattr(settings, 'HEALTHCHECK_MIGRATIONS_DB', DEFAULT_DB_ALIAS)
+        db_alias = getattr(settings, "HEALTHCHECK_MIGRATIONS_DB", DEFAULT_DB_ALIAS)
         try:
             executor = MigrationExecutor(connections[db_alias])
             plan = self.get_migration_plan(executor)

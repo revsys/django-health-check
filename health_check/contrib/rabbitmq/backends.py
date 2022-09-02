@@ -27,10 +27,20 @@ class RabbitMQHealthCheck(BaseHealthCheckBackend):
             with Connection(broker_url) as conn:
                 conn.connect()  # exceptions may be raised upon calling connect
         except ConnectionRefusedError as e:
-            self.add_error(ServiceUnavailable("Unable to connect to RabbitMQ: Connection was refused."), e)
+            self.add_error(
+                ServiceUnavailable(
+                    "Unable to connect to RabbitMQ: Connection was refused."
+                ),
+                e,
+            )
 
         except AccessRefused as e:
-            self.add_error(ServiceUnavailable("Unable to connect to RabbitMQ: Authentication error."), e)
+            self.add_error(
+                ServiceUnavailable(
+                    "Unable to connect to RabbitMQ: Authentication error."
+                ),
+                e,
+            )
 
         except IOError as e:
             self.add_error(ServiceUnavailable("IOError"), e)

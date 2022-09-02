@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _  # noqa: N812
 
 from health_check.exceptions import HealthCheckException
 
-logger = logging.getLogger('health-check')
+logger = logging.getLogger("health-check")
 
 
 class BaseHealthCheckBackend:
@@ -54,7 +54,7 @@ class BaseHealthCheckBackend:
     def pretty_status(self):
         if self.errors:
             return "\n".join(str(e) for e in self.errors)
-        return _('working')
+        return _("working")
 
     @property
     def status(self):

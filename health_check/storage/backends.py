@@ -31,23 +31,21 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             return self.storage
 
     def get_file_name(self):
-        return 'health_check_storage_test/test-%s.txt' % uuid.uuid4()
+        return "health_check_storage_test/test-%s.txt" % uuid.uuid4()
 
     def get_file_content(self):
-        return b'this is the healthtest file content'
+        return b"this is the healthtest file content"
 
     def check_save(self, file_name, file_content):
         storage = self.get_storage()
         # save the file
-        file_name = storage.save(
-            file_name, ContentFile(content=file_content)
-        )
+        file_name = storage.save(file_name, ContentFile(content=file_content))
         # read the file and compare
         if not storage.exists(file_name):
-            raise ServiceUnavailable('File does not exist')
+            raise ServiceUnavailable("File does not exist")
         with storage.open(file_name) as f:
             if not f.read() == file_content:
-                raise ServiceUnavailable('File content does not match')
+                raise ServiceUnavailable("File content does not match")
         return file_name
 
     def check_delete(self, file_name):
@@ -55,7 +53,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
         # delete the file and make sure it is gone
         storage.delete(file_name)
         if storage.exists(file_name):
-            raise ServiceUnavailable('File was not deleted')
+            raise ServiceUnavailable("File was not deleted")
 
     def check_status(self):
         try:
@@ -66,7 +64,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             self.check_delete(file_name)
             return True
         except Exception as e:
-            raise ServiceUnavailable('Unknown exception') from e
+            raise ServiceUnavailable("Unknown exception") from e
 
 
 class DefaultFileStorageHealthCheck(StorageHealthCheck):
