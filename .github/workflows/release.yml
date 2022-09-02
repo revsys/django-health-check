@@ -5,18 +5,17 @@ on:
     types: [published]
 
 jobs:
-  PyPI:
+
+  PyPi:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-
-      - name: Install Python dependencies
-        run: python -m pip install --upgrade pip setuptools wheel twine
-      - name: Build dist packages
-        run: python setup.py sdist bdist_wheel
-      - name: Upload packages
-        run: python -m twine upload dist/*
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
+    - run: python -m pip install --upgrade pip build wheel twine
+    - run: python -m build --sdist --wheel
+    - run: python -m twine upload dist/*
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
