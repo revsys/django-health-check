@@ -3,33 +3,76 @@
   <title>{% block title %}System status{% endblock title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    html, body {
+      margin: 0 auto;
+      font-family: sans-serif;
+      line-height: 1.5;
+      max-width: 900px;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 10px;
+      font-weight: lighter;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      text-align: left;
+    }
+
+    table tr:nth-child(2n) {
+      background-color: #f1f1f1;
+    }
+
+    td, th {
+      padding: 8px;
+    }
+
+    .align-right {
+      text-align: right;
+    }
+
+    table thead {
+      background-color: lightskyblue;
+    }
+
+    table .icons {
+      text-align: center;
+      width: 50px;
+    }
+  </style>
   {% block extra_head %}{% endblock extra_head %}
 </head>
-<body class="w3-content">
+<body>
   {% block content %}
-    <h1 class="w3-center">System status</h1>
-    <table class="w3-table w3-striped w3-white">
-      <tr class="w3-blue">
+    <h1>System status</h1>
+    <table>
+      <thead>
         <th colspan="2">Service</th>
         <th>Status</th>
-        <th class="w3-hide-small w3-hide-medium w3-right w3-right-align">Time Taken</th>
-      </tr>
-      {% for plugin in plugins %}
-        <tr>
-          <td class="w3-center" style="width: 50px">
-            {% if plugin.status %}
-              <i class="w3-text-green fa fa-check" aria-hidden="true"></i>
-            {% else %}
-              <i class="w3-text-red fa fa-close" aria-hidden="true"></i>
-            {% endif %}
-          </td>
-          <td>{{ plugin.identifier }}</td>
-          <td>{{ plugin.pretty_status | linebreaks }}</td>
-          <td class="w3-hide-small w3-hide-medium w3-right w3-right-align">{{ plugin.time_taken|floatformat:4 }} seconds</td>
-        </tr>
-      {% endfor %}
+        <th class="align-right">Time Taken</th>
+      </thead>
+      <tbody>
+        {% for plugin in plugins %}
+          <tr>
+            <td class="icons">
+              <span aria-hidden="true">
+                {% if plugin.status %}
+                  &#9989;
+                {% else %}
+                  &#10060;
+                {% endif %}
+              </span>
+            </td>
+            <td>{{ plugin.identifier }}</td>
+            <td>{{ plugin.pretty_status | linebreaks }}</td>
+            <td class="align-right">{{ plugin.time_taken|floatformat:4 }} seconds</td>
+          </tr>
+        {% endfor %}
+      </tbody>
     </table>
   {% endblock content %}
 </body>
