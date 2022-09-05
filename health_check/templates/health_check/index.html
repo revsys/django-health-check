@@ -36,7 +36,7 @@
       text-align: right;
     }
 
-    table .header {
+    table thead {
       background-color: lightskyblue;
     }
 
@@ -51,27 +51,29 @@
   {% block content %}
     <h1>System status</h1>
     <table>
-      <tr class="header">
+      <thead>
         <th colspan="2">Service</th>
         <th>Status</th>
         <th class="align-right">Time Taken</th>
-      </tr>
-      {% for plugin in plugins %}
-        <tr>
-          <td class="icons">
-            <span aria-hidden="true">
-              {% if plugin.status %}
-                &#9989;
-              {% else %}
-                &#10060;
-              {% endif %}
-            </span>
-          </td>
-          <td>{{ plugin.identifier }}</td>
-          <td>{{ plugin.pretty_status | linebreaks }}</td>
-          <td class="align-right">{{ plugin.time_taken|floatformat:4 }} seconds</td>
-        </tr>
-      {% endfor %}
+      </thead>
+      <tbody>
+        {% for plugin in plugins %}
+          <tr>
+            <td class="icons">
+              <span aria-hidden="true">
+                {% if plugin.status %}
+                  &#9989;
+                {% else %}
+                  &#10060;
+                {% endif %}
+              </span>
+            </td>
+            <td>{{ plugin.identifier }}</td>
+            <td>{{ plugin.pretty_status | linebreaks }}</td>
+            <td class="align-right">{{ plugin.time_taken|floatformat:4 }} seconds</td>
+          </tr>
+        {% endfor %}
+      </tbody>
     </table>
   {% endblock content %}
 </body>
