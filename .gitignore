@@ -102,3 +102,6 @@ ENV/
 
 # pytest
 .pytest_cache/
+
+.envrc
+.direnv
