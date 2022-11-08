@@ -258,16 +258,3 @@ Similar to the http version, a critical error will cause the command to quit wit
 
 - [django-watchman](https://github.com/mwarkentin/django-watchman) is a package that does some of the same things in a slightly different way.
 - See this [weblog](https://www.vincit.fi/en/blog/deploying-django-to-elastic-beanstalk-with-https-redirects-and-functional-health-checks/) about configuring Django and health checking with AWS Elastic Load Balancer.
-
-```
-.. |version| image:: https://img.shields.io/pypi/v/django-health-check.svg
-   :target: https://pypi.python.org/pypi/django-health-check/
-.. |pyversion| image:: https://img.shields.io/pypi/pyversions/django-health-check.svg
-   :target: https://pypi.python.org/pypi/django-health-check/
-.. |djversion| image:: https://img.shields.io/pypi/djversions/django-health-check.svg
-   :target: https://pypi.python.org/pypi/django-health-check/
-.. |coverage| image:: https://codecov.io/gh/KristianOellegaard/django-health-check/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/KristianOellegaard/django-health-check
-.. |license| image:: https://img.shields.io/badge/license-MIT-blue.svg
-   :target: LICENSE
-```
