@@ -26,6 +26,7 @@ INSTALLED_APPS = (
     "health_check.cache",
     "health_check.db",
     "health_check.storage",
+    "health_check.contrib.psutil",
     "health_check.contrib.celery",
     "health_check.contrib.migrations",
     "health_check.contrib.celery_ping",
@@ -64,3 +65,8 @@ CELERY_QUEUES = [
     Queue("default"),
     Queue("queue2"),
 ]
+
+HEALTH_CHECK = {
+    "DISK_USAGE_MAX": 90,
+    "MEORY_MIN": 100,
+}
