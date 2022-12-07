@@ -111,6 +111,13 @@ on django.conf.settings with the required format to connect to your redis server
     REDIS_URL = redis://localhost:6370
 ```
 
+The cache healthcheck tries to write and read a specific key within the cache backend.
+It can be customized by setting `HEALTHCHECK_CACHE_KEY` to another value:
+
+```python
+    HEALTHCHECK_CACHE_KEY = custom_healthcheck_key
+```
+
 ## Setting up monitoring
 
 You can use tools like Pingdom, StatusCake or other uptime robots to monitor service status.
