@@ -1,5 +1,5 @@
 bandit==1.7.4
 black==22.10.0
-flake8==5.0.4
+flake8==6.0.0
 isort==5.10.1
 pydocstyle[toml]==6.1.1
