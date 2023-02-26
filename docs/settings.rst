@@ -71,7 +71,7 @@ exceeds 90% or available memory drops below 100 MB.
    memory falls below the specified value, a warning will be reported.
 
 Celery Health Check
-----------------------
+-------------------
 Using `django.settings` you may exert more fine-grained control over the behavior of the celery health check
 
 .. list-table:: Additional Settings
@@ -82,6 +82,10 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Type
      - Default
      - Description
+   * - `HEALTHCHECK_CACHE_KEY`
+     - String
+     - djangohealtcheck_test
+     - Specifies the name of the key to write to and read from to validate that the cache is working.
    * - `HEALTHCHECK_CELERY_QUEUE_TIMEOUT`
      - Number
      - 3
