@@ -4,12 +4,14 @@ from django.conf import settings
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceReturnedUnexpectedResult, ServiceUnavailable
 
-class CacheBackend(BaseHealthCheckBackend):
 
+class CacheBackend(BaseHealthCheckBackend):
     def __init__(self, backend="default"):
         super().__init__()
         self.backend = backend
-        self.cache_key = getattr(settings, "HEALTHCHECK_CACHE_KEY", "djangohealtcheck_test")
+        self.cache_key = getattr(
+            settings, "HEALTHCHECK_CACHE_KEY", "djangohealthcheck_test"
+        )
 
     def identifier(self):
         return f"Cache backend: {self.backend}"
