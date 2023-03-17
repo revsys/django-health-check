@@ -1,8 +1,7 @@
 import uuid
 
-from django.conf import settings
 from django.core.files.base import ContentFile
-from django.core.files.storage import get_storage_class
+from django.core.files.storage import default_storage, get_storage_class
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
@@ -68,4 +67,4 @@ class StorageHealthCheck(BaseHealthCheckBackend):
 
 
 class DefaultFileStorageHealthCheck(StorageHealthCheck):
-    storage = settings.DEFAULT_FILE_STORAGE
+    storage = default_storage
