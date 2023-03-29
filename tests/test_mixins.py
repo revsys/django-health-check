@@ -40,15 +40,23 @@ class TestCheckMixin:
         assert len(Checker().run_check()) == 1
 
     def test_run_check_threading_enabled(self, monkeypatch):
+        """Ensure threading used when not disabled."""
+
+        # Ensure threading is enabled.
         monkeypatch.setattr(HEALTH_CHECK, "DISABLE_THREADING", False)
 
+        # Ensure ThreadPoolExecutor is used.
         with patch("health_check.mixins.ThreadPoolExecutor") as tpe:
             Checker().run_check()
             tpe.assert_called()
 
     def test_run_check_threading_disabled(self, monkeypatch):
+        """Ensure threading not used when disabled."""
+
+        # Ensure threading is disabled.
         monkeypatch.setattr(HEALTH_CHECK, "DISABLE_THREADING", True)
 
+        # Ensure ThreadPoolExecutor is not used.
         with patch("health_check.mixins.ThreadPoolExecutor") as tpe:
             Checker().run_check()
             tpe.assert_not_called()
