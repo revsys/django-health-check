@@ -101,21 +101,21 @@ To use the RabbitMQ healthcheck, please make sure that there is a variable named
 rabbit server. For example:
 
 ```python
-    BROKER_URL = amqp://myuser:mypassword@localhost:5672/myvhost
+    BROKER_URL = "amqp://myuser:mypassword@localhost:5672/myvhost"
 ```
 
 To use the Redis healthcheck, please make sure that there is a variable named ``REDIS_URL``
 on django.conf.settings with the required format to connect to your redis server. For example:
 
 ```python
-    REDIS_URL = redis://localhost:6370
+    REDIS_URL = "redis://localhost:6370"
 ```
 
 The cache healthcheck tries to write and read a specific key within the cache backend.
 It can be customized by setting `HEALTHCHECK_CACHE_KEY` to another value:
 
 ```python
-    HEALTHCHECK_CACHE_KEY = custom_healthcheck_key
+    HEALTHCHECK_CACHE_KEY = "custom_healthcheck_key"
 ```
 
 ## Setting up monitoring
