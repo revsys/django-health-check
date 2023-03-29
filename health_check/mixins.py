@@ -40,16 +40,22 @@ class CheckMixin:
 
                 connections.close_all()
 
+        def _collect_errors(plugin):
+            if plugin.critical_service:
+                if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
+                    errors.extend(
+                        e for e in plugin.errors if not isinstance(e, ServiceWarning)
+                    )
+                else:
+                    errors.extend(plugin.errors)
+
+        if HEALTH_CHECK["DISABLE_THREADING"]:
+            for plugin in self.plugins:
+                _run(plugin)
+                _collect_errors(plugin)
+
         with ThreadPoolExecutor(max_workers=len(self.plugins) or 1) as executor:
             for plugin in executor.map(_run, self.plugins):
-                if plugin.critical_service:
-                    if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
-                        errors.extend(
-                            e
-                            for e in plugin.errors
-                            if not isinstance(e, ServiceWarning)
-                        )
-                    else:
-                        errors.extend(plugin.errors)
+                _collect_errors(plugin)
 
         return errors
