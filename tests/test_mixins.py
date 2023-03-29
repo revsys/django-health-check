@@ -1,8 +1,10 @@
 import pytest
+from unittest.mock import patch
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.mixins import CheckMixin
 from health_check.plugins import plugin_dir
+from health_check.conf import HEALTH_CHECK
 
 
 class FailPlugin(BaseHealthCheckBackend):
@@ -36,3 +38,17 @@ class TestCheckMixin:
 
     def test_run_check(self):
         assert len(Checker().run_check()) == 1
+
+    def test_run_check_threading_enabled(self, monkeypatch):
+        monkeypatch.setattr(HEALTH_CHECK, "DISABLE_THREADING", False)
+
+        with patch("health_check.mixins.ThreadPoolExecutor") as tpe:
+            Checker().run_check()
+            tpe.assert_called()
+
+    def test_run_check_threading_disabled(self, monkeypatch):
+        monkeypatch.setattr(HEALTH_CHECK, "DISABLE_THREADING", True)
+
+        with patch("health_check.mixins.ThreadPoolExecutor") as tpe:
+            Checker().run_check()
+            tpe.assert_not_called()

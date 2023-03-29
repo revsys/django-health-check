@@ -53,9 +53,9 @@ class CheckMixin:
             for plugin in self.plugins:
                 _run(plugin)
                 _collect_errors(plugin)
-
-        with ThreadPoolExecutor(max_workers=len(self.plugins) or 1) as executor:
-            for plugin in executor.map(_run, self.plugins):
-                _collect_errors(plugin)
+        else:
+            with ThreadPoolExecutor(max_workers=len(self.plugins) or 1) as executor:
+                for plugin in executor.map(_run, self.plugins):
+                    _collect_errors(plugin)
 
         return errors
