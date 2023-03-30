@@ -1,10 +1,11 @@
-import pytest
 from unittest.mock import patch
 
+import pytest
+
 from health_check.backends import BaseHealthCheckBackend
+from health_check.conf import HEALTH_CHECK
 from health_check.mixins import CheckMixin
 from health_check.plugins import plugin_dir
-from health_check.conf import HEALTH_CHECK
 
 
 class FailPlugin(BaseHealthCheckBackend):
