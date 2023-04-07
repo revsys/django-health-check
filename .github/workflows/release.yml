@@ -13,7 +13,6 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: "3.x"
-          cache: 'pip'
     - run: python -m pip install --upgrade pip build wheel twine
     - run: python -m build --sdist --wheel
     - run: python -m twine upload dist/*
