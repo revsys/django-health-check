@@ -1,0 +1,9 @@
+[tool.black]
+target-version = ["py38"]
+
+[tool.pytest.ini_options]
+addopts = "--nomigrations --reuse-db --strict-markers"
+DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
+norecursedirs = ".git"
+python_files = "test_*.py"
+xfail_strict = true
