@@ -1,8 +1,12 @@
+import logging
+
 from django.core.cache import CacheKeyWarning, caches
 from django.conf import settings
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceReturnedUnexpectedResult, ServiceUnavailable
+
+logger = logging.getLogger(__name__)
 
 
 class CacheBackend(BaseHealthCheckBackend):
@@ -29,3 +33,7 @@ class CacheBackend(BaseHealthCheckBackend):
             self.add_error(ServiceReturnedUnexpectedResult("ValueError"), e)
         except ConnectionError as e:
             self.add_error(ServiceReturnedUnexpectedResult("Connection Error"), e)
+        except BaseException as e:
+            self.add_error(ServiceUnavailable("Unknown error"), e)
+        else:
+            logger.debug("Connection established. Cache is healthy.")
