@@ -2,7 +2,6 @@ from unittest.mock import patch
 
 import pytest
 from django.apps import apps
-from django.conf import settings
 
 from health_check.contrib.celery_ping.apps import HealthCheckConfig
 from health_check.contrib.celery_ping.backends import CeleryPingHealthCheck
@@ -18,7 +17,9 @@ class TestCeleryPingHealthCheck:
     def health_check(self):
         return CeleryPingHealthCheck()
 
-    def test_check_status_doesnt_add_errors_when_ping_successful(self, health_check):
+    def test_check_status_doesnt_add_errors_when_ping_successful(
+        self, health_check, settings
+    ):
         celery_worker = "celery@4cc150a7b49b"
 
         with (
@@ -54,6 +55,7 @@ class TestCeleryPingHealthCheck:
     def test_check_status_adds_errors_when_ping_successfull_but_not_all_defined_queues_have_consumers(
         self,
         health_check,
+        settings,
     ):
         celery_worker = "celery@4cc150a7b49b"
         queues = list(settings.CELERY_QUEUES)
@@ -110,6 +112,46 @@ class TestCeleryPingHealthCheck:
 
             assert len(health_check.errors) == 1
             assert "workers unavailable" in health_check.errors[0].message.lower()
+
+    def test_check_status_reports_errors_if_ping_responses_are_missing(
+        self,
+        health_check,
+        settings,
+    ):
+        settings.HEALTHCHECK_CELERY_PING_DESTINATION = [
+            "celery1@4cc150a7b49b",
+            "celery2@4cc150a7b49b",
+        ]
+        with patch(
+            self.CELERY_APP_CONTROL_PING,
+            return_value=[
+                {"celery1@4cc150a7b49b": CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
+            ],
+        ):
+            health_check.check_status()
+
+            assert len(health_check.errors) == 1
+
+    def test_check_status_reports_destinations(
+        self,
+        health_check,
+        settings,
+    ):
+        settings.HEALTHCHECK_CELERY_PING_DESTINATION = [
+            "celery1@4cc150a7b49b",
+            "celery2@4cc150a7b49b",
+        ]
+        with patch(
+            self.CELERY_APP_CONTROL_PING,
+            return_value=[
+                {"celery1@4cc150a7b49b": CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
+                {"celery2@4cc150a7b49b": CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
+                {"celery3@4cc150a7b49b": CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
+            ],
+        ):
+            health_check.check_status()
+
+            assert len(health_check.errors) == 1
 
 
 class TestCeleryPingHealthCheckApps:
