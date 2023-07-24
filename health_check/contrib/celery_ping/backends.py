@@ -50,7 +50,12 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
             self._check_active_queues(active_workers)
 
     def _check_active_queues(self, active_workers):
-        defined_queues = app.conf.CELERY_QUEUES
+        try:
+            # Celery 4+
+            defined_queues = app.conf.task_queues
+        except AttributeError:
+            # Celery <4
+            defined_queues = app.conf.CELERY_QUEUES
 
         if not defined_queues:
             return
