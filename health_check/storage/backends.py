@@ -68,4 +68,4 @@ class StorageHealthCheck(BaseHealthCheckBackend):
 
 
 class DefaultFileStorageHealthCheck(StorageHealthCheck):
-    storage = settings.DEFAULT_FILE_STORAGE
+    storage = settings.STORAGES["default"]["BACKEND"]
