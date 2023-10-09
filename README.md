@@ -68,6 +68,7 @@ Add the `health_check` applications to your `INSTALLED_APPS`:
         'health_check.cache',
         'health_check.storage',
         'health_check.contrib.migrations',
+        'health_check.contrib.prometheus',          # requires prometheus-client, transforms status into prometheus metrics
         'health_check.contrib.celery',              # requires celery
         'health_check.contrib.celery_ping',         # requires celery
         'health_check.contrib.psutil',              # disk and memory utilization; requires psutil
@@ -259,6 +260,30 @@ This should yield the following output:
 ```
 
 Similar to the http version, a critical error will cause the command to quit with the exit code `1`.
+
+## Prometheus support
+
+The `health_check.contrib.prometheus` app provides a optional collector for the [prometheus-client](https://github.com/prometheus/client_python) library.
+
+If you want to use it, add `health_check.contrib.prometheus` to your `INSTALLED_APPS`: 
+
+```python
+    INSTALLED_APPS = [
+        # ...
+        'health_check.contrib.prometheus',
+    ]
+```
+
+When enabled, it will expose the health check status as a metric on the existing `/metrics` endpoint:
+
+> # The errors returned by the health checks
+> # TYPE django_health_check_errors gauge
+> django_health_check_errors{plugin="DatabaseHealthCheck", critical_service="1"} 0.0
+> django_health_check_errors{plugin="CustomHealthCheck", critical_service="0"} 1.0
+> # The seconds taken by the health checks
+> # TYPE django_health_check_duration_seconds gauge
+> django_health_check_duration_seconds{plugin="DatabaseHealthCheck", critical_service="1"} 0.01
+> django_health_check_duration_seconds{plugin="CustomHealthCheck", critical_service="0"} 1。0
 
 
 ## Other resources
