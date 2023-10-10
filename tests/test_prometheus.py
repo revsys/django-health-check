@@ -60,7 +60,7 @@ class TestDjangoHealthCheckCollector:
         for metric_family in metric_families:
             sample = metric_family.samples[0]
 
-            assert sample.labels["plugin"] == "FakePlugin"
+            assert sample.labels["identifier"] == "FakePlugin"
             assert sample.labels["critical_service"] == str(critical_service)
 
             if sample.name == "django_health_check_errors":

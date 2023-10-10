@@ -278,12 +278,12 @@ When enabled, it will expose the health check status as a metric on the existing
 
 > # The errors returned by the health checks
 > # TYPE django_health_check_errors gauge
-> django_health_check_errors{plugin="DatabaseHealthCheck", critical_service="1"} 0.0
-> django_health_check_errors{plugin="CustomHealthCheck", critical_service="0"} 1.0
+> django_health_check_errors{identifier="DatabaseHealthCheck", critical_service="1"} 0.0
+> django_health_check_errors{identifier="CustomHealthCheck", critical_service="0"} 1.0
 > # The seconds taken by the health checks
 > # TYPE django_health_check_duration_seconds gauge
-> django_health_check_duration_seconds{plugin="DatabaseHealthCheck", critical_service="1"} 0.01
-> django_health_check_duration_seconds{plugin="CustomHealthCheck", critical_service="0"} 1。0
+> django_health_check_duration_seconds{identifier="DatabaseHealthCheck", critical_service="1"} 0.01
+> django_health_check_duration_seconds{identifier="CustomHealthCheck", critical_service="0"} 1.0
 
 
 ## Other resources
