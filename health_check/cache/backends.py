@@ -4,7 +4,6 @@ from django.core.cache import CacheKeyWarning, caches
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceReturnedUnexpectedResult, ServiceUnavailable
 
-
 try:
     # Exceptions thrown by Redis do not subclass builtin exceptions like ConnectionError.
     # Additionally, not only connection errors (ConnectionError -> RedisError) can be raised,
