@@ -21,3 +21,6 @@ class S3BotoStorageHealthCheck(StorageHealthCheck):
     def check_delete(self, file_name):
         storage = self.get_storage()
         storage.delete(file_name)
+
+    def identifier(self):
+        return f"S3 Boto Storage: {self.__class__.__name__}"

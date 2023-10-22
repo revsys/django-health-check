@@ -26,6 +26,9 @@ class DiskUsage(BaseHealthCheckBackend):
         except ValueError as e:
             self.add_error(ServiceReturnedUnexpectedResult("ValueError"), e)
 
+    def identifier(self):
+        return f"Disk: {self.__class__.__name__}"
+
 
 class MemoryUsage(BaseHealthCheckBackend):
     def check_status(self):
@@ -42,3 +45,6 @@ class MemoryUsage(BaseHealthCheckBackend):
                 )
         except ValueError as e:
             self.add_error(ServiceReturnedUnexpectedResult("ValueError"), e)
+
+    def identifier(self):
+        return f"Memory: {self.__class__.__name__}"

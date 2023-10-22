@@ -26,7 +26,7 @@ class CacheBackend(BaseHealthCheckBackend):
         )
 
     def identifier(self):
-        return f"Cache backend: {self.backend}"
+        return f"Cache: {self.__class__.__name__}"
 
     def check_status(self):
         cache = caches[self.backend]

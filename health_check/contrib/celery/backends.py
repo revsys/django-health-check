@@ -48,3 +48,6 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
             )
         except BaseException as e:
             self.add_error(ServiceUnavailable("Unknown error"), e)
+
+    def identifier(self):
+        return f"Celery: {self.__class__.__name__}"

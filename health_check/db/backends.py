@@ -17,3 +17,6 @@ class DatabaseBackend(BaseHealthCheckBackend):
             raise ServiceReturnedUnexpectedResult("Integrity Error")
         except DatabaseError:
             raise ServiceUnavailable("Database error")
+
+    def identifier(self):
+        return f"Database: {self.__class__.__name__}"
