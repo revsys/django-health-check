@@ -276,10 +276,6 @@ Other resources
 -  `django-watchman <https://github.com/mwarkentin/django-watchman>`__
    is a package that does some of the same things in a slightly
    different way.
--  See this
-   `weblog <https://www.vincit.fi/en/blog/deploying-django-to-elastic-beanstalk-with-https-redirects-and-functional-health-checks/>`__
-   about configuring Django and health checking with AWS Elastic Load
-   Balancer.
 
 .. |version| image:: https://img.shields.io/pypi/v/django-health-check.svg
    :target: https://pypi.python.org/pypi/django-health-check/

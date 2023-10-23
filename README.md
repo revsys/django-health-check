@@ -264,4 +264,3 @@ Similar to the http version, a critical error will cause the command to quit wit
 ## Other resources
 
 - [django-watchman](https://github.com/mwarkentin/django-watchman) is a package that does some of the same things in a slightly different way.
-- See this [weblog](https://www.vincit.fi/en/blog/deploying-django-to-elastic-beanstalk-with-https-redirects-and-functional-health-checks/) about configuring Django and health checking with AWS Elastic Load Balancer.
