@@ -40,7 +40,7 @@ class CheckMixin:
 
                 connections.close_all()
 
-        with ThreadPoolExecutor(max_workers=len(self.plugins) or 1) as executor:
+        with ThreadPoolExecutor() as executor:
             for plugin in executor.map(_run, self.plugins):
                 if plugin.critical_service:
                     if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
