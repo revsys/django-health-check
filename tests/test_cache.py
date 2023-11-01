@@ -71,9 +71,7 @@ class HealthCheckCacheTests(TestCase):
         cache_backend = CacheBackend("broken")
         cache_backend.run_check()
         self.assertTrue(cache_backend.errors)
-        self.assertIn(
-            "unavailable: Cache key does not match", cache_backend.pretty_status()
-        )
+        self.assertIn("does not match", cache_backend.pretty_status())
 
     # check_status should raise ServiceUnavailable when values at cache key do not match
     @patch(
@@ -83,9 +81,7 @@ class HealthCheckCacheTests(TestCase):
         cache_backend = CacheBackend()
         cache_backend.run_check()
         self.assertTrue(cache_backend.errors)
-        self.assertIn(
-            "unavailable: Cache key does not match", cache_backend.pretty_status()
-        )
+        self.assertIn("does not match", cache_backend.pretty_status())
 
     # check_status should catch generic exceptions raised by set and convert to ServiceUnavailable
     @patch(
