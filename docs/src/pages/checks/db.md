@@ -5,7 +5,7 @@ description: Verify your Django application is able to communicate with the data
 ---
 
 The `health_check.db` health check verifies that both Django and your database
-server are both configured properly and functioning properly.
+server are both configured and functioning properly.
 
 ## Settings
 
@@ -14,15 +14,15 @@ settings in your `settings.py`.
 
 ## What does it check?
 
-This check specifically does the following:
+This check does the following:
 
-- It creates a new row in a Django ORM model for this app
-- It then updates that row with a new value
-- It then deletes the row
+- Creates a new row in a Django ORM model for this app
+- Updates that row with a new value
+- Deletes the row
 
 This ensures your app can communicate with the database and that it's able to
 write new rows.
 
-The idea being if you can write and update a row in a specific Django model
-your app can most likely read and write rows to any of it's models without
+The idea is if you can write and update a row in a specific Django model
+your app can most likely read and write rows to any of it's models without an
 issue.
