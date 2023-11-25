@@ -321,6 +321,10 @@ class TestMainView:
             SuccessTwoBackend().identifier(): SuccessTwoBackend().pretty_status(),
         }
 
+    def test_error_subset_not_found(self, client):
+        response = client.get(self.url, {"format": "json"})
+        assert response.status_code == 404, response.content.decode("utf-8")
+
     def test_error_param_json(self, client):
         class JSONErrorBackend(BaseHealthCheckBackend):
             def run_check(self, subset=None):
