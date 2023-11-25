@@ -1,7 +1,6 @@
 import copy
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
-from django.conf import settings
 from django.http import Http404
 
 from health_check.conf import HEALTH_CHECK, HEALTH_CHECK_SUBSETS
@@ -12,7 +11,6 @@ from health_check.plugins import plugin_dir
 class CheckMixin:
     _errors = None
     _plugins = None
-    _subset = None
 
     @property
     def errors(self):
