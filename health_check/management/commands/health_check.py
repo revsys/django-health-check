@@ -12,11 +12,11 @@ class Command(CheckMixin, BaseCommand):
         # perform all checks
         errors = self.errors
 
-        for plugin in self.plugins:
+        for plugin_identifier, plugin in self.plugins.items():
             style_func = self.style.SUCCESS if not plugin.errors else self.style.ERROR
             self.stdout.write(
                 "{:<24} ... {}\n".format(
-                    plugin.identifier(), style_func(plugin.pretty_status())
+                    plugin_identifier, style_func(plugin.pretty_status())
                 )
             )
 

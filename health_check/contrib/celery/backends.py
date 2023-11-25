@@ -8,7 +8,7 @@ from .tasks import add
 
 
 class CeleryHealthCheck(BaseHealthCheckBackend):
-    def check_status(self):
+    def check_status(self, subset=None):
         timeout = getattr(settings, "HEALTHCHECK_CELERY_TIMEOUT", 3)
         result_timeout = getattr(settings, "HEALTHCHECK_CELERY_RESULT_TIMEOUT", timeout)
         queue_timeout = getattr(settings, "HEALTHCHECK_CELERY_QUEUE_TIMEOUT", timeout)

@@ -14,7 +14,7 @@ MEMORY_MIN = HEALTH_CHECK["MEMORY_MIN"]
 
 
 class DiskUsage(BaseHealthCheckBackend):
-    def check_status(self):
+    def check_status(self, subset=None):
         try:
             du = psutil.disk_usage("/")
             if DISK_USAGE_MAX and du.percent >= DISK_USAGE_MAX:
@@ -28,7 +28,7 @@ class DiskUsage(BaseHealthCheckBackend):
 
 
 class MemoryUsage(BaseHealthCheckBackend):
-    def check_status(self):
+    def check_status(self, subset=None):
         try:
             memory = psutil.virtual_memory()
             if MEMORY_MIN and memory.available < (MEMORY_MIN * 1024 * 1024):

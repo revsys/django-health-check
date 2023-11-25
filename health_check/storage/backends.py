@@ -67,7 +67,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
         if storage.exists(file_name):
             raise ServiceUnavailable("File was not deleted")
 
-    def check_status(self):
+    def check_status(self, subset=None):
         try:
             # write the file to the storage backend
             file_name = self.get_file_name()

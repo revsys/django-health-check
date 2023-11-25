@@ -92,7 +92,7 @@ class TestMainView:
 
     def test_error(self, client):
         class MyBackend(BaseHealthCheckBackend):
-            def check_status(self):
+            def check_status(self, subset=None):
                 self.add_error("Super Fail!")
 
         plugin_dir.reset()
@@ -104,7 +104,7 @@ class TestMainView:
 
     def test_warning(self, client):
         class MyBackend(BaseHealthCheckBackend):
-            def check_status(self):
+            def check_status(self, subset=None):
                 raise ServiceWarning("so so")
 
         plugin_dir.reset()
@@ -124,7 +124,7 @@ class TestMainView:
         class MyBackend(BaseHealthCheckBackend):
             critical_service = False
 
-            def check_status(self):
+            def check_status(self, subset=None):
                 self.add_error("Super Fail!")
 
         plugin_dir.reset()
