@@ -1,5 +1,8 @@
 import copy
+from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
+from django.conf import settings
+from django.http import Http404
 
 from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceWarning
@@ -9,6 +12,7 @@ from health_check.plugins import plugin_dir
 class CheckMixin:
     _errors = None
     _plugins = None
+    _subset = None
 
     @property
     def errors(self):
@@ -16,19 +20,33 @@ class CheckMixin:
             self._errors = self.run_check()
         return self._errors
 
+    def check(self, subset):
+        return self.run_check(subset=subset)
+
     @property
     def plugins(self):
         if not self._plugins:
-            self._plugins = sorted(
-                (
+            registering_plugins = (
                     plugin_class(**copy.deepcopy(options))
                     for plugin_class, options in plugin_dir._registry
-                ),
-                key=lambda plugin: plugin.identifier(),
             )
+            self._plugins = OrderedDict({plugin.identifier(): plugin for plugin in registering_plugins})
         return self._plugins
 
-    def run_check(self):
+    def filter_plugins(self, subset=None):
+        if subset is None:
+            return self.plugins
+
+        health_check_subsets = getattr(settings, 'HEALTH_CHECK_SUBSETS', {})
+
+        if subset not in health_check_subsets:
+            raise Http404(f"Specify subset: '{subset}' does not exists.")
+
+        selected_subset = set(health_check_subsets[subset])
+        return {plugin_identifier: v for plugin_identifier, v in self.plugins.items() if plugin_identifier in selected_subset}
+
+
+    def run_check(self, subset=None):
         errors = []
 
         def _run(plugin):
@@ -40,8 +58,9 @@ class CheckMixin:
 
                 connections.close_all()
 
-        with ThreadPoolExecutor(max_workers=len(self.plugins) or 1) as executor:
-            for plugin in executor.map(_run, self.plugins):
+        plugins = self.filter_plugins(subset=subset)
+        with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
+            for plugin in executor.map(_run, plugins.values()):
                 if plugin.critical_service:
                     if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
                         errors.extend(

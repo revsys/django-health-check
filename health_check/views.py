@@ -88,12 +88,13 @@ class MainView(CheckMixin, TemplateView):
 
     @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
-        status_code = 500 if self.errors else 200
-
+        subset = kwargs.get("subset", None)
+        health_check_has_error = self.check(subset)
+        status_code = 500 if health_check_has_error else 200
         format_override = request.GET.get("format")
 
         if format_override == "json":
-            return self.render_to_response_json(self.plugins, status_code)
+            return self.render_to_response_json(self.filter_plugins(subset=subset), status_code)
 
         accept_header = request.META.get("HTTP_ACCEPT", "*/*")
         for media in MediaType.parse_header(accept_header):
@@ -106,7 +107,7 @@ class MainView(CheckMixin, TemplateView):
                 context = self.get_context_data(**kwargs)
                 return self.render_to_response(context, status=status_code)
             elif media.mime_type in ("application/json", "application/*"):
-                return self.render_to_response_json(self.plugins, status_code)
+                return self.render_to_response_json(self.filter_plugins(subset=subset), status_code)
         return HttpResponse(
             "Not Acceptable: Supported content types: text/html, application/json",
             status=406,
@@ -114,10 +115,11 @@ class MainView(CheckMixin, TemplateView):
         )
 
     def get_context_data(self, **kwargs):
-        return {**super().get_context_data(**kwargs), "plugins": self.plugins}
+        subset = kwargs.get('subset', None)
+        return {**super().get_context_data(**kwargs), "plugins": self.filter_plugins(subset=subset).values()}
 
     def render_to_response_json(self, plugins, status):
         return JsonResponse(
-            {str(p.identifier()): str(p.pretty_status()) for p in plugins},
+            {str(plugin_identifier): str(p.pretty_status()) for plugin_identifier, p in plugins.items()},
             status=status,
         )
