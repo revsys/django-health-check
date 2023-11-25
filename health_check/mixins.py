@@ -20,7 +20,7 @@ class CheckMixin:
             self._errors = self.run_check()
         return self._errors
 
-    def check(self, subset):
+    def check(self, subset=None):
         return self.run_check(subset=subset)
 
     @property
