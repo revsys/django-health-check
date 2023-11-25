@@ -1,6 +1,7 @@
 import copy
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
+
 from django.http import Http404
 
 from health_check.conf import HEALTH_CHECK, HEALTH_CHECK_SUBSETS
@@ -25,10 +26,12 @@ class CheckMixin:
     def plugins(self):
         if not self._plugins:
             registering_plugins = (
-                    plugin_class(**copy.deepcopy(options))
-                    for plugin_class, options in plugin_dir._registry
+                plugin_class(**copy.deepcopy(options))
+                for plugin_class, options in plugin_dir._registry
             )
-            self._plugins = OrderedDict({plugin.identifier(): plugin for plugin in registering_plugins})
+            self._plugins = OrderedDict(
+                {plugin.identifier(): plugin for plugin in registering_plugins}
+            )
         return self._plugins
 
     def filter_plugins(self, subset=None):
@@ -41,8 +44,11 @@ class CheckMixin:
             raise Http404(f"Specify subset: '{subset}' does not exists.")
 
         selected_subset = set(health_check_subsets[subset])
-        return {plugin_identifier: v for plugin_identifier, v in self.plugins.items() if plugin_identifier in selected_subset}
-
+        return {
+            plugin_identifier: v
+            for plugin_identifier, v in self.plugins.items()
+            if plugin_identifier in selected_subset
+        }
 
     def run_check(self, subset=None):
         errors = []

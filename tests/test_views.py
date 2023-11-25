@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from health_check import conf
 from health_check.backends import BaseHealthCheckBackend
 from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceWarning
@@ -278,9 +279,47 @@ class TestMainView:
             JSONSuccessBackend().identifier(): JSONSuccessBackend().pretty_status()
         }
 
-
     def test_success_subset_define(self, client):
+        class SuccessOneBackend(BaseHealthCheckBackend):
+            def run_check(self, subset=None):
+                pass
 
+        class SuccessTwoBackend(BaseHealthCheckBackend):
+            def run_check(self, subset=None):
+                pass
+
+        plugin_dir.reset()
+        plugin_dir.register(SuccessOneBackend)
+        plugin_dir.register(SuccessTwoBackend)
+
+        HEALTH_CHECK_SUBSETS = {
+            "startup-probe": ["SuccessOneBackend", "SuccessTwoBackend"],
+            "liveness-probe": ["SuccessTwoBackend"],
+        }
+        setattr(conf, "HEALTH_CHECK_SUBSETS", HEALTH_CHECK_SUBSETS)
+
+        response_startup_probe = client.get(
+            self.url + "startup-probe/", {"format": "json"}
+        )
+        assert (
+            response_startup_probe.status_code == 200
+        ), response_startup_probe.content.decode("utf-8")
+        assert response_startup_probe["content-type"] == "application/json"
+        assert json.loads(response_startup_probe.content.decode("utf-8")) == {
+            SuccessOneBackend().identifier(): SuccessOneBackend().pretty_status(),
+            SuccessTwoBackend().identifier(): SuccessTwoBackend().pretty_status(),
+        }
+
+        response_liveness_probe = client.get(
+            self.url + "liveness-probe/", {"format": "json"}
+        )
+        assert (
+            response_liveness_probe.status_code == 200
+        ), response_liveness_probe.content.decode("utf-8")
+        assert response_liveness_probe["content-type"] == "application/json"
+        assert json.loads(response_liveness_probe.content.decode("utf-8")) == {
+            SuccessTwoBackend().identifier(): SuccessTwoBackend().pretty_status(),
+        }
 
     def test_error_param_json(self, client):
         class JSONErrorBackend(BaseHealthCheckBackend):
