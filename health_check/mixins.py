@@ -29,7 +29,9 @@ class CheckMixin:
                 plugin_class(**copy.deepcopy(options))
                 for plugin_class, options in plugin_dir._registry
             )
-            registering_plugins = sorted(registering_plugins, key=lambda plugin: plugin.identifier())
+            registering_plugins = sorted(
+                registering_plugins, key=lambda plugin: plugin.identifier()
+            )
             self._plugins = OrderedDict(
                 {plugin.identifier(): plugin for plugin in registering_plugins}
             )
