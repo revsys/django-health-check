@@ -26,3 +26,34 @@ write new rows.
 The idea is if you can write and update a row in a specific Django model
 your app can most likely read and write rows to any of it's models without an
 issue.
+
+### Steps
+1.Installation
+ ```shell
+#requirements.txt
+django-health-check == x.x.x
+```
+
+2.Configure your health check URL endpoint:
+
+```python
+urlpatterns = [
+    # ... your existing URLs here ...
+    url(r'^health/', include('health_check.urls')),
+]
+```
+
+3.Add the `health_check.db` applications to your `INSTALLED_APPS`:
+
+``` python
+INSTALLED_APPS = [
+    # ...
+    'health_check',                             
+    'health_check.db',
+]
+```
+
+4.Run migrations
+```shell
+$ python manage.py migrate
+```
