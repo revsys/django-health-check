@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from django.http import Http404
 
-from health_check.conf import HEALTH_CHECK, HEALTH_CHECK_SUBSETS
+from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceWarning
 from health_check.plugins import plugin_dir
 
@@ -24,6 +24,9 @@ class CheckMixin:
 
     @property
     def plugins(self):
+        if not plugin_dir._registry:
+            return OrderedDict({})
+
         if not self._plugins:
             registering_plugins = (
                 plugin_class(**copy.deepcopy(options))
@@ -41,9 +44,8 @@ class CheckMixin:
         if subset is None:
             return self.plugins
 
-        health_check_subsets = HEALTH_CHECK_SUBSETS
-
-        if subset not in health_check_subsets:
+        health_check_subsets = HEALTH_CHECK['SUBSETS']
+        if subset not in health_check_subsets or not self.plugins:
             raise Http404(f"Specify subset: '{subset}' does not exists.")
 
         selected_subset = set(health_check_subsets[subset])

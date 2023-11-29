@@ -292,11 +292,10 @@ class TestMainView:
         plugin_dir.register(SuccessOneBackend)
         plugin_dir.register(SuccessTwoBackend)
 
-        HEALTH_CHECK_SUBSETS = {
+        HEALTH_CHECK['SUBSETS'] = {
             "startup-probe": ["SuccessOneBackend", "SuccessTwoBackend"],
             "liveness-probe": ["SuccessTwoBackend"],
         }
-        setattr(conf, "HEALTH_CHECK_SUBSETS", HEALTH_CHECK_SUBSETS)
 
         response_startup_probe = client.get(
             self.url + "startup-probe/", {"format": "json"}
@@ -322,7 +321,10 @@ class TestMainView:
         }
 
     def test_error_subset_not_found(self, client):
-        response = client.get(self.url, {"format": "json"})
+        plugin_dir.reset()
+        response = client.get(self.url + "liveness-probe/", {"format": "json"})
+        print(f"content: {response.content}")
+        print(f"code: {response.status_code}")
         assert response.status_code == 404, response.content.decode("utf-8")
 
     def test_error_param_json(self, client):
