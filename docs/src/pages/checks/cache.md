@@ -30,7 +30,7 @@ This check does the following:
 
 This ensures your app's cache backend is functioning correctly and is always available. It not only prevents [data inconsistencies](https://www.alachisoft.com/blogs/cache-database-data-inconsistency-pitfall-and-solutions/#:~:text=Data%20inconsistency%20issues%20occur%20when,the%20cache%20is%20not%20synchronized) and [race conditions](https://www.techtarget.com/searchstorage/definition/race-condition) but also helps identify and troubleshoot cache-related problems.
 
-### Steps
+## Steps
 1.Installation
  ```shell
 #requirements.txt
@@ -48,7 +48,7 @@ urlpatterns = [
 
 3.Add the `health_check.cache` applications to your `INSTALLED_APPS`:
 
-``` python
+```python
 INSTALLED_APPS = [
     # ...
     'health_check',                             

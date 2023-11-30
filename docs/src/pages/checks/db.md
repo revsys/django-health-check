@@ -27,7 +27,7 @@ The idea is if you can write and update a row in a specific Django model
 your app can most likely read and write rows to any of it's models without an
 issue.
 
-### Steps
+## Steps
 1.Installation
  ```shell
 #requirements.txt
@@ -45,7 +45,7 @@ urlpatterns = [
 
 3.Add the `health_check.db` applications to your `INSTALLED_APPS`:
 
-``` python
+```python
 INSTALLED_APPS = [
     # ...
     'health_check',                             

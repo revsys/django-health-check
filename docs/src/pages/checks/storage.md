@@ -27,7 +27,7 @@ This check does the following:
 
 This ensures your app's storage backend is functioning correctly and detects any storage issues that may affect performance.
 
-### Steps
+## Steps
 1.Installation
  ```shell
 #requirements.txt
@@ -45,7 +45,7 @@ urlpatterns = [
 
 3.Add the `health_check.storage` applications to your `INSTALLED_APPS`:
 
-``` python
+```python
 INSTALLED_APPS = [
     # ...
     'health_check',                             

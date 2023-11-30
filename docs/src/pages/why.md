@@ -6,15 +6,11 @@ description: Why should you use django-health-check over simply checking that po
 
 - Proactively monitor your application components, such as caches, and identify potential issues before they affect end users.
 
-- Improve the performance of your Django application by identifying areas where it can be improved, for example, response times, error rates, and resource utilization.
-
 - To enhance security by identifying potential security vulnerabilities like outdated software or misconfigured controls, to protect the application from data breaches and cyber attacks.
 
 - For scalability to understand how your application scales under load to identify capacity limits and plan for future growth
 
 - Flexibility to create your own custom health checks to match your application requirements
-
-- Middleware integration, where it can easily be integrated into your application without making significant changes to the existing codebase.
 
 - Simplifies troubleshooting by providing detailed information about the root cause of issues.
 
