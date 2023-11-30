@@ -55,5 +55,11 @@ INSTALLED_APPS = [
 
 4.Run migrations
 ```shell
-$ python manage.py migrate
+ python manage.py migrate
+```
+
+5.Run the health check
+```shell
+python manage.py health_check
+
 ```

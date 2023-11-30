@@ -47,7 +47,7 @@ const navigation = [
   {
     title: 'Advanced guides',
     links: [
-      { title: 'Writing sustom checks', href: '/writing-your-own-checks' },
+      { title: 'Writing custom checks', href: '/writing-your-own-checks' },
       { title: 'Customizing the output', href: '/customize-output' },
       { title: 'Management Command', href: '/management-command' },
       { title: 'External Monitoring', href: '/monitoring' },
