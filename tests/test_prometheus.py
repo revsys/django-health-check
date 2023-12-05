@@ -42,17 +42,17 @@ class TestDjangoHealthCheckCollector:
     @pytest.mark.parametrize(
         "error, critical_service, errors",
         [
-            (None, 1, 0),
-            (None, 0, 0),
-            (HealthCheckException("test"), 1, 1),
-            (HealthCheckException("test"), 0, 1),
-            (HealthCheckException("test"), 1, 1),
-            (HealthCheckException("test"), 0, 1),
+            (None, True, 0),
+            (None, False, 0),
+            (HealthCheckException("test"), True, 1),
+            (HealthCheckException("test"), False, 1),
+            (HealthCheckException("test"), True, 1),
+            (HealthCheckException("test"), False, 1),
         ],
     )
     def test_collect(self, collector, plugin, error, critical_service, errors):
         plugin.error = error
-        plugin.critical_service = bool(critical_service)
+        plugin.critical_service = critical_service
 
         metric_families = list(collector.collect())
         assert metric_families
@@ -61,7 +61,11 @@ class TestDjangoHealthCheckCollector:
             sample = metric_family.samples[0]
 
             assert sample.labels["identifier"] == "FakePlugin"
-            assert sample.labels["critical_service"] == str(critical_service)
+
+            if critical_service:
+                assert sample.labels["kind"] == "critical_service"
+            else:
+                assert sample.labels["kind"] == "normal"
 
             if sample.name == "django_health_check_errors":
                 assert sample.value == errors
