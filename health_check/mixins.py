@@ -66,7 +66,7 @@ class CheckMixin:
                 from django.db import connections
 
                 connections.close_all()
-        
+
         def _collect_errors(plugin):
             if plugin.critical_service:
                 if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
@@ -75,15 +75,16 @@ class CheckMixin:
                     )
                 else:
                     errors.extend(plugin.errors)
-                    
+
         plugins = self.filter_plugins(subset=subset)
-        
+        plugin_instances = plugins.values()
+
         if HEALTH_CHECK["DISABLE_THREADING"]:
-            for plugin in plugins:
+            for plugin in plugin_instances:
                 _run(plugin)
                 _collect_errors(plugin)
         else:
-            with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-                for plugin in executor.map(_run, plugins):
+            with ThreadPoolExecutor(max_workers=len(plugin_instances) or 1) as executor:
+                for plugin in executor.map(_run, plugin_instances):
                     _collect_errors(plugin)
         return errors
