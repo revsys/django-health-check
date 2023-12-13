@@ -66,18 +66,24 @@ class CheckMixin:
                 from django.db import connections
 
                 connections.close_all()
-
+        
+        def _collect_errors(plugin):
+            if plugin.critical_service:
+                if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
+                    errors.extend(
+                        e for e in plugin.errors if not isinstance(e, ServiceWarning)
+                    )
+                else:
+                    errors.extend(plugin.errors)
+                    
         plugins = self.filter_plugins(subset=subset)
-        with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
-            for plugin in executor.map(_run, plugins.values()):
-                if plugin.critical_service:
-                    if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
-                        errors.extend(
-                            e
-                            for e in plugin.errors
-                            if not isinstance(e, ServiceWarning)
-                        )
-                    else:
-                        errors.extend(plugin.errors)
-
+        
+        if HEALTH_CHECK["DISABLE_THREADING"]:
+            for plugin in plugins:
+                _run(plugin)
+                _collect_errors(plugin)
+        else:
+            with ThreadPoolExecutor(max_workers=len(plugins) or 1) as executor:
+                for plugin in executor.map(_run, plugins):
+                    _collect_errors(plugin)
         return errors
