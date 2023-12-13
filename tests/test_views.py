@@ -2,7 +2,6 @@ import json
 
 import pytest
 
-from health_check import conf
 from health_check.backends import BaseHealthCheckBackend
 from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceWarning
@@ -292,7 +291,7 @@ class TestMainView:
         plugin_dir.register(SuccessOneBackend)
         plugin_dir.register(SuccessTwoBackend)
 
-        HEALTH_CHECK['SUBSETS'] = {
+        HEALTH_CHECK["SUBSETS"] = {
             "startup-probe": ["SuccessOneBackend", "SuccessTwoBackend"],
             "liveness-probe": ["SuccessTwoBackend"],
         }

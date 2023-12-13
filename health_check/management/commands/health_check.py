@@ -10,7 +10,7 @@ class Command(CheckMixin, BaseCommand):
     help = "Run health checks and exit 0 if everything went well."
 
     def add_arguments(self, parser):
-        parser.add_argument("-s", '--subset', type=str, nargs=1)
+        parser.add_argument("-s", "--subset", type=str, nargs=1)
 
     def handle(self, *args, **options):
         # perform all checks
