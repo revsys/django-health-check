@@ -90,6 +90,24 @@ one of these checks, set its value to `None`.
     }
 ```
 
+To use Health Check Subsets, Specify a subset name and associate it with the relevant health check services to utilize Health Check Subsets.
+```python
+    HEALTH_CHECK = {
+        # .....
+        "SUBSETS": {
+            "startup-probe": ["MigrationsHealthCheck", "DatabaseBackend"],
+            "liveness-probe": ["DatabaseBackend"],
+            "<SUBSET_NAME>": ["<Health_Check_Service_Name"]
+        },
+        # .....
+    }
+```
+
+To only execute specific subset of health check
+```shell
+curl -X GET -H "Accept: application/json" http://www.example.com/ht/startup-probe/
+```
+
 If using the DB check, run migrations:
 
 ```shell

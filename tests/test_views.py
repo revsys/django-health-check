@@ -92,7 +92,7 @@ class TestMainView:
 
     def test_error(self, client):
         class MyBackend(BaseHealthCheckBackend):
-            def check_status(self):
+            def check_status(self, subset=None):
                 self.add_error("Super Fail!")
 
         plugin_dir.reset()
@@ -104,7 +104,7 @@ class TestMainView:
 
     def test_warning(self, client):
         class MyBackend(BaseHealthCheckBackend):
-            def check_status(self):
+            def check_status(self, subset=None):
                 raise ServiceWarning("so so")
 
         plugin_dir.reset()
@@ -124,7 +124,7 @@ class TestMainView:
         class MyBackend(BaseHealthCheckBackend):
             critical_service = False
 
-            def check_status(self):
+            def check_status(self, subset=None):
                 self.add_error("Super Fail!")
 
         plugin_dir.reset()
@@ -136,7 +136,7 @@ class TestMainView:
 
     def test_success_accept_json(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -147,7 +147,7 @@ class TestMainView:
 
     def test_success_prefer_json(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -160,7 +160,7 @@ class TestMainView:
 
     def test_success_accept_xhtml(self, client):
         class SuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -171,7 +171,7 @@ class TestMainView:
 
     def test_success_unsupported_accept(self, client):
         class SuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -186,7 +186,7 @@ class TestMainView:
 
     def test_success_unsupported_and_supported_accept(self, client):
         class SuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -199,7 +199,7 @@ class TestMainView:
 
     def test_success_accept_order(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -213,7 +213,7 @@ class TestMainView:
 
     def test_success_accept_order__reverse(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -227,7 +227,7 @@ class TestMainView:
 
     def test_format_override(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -238,7 +238,7 @@ class TestMainView:
 
     def test_format_no_accept_header(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -249,7 +249,7 @@ class TestMainView:
 
     def test_error_accept_json(self, client):
         class JSONErrorBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 self.add_error("JSON Error")
 
         plugin_dir.reset()
@@ -266,7 +266,7 @@ class TestMainView:
 
     def test_success_param_json(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 pass
 
         plugin_dir.reset()
@@ -278,9 +278,57 @@ class TestMainView:
             JSONSuccessBackend().identifier(): JSONSuccessBackend().pretty_status()
         }
 
+    def test_success_subset_define(self, client):
+        class SuccessOneBackend(BaseHealthCheckBackend):
+            def run_check(self, subset=None):
+                pass
+
+        class SuccessTwoBackend(BaseHealthCheckBackend):
+            def run_check(self, subset=None):
+                pass
+
+        plugin_dir.reset()
+        plugin_dir.register(SuccessOneBackend)
+        plugin_dir.register(SuccessTwoBackend)
+
+        HEALTH_CHECK["SUBSETS"] = {
+            "startup-probe": ["SuccessOneBackend", "SuccessTwoBackend"],
+            "liveness-probe": ["SuccessTwoBackend"],
+        }
+
+        response_startup_probe = client.get(
+            self.url + "startup-probe/", {"format": "json"}
+        )
+        assert (
+            response_startup_probe.status_code == 200
+        ), response_startup_probe.content.decode("utf-8")
+        assert response_startup_probe["content-type"] == "application/json"
+        assert json.loads(response_startup_probe.content.decode("utf-8")) == {
+            SuccessOneBackend().identifier(): SuccessOneBackend().pretty_status(),
+            SuccessTwoBackend().identifier(): SuccessTwoBackend().pretty_status(),
+        }
+
+        response_liveness_probe = client.get(
+            self.url + "liveness-probe/", {"format": "json"}
+        )
+        assert (
+            response_liveness_probe.status_code == 200
+        ), response_liveness_probe.content.decode("utf-8")
+        assert response_liveness_probe["content-type"] == "application/json"
+        assert json.loads(response_liveness_probe.content.decode("utf-8")) == {
+            SuccessTwoBackend().identifier(): SuccessTwoBackend().pretty_status(),
+        }
+
+    def test_error_subset_not_found(self, client):
+        plugin_dir.reset()
+        response = client.get(self.url + "liveness-probe/", {"format": "json"})
+        print(f"content: {response.content}")
+        print(f"code: {response.status_code}")
+        assert response.status_code == 404, response.content.decode("utf-8")
+
     def test_error_param_json(self, client):
         class JSONErrorBackend(BaseHealthCheckBackend):
-            def run_check(self):
+            def run_check(self, subset=None):
                 self.add_error("JSON Error")
 
         plugin_dir.reset()
