@@ -81,4 +81,4 @@ class StorageHealthCheck(BaseHealthCheckBackend):
 
 class DefaultFileStorageHealthCheck(StorageHealthCheck):
     storage_alias = "default"
-    storage = settings.DEFAULT_FILE_STORAGE
+    storage = settings.DEFAULT_FILE_STORAGE if django.VERSION < (4, 2) else None
