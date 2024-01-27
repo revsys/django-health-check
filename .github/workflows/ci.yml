@@ -74,7 +74,7 @@ jobs:
           - "4.2"
         exclude:
           - python-version: "3.10"
-            django-versin: "2.2"
+            django-version: "2.2"
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python version ${{ matrix.python-version }}
