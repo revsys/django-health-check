@@ -1,13 +1,13 @@
 Settings
 ========
 
-Settings can be configured via the ``HEALTH_CHECK`` dictionary.
+Settings can be configured via the `HEALTH_CHECK` dictionary.
 
 .. data:: WARNINGS_AS_ERRORS
 
     Treats :class:`ServiceWarning` as errors, meaning they will cause the views
-    to respond with a 500 status code. Default is ``True``. If set to
-    ``False`` warnings will be displayed in the template on in the JSON
+    to respond with a 500 status code. Default is `True`. If set to
+    `False` warnings will be displayed in the template on in the JSON
     response but the status code will remain a 200.
 
 Security
@@ -42,13 +42,13 @@ You can still use any uptime bot that is URL based while enjoying token protecti
     Do NOT use Django's `SECRET_KEY` setting. This should never be exposed,
     to any third party. Not even your trusted uptime bot.
 
-``psutil``
-----------
+`psutil`
+--------
 
 The following default settings will be used to check for disk and memory
 utilization. If you would prefer different thresholds, you can add the dictionary
 below to your Django settings file and adjust the values accordingly. If you want
-to disable any of these checks, set its value to ``None``.
+to disable any of these checks, set its value to `None`.
 
 .. code:: python
 
@@ -72,6 +72,7 @@ exceeds 90% or available memory drops below 100 MB.
 
 Celery Health Check
 -------------------
+
 Using `django.settings` you may exert more fine-grained control over the behavior of the celery health check
 
 .. list-table:: Additional Settings
@@ -84,13 +85,13 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Description
    * - `HEALTHCHECK_CACHE_KEY`
      - String
-     - djangohealtcheck_test
+     - `djangohealtcheck_test`
      - Specifies the name of the key to write to and read from to validate that the cache is working.
    * - `HEALTHCHECK_CELERY_QUEUE_TIMEOUT`
      - Number
-     - 3
+     - `3`
      - Specifies the maximum amount of time a task may spend in the queue before being automatically revoked with a `TaskRevokedError`.
    * - `HEALTHCHECK_CELERY_RESULT_TIMEOUT`
      - Number
-     - 3
+     - `3`
      - Specifies the maximum total time for a task to complete and return a result, including queue time.

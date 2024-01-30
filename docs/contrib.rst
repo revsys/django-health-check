@@ -1,19 +1,19 @@
 contrib
 =======
 
-``psutil``
-----------
+`psutil`
+--------
 
 Full disks and out-of-memory conditions are common causes of service outages.
 These situations can be averted by checking disk and memory utilization via the
-``psutil`` package:
+`psutil` package:
 
 .. code::
 
     pip install psutil
 
 Once that dependency has been installed, make sure that the corresponding Django
-app has been added to ``INSTALLED_APPS``:
+app has been added to `INSTALLED_APPS`:
 
 .. code:: python
 
@@ -36,8 +36,8 @@ to disable any of these checks, set its value to ``None``.
         'MEMORY_MIN' = 100,    # in MB
     }
 
-``celery``
-----------
+`celery`
+--------
 
 If you are using Celery you may choose between two different Celery checks.
 
@@ -57,8 +57,8 @@ all the time.
 You may also use both of them. To use these checks add them to `INSTALLED_APPS` in your
 Django settings module.
 
-``cache``
----------
+`cache`
+-------
 
 The key `djangohealtcheck_test` will be written to the cache backend to validate that the cache is working.  
 The name of the key can be customized by setting `HEALTHCHECK_CACHE_KEY` to another value.

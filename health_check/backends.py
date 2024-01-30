@@ -20,14 +20,14 @@ class BaseHealthCheckBackend:
     def __init__(self):
         self.errors = []
 
-    def check_status(self):
+    def check_status(self, subset=None):
         raise NotImplementedError
 
-    def run_check(self):
+    def run_check(self, subset=None):
         start = timer()
         self.errors = []
         try:
-            self.check_status()
+            self.check_status(subset=subset)
         except HealthCheckException as e:
             self.add_error(e, e)
         except BaseException:

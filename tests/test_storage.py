@@ -1,5 +1,7 @@
+import unittest
 from unittest import mock
 
+import django
 from django.core.files.storage import Storage
 from django.test import TestCase
 
@@ -8,6 +10,10 @@ from health_check.storage.backends import (
     DefaultFileStorageHealthCheck,
     StorageHealthCheck,
 )
+
+
+class CustomStorage(Storage):
+    pass
 
 
 class MockStorage(Storage):
@@ -68,6 +74,25 @@ class HealthCheckStorageTests(TestCase):
         default_storage = DefaultFileStorageHealthCheck()
         self.assertIsInstance(default_storage.get_storage(), Storage)
 
+    @unittest.skipUnless((4, 2) <= django.VERSION < (5, 0), "Only for Django 4.2 - 5.0")
+    def test_get_storage_django_between_42_and_50(self):
+        """Check that the old DEFAULT_FILE_STORAGE setting keeps being supported."""
+        # Note: this test doesn't work on Django<4.2 because the setting value is
+        # evaluated when the class attribute DefaultFileStorageHealthCheck.store is
+        # read, which is at import time, before we can mock the setting.
+        with self.settings(DEFAULT_FILE_STORAGE="tests.test_storage.CustomStorage"):
+            default_storage = DefaultFileStorageHealthCheck()
+            self.assertIsInstance(default_storage.get_storage(), CustomStorage)
+
+    @unittest.skipUnless((4, 2) <= django.VERSION, "Django 4.2+ required")
+    def test_get_storage_django_42_plus(self):
+        """Check that the new STORAGES setting is supported."""
+        with self.settings(
+            STORAGES={"default": {"BACKEND": "tests.test_storage.CustomStorage"}}
+        ):
+            default_storage = DefaultFileStorageHealthCheck()
+            self.assertIsInstance(default_storage.get_storage(), CustomStorage)
+
     @mock.patch(
         "health_check.storage.backends.DefaultFileStorageHealthCheck.storage",
         MockStorage(),
@@ -88,21 +113,45 @@ class HealthCheckStorageTests(TestCase):
         ):
             self.assertTrue(default_storage_health.check_status())
 
+    @unittest.skipUnless(django.VERSION <= (4, 1), "Only for Django 4.1 and earlier")
     @mock.patch(
         "health_check.storage.backends.DefaultFileStorageHealthCheck.storage",
         MockStorage(saves=False),
     )
-    def test_file_does_not_exist(self):
+    def test_file_does_not_exist_django_41_earlier(self):
         """Test check_status raises ServiceUnavailable when file is not saved."""
         default_storage_health = DefaultFileStorageHealthCheck()
         with self.assertRaises(ServiceUnavailable):
             default_storage_health.check_status()
 
+    @unittest.skipUnless((4, 2) <= django.VERSION, "Only for Django 4.2+")
+    @mock.patch(
+        "health_check.storage.backends.storages",
+        {"default": MockStorage(saves=False)},
+    )
+    def test_file_does_not_exist_django_42_plus(self):
+        """Test check_status raises ServiceUnavailable when file is not saved."""
+        default_storage_health = DefaultFileStorageHealthCheck()
+        with self.assertRaises(ServiceUnavailable):
+            default_storage_health.check_status()
+
+    @unittest.skipUnless(django.VERSION <= (4, 1), "Only for Django 4.1 and earlier")
     @mock.patch(
         "health_check.storage.backends.DefaultFileStorageHealthCheck.storage",
         MockStorage(deletes=False),
     )
-    def test_file_not_deleted(self):
+    def test_file_not_deleted_django_41_earlier(self):
+        """Test check_status raises ServiceUnavailable when file is not deleted."""
+        default_storage_health = DefaultFileStorageHealthCheck()
+        with self.assertRaises(ServiceUnavailable):
+            default_storage_health.check_status()
+
+    @unittest.skipUnless((4, 2) <= django.VERSION, "Only for Django 4.2+")
+    @mock.patch(
+        "health_check.storage.backends.storages",
+        {"default": MockStorage(deletes=False)},
+    )
+    def test_file_not_deleted_django_42_plus(self):
         """Test check_status raises ServiceUnavailable when file is not deleted."""
         default_storage_health = DefaultFileStorageHealthCheck()
         with self.assertRaises(ServiceUnavailable):

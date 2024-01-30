@@ -8,7 +8,7 @@ from health_check.exceptions import ServiceUnavailable
 class CeleryPingHealthCheck(BaseHealthCheckBackend):
     CORRECT_PING_RESPONSE = {"ok": "pong"}
 
-    def check_status(self):
+    def check_status(self, subset=None):
         timeout = getattr(settings, "HEALTHCHECK_CELERY_PING_TIMEOUT", 1)
 
         try:

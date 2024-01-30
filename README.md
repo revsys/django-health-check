@@ -54,7 +54,7 @@ Add the health checker to a URL you want to use:
 ```python
     urlpatterns = [
         # ...
-        url(r'^ht/', include('health_check.urls')),
+        path(r'ht/', include('health_check.urls')),
     ]
 ```
 
@@ -90,6 +90,24 @@ one of these checks, set its value to `None`.
     }
 ```
 
+To use Health Check Subsets, Specify a subset name and associate it with the relevant health check services to utilize Health Check Subsets.
+```python
+    HEALTH_CHECK = {
+        # .....
+        "SUBSETS": {
+            "startup-probe": ["MigrationsHealthCheck", "DatabaseBackend"],
+            "liveness-probe": ["DatabaseBackend"],
+            "<SUBSET_NAME>": ["<Health_Check_Service_Name"]
+        },
+        # .....
+    }
+```
+
+To only execute specific subset of health check
+```shell
+curl -X GET -H "Accept: application/json" http://www.example.com/ht/startup-probe/
+```
+
 If using the DB check, run migrations:
 
 ```shell
@@ -101,21 +119,21 @@ To use the RabbitMQ healthcheck, please make sure that there is a variable named
 rabbit server. For example:
 
 ```python
-    BROKER_URL = amqp://myuser:mypassword@localhost:5672/myvhost
+    BROKER_URL = "amqp://myuser:mypassword@localhost:5672/myvhost"
 ```
 
 To use the Redis healthcheck, please make sure that there is a variable named ``REDIS_URL``
 on django.conf.settings with the required format to connect to your redis server. For example:
 
 ```python
-    REDIS_URL = redis://localhost:6370
+    REDIS_URL = "redis://localhost:6370"
 ```
 
 The cache healthcheck tries to write and read a specific key within the cache backend.
 It can be customized by setting `HEALTHCHECK_CACHE_KEY` to another value:
 
 ```python
-    HEALTHCHECK_CACHE_KEY = custom_healthcheck_key
+    HEALTHCHECK_CACHE_KEY = "custom_healthcheck_key"
 ```
 
 ## Setting up monitoring
@@ -238,7 +256,7 @@ and `render_to_response_json` properties:
 
     urlpatterns = [
         # ...
-        url(r'^ht/$', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
+        path(r'ht/', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
     ]
 ```
 
@@ -264,4 +282,3 @@ Similar to the http version, a critical error will cause the command to quit wit
 ## Other resources
 
 - [django-watchman](https://github.com/mwarkentin/django-watchman) is a package that does some of the same things in a slightly different way.
-- See this [weblog](https://www.vincit.fi/en/blog/deploying-django-to-elastic-beanstalk-with-https-redirects-and-functional-health-checks/) about configuring Django and health checking with AWS Elastic Load Balancer.

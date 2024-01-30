@@ -1,7 +1,14 @@
 import uuid
 
+import django
+from django.conf import settings
 from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage, get_storage_class
+from django.core.files.storage import default_storage
+
+if django.VERSION >= (4, 2):
+    from django.core.files.storage import InvalidStorageError, storages
+else:
+    from django.core.files.storage import get_storage_class
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
@@ -21,13 +28,22 @@ class StorageHealthCheck(BaseHealthCheckBackend):
     (e.g 'django.core.files.storage.FileSystemStorage') or a Storage instance.
     """
 
+    storage_alias = None
     storage = None
 
     def get_storage(self):
-        if isinstance(self.storage, str):
-            return get_storage_class(self.storage)()
+        if django.VERSION >= (4, 2):
+            if self.storage is not None:
+                return self.storage
+            try:
+                return storages[self.storage_alias]
+            except InvalidStorageError:
+                return None
         else:
-            return self.storage
+            if isinstance(self.storage, str):
+                return get_storage_class(self.storage)()
+            else:
+                return self.storage
 
     def get_file_name(self):
         return "health_check_storage_test/test-%s.txt" % uuid.uuid4()
@@ -54,7 +70,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
         if storage.exists(file_name):
             raise ServiceUnavailable("File was not deleted")
 
-    def check_status(self):
+    def check_status(self, subset=None):
         try:
             # write the file to the storage backend
             file_name = self.get_file_name()
