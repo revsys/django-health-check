@@ -9,12 +9,12 @@ from health_check.plugins import plugin_dir
 
 
 class FailPlugin(BaseHealthCheckBackend):
-    def check_status(self, subset=None):
+    def check_status(self):
         self.add_error("Oops")
 
 
 class OkPlugin(BaseHealthCheckBackend):
-    def check_status(self, subset=None):
+    def check_status(self):
         pass
 
 

@@ -7,7 +7,7 @@ from .models import TestModel
 
 
 class DatabaseBackend(BaseHealthCheckBackend):
-    def check_status(self, subset=None):
+    def check_status(self):
         try:
             obj = TestModel.objects.create(title="test")
             obj.title = "newtest"

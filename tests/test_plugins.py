@@ -5,12 +5,12 @@ from health_check.plugins import plugin_dir
 
 
 class FakePlugin(BaseHealthCheckBackend):
-    def check_status(self, subset=None):
+    def check_status(self):
         pass
 
 
 class Plugin(BaseHealthCheckBackend):
-    def check_status(self, subset=None):
+    def check_status(self):
         pass
 
 
