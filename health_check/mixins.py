@@ -46,7 +46,7 @@ class CheckMixin:
 
         health_check_subsets = HEALTH_CHECK["SUBSETS"]
         if subset not in health_check_subsets or not self.plugins:
-            raise Http404(f"Specify subset: '{subset}' does not exists.")
+            raise Http404(f"Subset: '{subset}' does not exist.")
 
         selected_subset = set(health_check_subsets[subset])
         return {
