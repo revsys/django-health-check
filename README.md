@@ -192,7 +192,7 @@ Writing a health check is quick and easy:
         #: even if the check errors.
         critical_service = False
 
-        def check_status(self):
+        def check_status(self, subset=None):
             # The test code goes here.
             # You can use `self.add_error` or
             # raise a `HealthCheckException`,
