@@ -75,5 +75,5 @@ class TestCommand:
             )
         stdout.seek(0)
         assert stdout.read() == (
-            f"Specify subset: '{NON_EXISTENCE_SUBSET_NAME}' does not exists.\n"
+            f"Subset: '{NON_EXISTENCE_SUBSET_NAME}' does not exist.\n"
         )

@@ -1,4 +1,5 @@
 import logging
+from health_check.exceptions import ServiceUnavailable
 
 from health_check.storage.backends import StorageHealthCheck
 
@@ -18,7 +19,11 @@ class S3Boto3StorageHealthCheck(StorageHealthCheck):
 
     logger = logging.getLogger(__name__)
     storage = "storages.backends.s3boto3.S3Boto3Storage"
+    storage_alias = "default"
 
     def check_delete(self, file_name):
-        storage = self.get_storage()
-        storage.delete(file_name)
+        try:
+            storage = self.get_storage()
+            storage.delete(file_name)
+        except Exception as e:
+            raise ServiceUnavailable("File was not deleted") from e
