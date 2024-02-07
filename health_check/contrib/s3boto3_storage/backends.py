@@ -22,8 +22,7 @@ class S3Boto3StorageHealthCheck(StorageHealthCheck):
     storage_alias = "default"
 
     def check_delete(self, file_name):
-        try:
-            storage = self.get_storage()
-            storage.delete(file_name)
-        except Exception as e:
-            raise ServiceUnavailable("File was not deleted") from e
+        storage = self.get_storage()
+        if not storage.exists(file_name):
+            raise ServiceUnavailable("File does not exist")
+        storage.delete(file_name)

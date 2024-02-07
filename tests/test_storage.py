@@ -267,9 +267,9 @@ class HealthCheckS3Boto3StorageTests(TestCase):
     def test_check_status_failure_on_delete(self):
         """Test check_status raises ServiceUnavailable when file cannot be deleted."""
         with mock.patch.object(
-            MockS3Boto3Storage, "delete", new_callable=mock.PropertyMock
-        ) as mock_deletes:
-            mock_deletes.return_value = False
+            MockS3Boto3Storage, "exists", new_callable=mock.PropertyMock
+        ) as mock_exists:
+            mock_exists.return_value = False
             health_check = S3Boto3StorageHealthCheck()
             with self.assertRaises(ServiceUnavailable):
                 health_check.check_status()
