@@ -90,7 +90,7 @@ one of these checks, set its value to `None`.
     }
 ```
 
-To use Health Check Subsets, Specify a subset name and associate it with the relevant health check services to utilize Health Check Subsets.
+To use Health Check Subsets, Specify a subset name and associate it with the relevant health check services to utilize Health Check Subsets. (New in version 3.18.0)
 ```python
     HEALTH_CHECK = {
         # .....
