@@ -1,6 +1,6 @@
 import logging
-from health_check.exceptions import ServiceUnavailable
 
+from health_check.exceptions import ServiceUnavailable
 from health_check.storage.backends import StorageHealthCheck
 
 
