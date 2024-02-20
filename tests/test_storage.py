@@ -1,13 +1,13 @@
-from io import BytesIO
 import unittest
+from io import BytesIO
 from unittest import mock
 
 import django
-from django.core.files.storage import Storage
-from django.test import TestCase
-from health_check.contrib.s3boto3_storage.backends import S3Boto3StorageHealthCheck
-from django.test import override_settings
 from django.core.files.base import File
+from django.core.files.storage import Storage
+from django.test import TestCase, override_settings
+
+from health_check.contrib.s3boto3_storage.backends import S3Boto3StorageHealthCheck
 from health_check.exceptions import ServiceUnavailable
 from health_check.storage.backends import (
     DefaultFileStorageHealthCheck,
