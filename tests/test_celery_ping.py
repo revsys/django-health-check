@@ -148,10 +148,18 @@ class TestCeleryPingHealthCheck:
                 {"celery2@4cc150a7b49b": CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
                 {"celery3@4cc150a7b49b": CeleryPingHealthCheck.CORRECT_PING_RESPONSE},
             ],
+        ), patch(
+            self.CELERY_APP_CONTROL_INSPECT_ACTIVE_QUEUES,
+            return_value={
+                celery_worker: [
+                    {"name": queue.name} for queue in settings.CELERY_QUEUES
+                ]
+                for celery_worker in ("celery1@4cc150a7b49b", "celery2@4cc150a7b49b", "celery3@4cc150a7b49b")
+            },
         ):
             health_check.check_status()
 
-            assert len(health_check.errors) == 1
+            assert not health_check.errors
 
 
 class TestCeleryPingHealthCheckApps:
