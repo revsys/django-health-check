@@ -95,3 +95,26 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Number
      - `3`
      - Specifies the maximum total time for a task to complete and return a result, including queue time.
+
+
+Celery-Ping Health Check
+-------------------
+
+Using `django.settings` you may exert more fine-grained control over the behavior of the celery-ping health check
+
+.. list-table:: Additional Settings
+   :widths: 25 10 10 55
+   :header-rows: 1
+
+   * - Name
+     - Type
+     - Default
+     - Description
+   * - `HEALTHCHECK_CELERY_PING_TIMEOUT`
+     - Number
+     - `1`
+     - Specifies the maximum total time (in seconds) for which "pong" responses are awaited.
+   * - `HEALTHCHECK_CELERY_PING_DESTINATION`
+     - List of Strings
+     - `None`
+     - Specifies the list of workers which will receive the "ping" request.
