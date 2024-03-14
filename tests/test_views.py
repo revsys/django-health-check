@@ -278,6 +278,54 @@ class TestMainView:
             JSONSuccessBackend().identifier(): JSONSuccessBackend().pretty_status()
         }
 
+    def test_success_subset_define(self, client):
+        class SuccessOneBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                pass
+
+        class SuccessTwoBackend(BaseHealthCheckBackend):
+            def run_check(self):
+                pass
+
+        plugin_dir.reset()
+        plugin_dir.register(SuccessOneBackend)
+        plugin_dir.register(SuccessTwoBackend)
+
+        HEALTH_CHECK["SUBSETS"] = {
+            "startup-probe": ["SuccessOneBackend", "SuccessTwoBackend"],
+            "liveness-probe": ["SuccessTwoBackend"],
+        }
+
+        response_startup_probe = client.get(
+            self.url + "startup-probe/", {"format": "json"}
+        )
+        assert (
+            response_startup_probe.status_code == 200
+        ), response_startup_probe.content.decode("utf-8")
+        assert response_startup_probe["content-type"] == "application/json"
+        assert json.loads(response_startup_probe.content.decode("utf-8")) == {
+            SuccessOneBackend().identifier(): SuccessOneBackend().pretty_status(),
+            SuccessTwoBackend().identifier(): SuccessTwoBackend().pretty_status(),
+        }
+
+        response_liveness_probe = client.get(
+            self.url + "liveness-probe/", {"format": "json"}
+        )
+        assert (
+            response_liveness_probe.status_code == 200
+        ), response_liveness_probe.content.decode("utf-8")
+        assert response_liveness_probe["content-type"] == "application/json"
+        assert json.loads(response_liveness_probe.content.decode("utf-8")) == {
+            SuccessTwoBackend().identifier(): SuccessTwoBackend().pretty_status(),
+        }
+
+    def test_error_subset_not_found(self, client):
+        plugin_dir.reset()
+        response = client.get(self.url + "liveness-probe/", {"format": "json"})
+        print(f"content: {response.content}")
+        print(f"code: {response.status_code}")
+        assert response.status_code == 404, response.content.decode("utf-8")
+
     def test_error_param_json(self, client):
         class JSONErrorBackend(BaseHealthCheckBackend):
             def run_check(self):

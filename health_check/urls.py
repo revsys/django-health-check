@@ -6,4 +6,5 @@ app_name = "health_check"
 
 urlpatterns = [
     path("", MainView.as_view(), name="health_check_home"),
+    path("<str:subset>/", MainView.as_view(), name="health_check_subset"),
 ]
