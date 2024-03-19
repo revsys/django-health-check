@@ -180,6 +180,14 @@ The backend will return a JSON response:
     }
 ```
 
+## Settings overrides
+
+You can provide `settings.HEALTH_CHECK_TEST_FOLDER` to alter the default storage behavior. It is helpful if your user doesn't have permissions to create a folder within the current dir.
+
+```python
+HEALTH_CHECK_TEST_FOLDER = '/tmp'
+```
+
 ## Writing a custom health check
 
 Writing a health check is quick and easy:

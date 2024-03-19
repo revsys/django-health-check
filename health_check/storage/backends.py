@@ -44,6 +44,15 @@ class StorageHealthCheck(BaseHealthCheckBackend):
                 return self.storage
 
     def get_file_name(self):
+        """
+        Generate a unique filename for a test file within the specified folder.
+
+        If the `HEALTH_CHECK_TEST_FOLDER` setting is defined, the generated filename will be within that folder.
+        Otherwise, it will be within a folder named 'health_check_storage_test' in the current directory.
+
+        Returns:
+            str: A string representing the path to the generated test file.
+        """
         path = settings.HEALTH_CHECK_TEST_FOLDER or 'health_check_storage_test'
         filename = f'test-{uuid.uuid4()}.txt'
         return os.path.join(path, filename)
