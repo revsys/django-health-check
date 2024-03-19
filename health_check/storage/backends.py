@@ -1,3 +1,4 @@
+import os
 import uuid
 
 import django
@@ -43,7 +44,9 @@ class StorageHealthCheck(BaseHealthCheckBackend):
                 return self.storage
 
     def get_file_name(self):
-        return "health_check_storage_test/test-%s.txt" % uuid.uuid4()
+        path = settings.HEALTH_CHECK_TEST_FOLDER or 'health_check_storage_test'
+        filename = f'test-{uuid.uuid4()}.txt'
+        return os.path.join(path, filename)
 
     def get_file_content(self):
         return b"this is the healthtest file content"
