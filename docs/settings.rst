@@ -95,3 +95,16 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Number
      - `3`
      - Specifies the maximum total time for a task to complete and return a result, including queue time.
+
+Threading
+-------------------
+
+Django Health Check runs each check in `its own thread<https://github.com/revsys/django-health-check/blob/8f7e966e6dc6c7773f2340deabb4f0e2a2ab0873/health_check/mixins.py#L87>`_ by default.
+
+This behavior can be disabled with:
+
+.. code:: python
+
+    HEALTH_CHECK = {
+        'DISABLE_THREADING': True
+    }
