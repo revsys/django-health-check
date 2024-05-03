@@ -1,10 +1,13 @@
 import unittest
+from io import BytesIO
 from unittest import mock
 
 import django
+from django.core.files.base import File
 from django.core.files.storage import Storage
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
+from health_check.contrib.s3boto3_storage.backends import S3Boto3StorageHealthCheck
 from health_check.exceptions import ServiceUnavailable
 from health_check.storage.backends import (
     DefaultFileStorageHealthCheck,
@@ -43,6 +46,62 @@ class MockStorage(Storage):
     def save(self, name, content, max_length=None):
         if self.saves:
             self.MOCK_FILE_COUNT += 1
+
+
+# Mocking the S3Boto3Storage backend
+class MockS3Boto3Storage:
+    """
+    A mock S3Boto3Storage backend to simulate interactions with AWS S3.
+    """
+
+    def __init__(self, saves=True, deletes=True):
+        self.saves = saves
+        self.deletes = deletes
+        self.files = {}
+
+    def open(self, name, mode="rb"):
+        """
+        Simulates opening a file from the mocked S3 storage.
+        For simplicity, this doesn't differentiate between read and write modes.
+        """
+        if name in self.files:
+            # Assuming file content is stored as bytes
+            file_content = self.files[name]
+            if isinstance(file_content, bytes):
+                return File(BytesIO(file_content))
+            else:
+                raise ValueError("File content must be bytes.")
+        else:
+            raise FileNotFoundError(f"The file {name} does not exist.")
+
+    def save(self, name, content):
+        """
+        Overriding save to ensure content is stored as bytes in a way compatible with open method.
+        Assumes content is either a ContentFile, bytes, or a string that needs conversion.
+        """
+        if self.saves:
+            # Check if content is a ContentFile or similar and read bytes
+            if hasattr(content, "read"):
+                file_content = content.read()
+            elif isinstance(content, bytes):
+                file_content = content
+            elif isinstance(content, str):
+                file_content = content.encode()  # Convert string to bytes
+            else:
+                raise ValueError("Unsupported file content type.")
+
+            self.files[name] = file_content
+            return name
+        raise Exception("Failed to save file.")
+
+    def delete(self, name):
+        if self.deletes:
+            self.files.pop(name, None)
+        else:
+            raise Exception("Failed to delete file.")
+
+    def exists(self, name):
+        return name in self.files
 
 
 def get_file_name(*args, **kwargs):
@@ -156,3 +215,90 @@ class HealthCheckStorageTests(TestCase):
         default_storage_health = DefaultFileStorageHealthCheck()
         with self.assertRaises(ServiceUnavailable):
             default_storage_health.check_status()
+
+
+@mock.patch("storages.backends.s3boto3.S3Boto3Storage", new=MockS3Boto3Storage)
+@override_settings(
+    STORAGES={
+        "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+    }
+)
+class HealthCheckS3Boto3StorageTests(TestCase):
+    """
+    Tests health check behavior with a mocked S3Boto3Storage backend.
+    """
+
+    @unittest.skipUnless(django.VERSION <= (4, 1), "Only for Django 4.1 and earlier")
+    @mock.patch(
+        "storages.backends.s3boto3.S3Boto3Storage",
+        MockS3Boto3Storage(deletes=False),
+    )
+    def test_check_delete_success_django_41_earlier(self):
+        """Test that check_delete correctly deletes a file when S3Boto3Storage is working."""
+        health_check = S3Boto3StorageHealthCheck()
+        mock_storage = health_check.get_storage()
+        file_name = "testfile.txt"
+        content = BytesIO(b"Test content")
+        mock_storage.save(file_name, content)
+
+        with self.assertRaises(ServiceUnavailable):
+            health_check.check_delete(file_name)
+
+    @unittest.skipUnless((4, 2) <= django.VERSION, "Only for Django 4.2+")
+    def test_check_delete_success(self):
+        """Test that check_delete correctly deletes a file when S3Boto3Storage is working."""
+        health_check = S3Boto3StorageHealthCheck()
+        mock_storage = health_check.get_storage()
+        file_name = "testfile.txt"
+        content = BytesIO(b"Test content")
+        mock_storage.save(file_name, content)
+
+        health_check.check_delete(file_name)
+        self.assertFalse(mock_storage.exists(file_name))
+
+    def test_check_delete_failure(self):
+        """Test that check_delete raises ServiceUnavailable when deletion fails."""
+        with mock.patch.object(
+            MockS3Boto3Storage,
+            "delete",
+            side_effect=Exception("Failed to delete file."),
+        ):
+            health_check = S3Boto3StorageHealthCheck()
+            with self.assertRaises(ServiceUnavailable):
+                health_check.check_delete("testfile.txt")
+
+    @unittest.skipUnless(django.VERSION <= (4, 1), "Only for Django 4.1 and earlier")
+    @mock.patch(
+        "storages.backends.s3boto3.S3Boto3Storage",
+        MockS3Boto3Storage(deletes=False),
+    )
+    def test_check_status_working_django_41_earlier(self):
+        """Test check_status returns True when S3Boto3Storage can save and delete files."""
+        health_check = S3Boto3StorageHealthCheck()
+        with self.assertRaises(ServiceUnavailable):
+            self.assertTrue(health_check.check_status())
+
+    @unittest.skipUnless((4, 2) <= django.VERSION, "Only for Django 4.2+")
+    def test_check_status_working(self):
+        """Test check_status returns True when S3Boto3Storage can save and delete files."""
+        health_check = S3Boto3StorageHealthCheck()
+        self.assertTrue(health_check.check_status())
+
+    def test_check_status_failure_on_save(self):
+        """Test check_status raises ServiceUnavailable when file cannot be saved."""
+        with mock.patch.object(
+            MockS3Boto3Storage, "save", side_effect=Exception("Failed to save file.")
+        ):
+            health_check = S3Boto3StorageHealthCheck()
+            with self.assertRaises(ServiceUnavailable):
+                health_check.check_status()
+
+    def test_check_status_failure_on_delete(self):
+        """Test check_status raises ServiceUnavailable when file cannot be deleted."""
+        with mock.patch.object(
+            MockS3Boto3Storage, "exists", new_callable=mock.PropertyMock
+        ) as mock_exists:
+            mock_exists.return_value = False
+            health_check = S3Boto3StorageHealthCheck()
+            with self.assertRaises(ServiceUnavailable):
+                health_check.check_status()
