@@ -1,8 +1,8 @@
 import uuid
 
 import django
-from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 
 if django.VERSION >= (4, 2):
     from django.core.files.storage import InvalidStorageError, storages
@@ -81,4 +81,4 @@ class StorageHealthCheck(BaseHealthCheckBackend):
 
 class DefaultFileStorageHealthCheck(StorageHealthCheck):
     storage_alias = "default"
-    storage = settings.DEFAULT_FILE_STORAGE
+    storage = default_storage
