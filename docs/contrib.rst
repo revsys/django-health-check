@@ -56,9 +56,3 @@ all the time.
 
 You may also use both of them. To use these checks add them to `INSTALLED_APPS` in your
 Django settings module.
-
-`cache`
--------
-
-The key `djangohealtcheck_test` will be written to the cache backend to validate that the cache is working.  
-The name of the key can be customized by setting `HEALTHCHECK_CACHE_KEY` to another value.
