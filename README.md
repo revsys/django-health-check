@@ -103,6 +103,20 @@ To use Health Check Subsets, Specify a subset name and associate it with the rel
     }
 ```
 
+To add checks on a specific database, it's possible to parameterize `DatabaseBackend` to use a specific database:
+```python
+    HEALTH_CHECK = {
+        # .....
+        "SUBSETS": {
+            "database-probe": [
+                "DatabaseBackend[default]",  # This is equivalent to "DatabaseBackend"
+                "DatabaseBackend[secondary]",
+            ],
+        },
+        # .....
+    }
+```
+
 To only execute specific subset of health check
 ```shell
 curl -X GET -H "Accept: application/json" http://www.example.com/ht/startup-probe/
