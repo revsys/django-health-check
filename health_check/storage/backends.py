@@ -10,7 +10,7 @@ else:
     from django.core.files.storage import get_storage_class
 
 from health_check.backends import BaseHealthCheckBackend
-from health_check.exceptions import ServiceUnavailable
+from health_check.exceptions import HealthCheckException, ServiceUnavailable
 
 
 class StorageHealthCheck(BaseHealthCheckBackend):
@@ -75,6 +75,8 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             file_name = self.check_save(file_name, file_content)
             self.check_delete(file_name)
             return True
+        except HealthCheckException:
+            raise
         except Exception as e:
             raise ServiceUnavailable("Unknown exception") from e
 
