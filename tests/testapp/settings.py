@@ -31,6 +31,7 @@ INSTALLED_APPS = (
     "health_check.contrib.celery_ping",
     "health_check.contrib.s3boto_storage",
     "health_check.contrib.db_heartbeat",
+    "health_check.contrib.mail",
     "tests",
 )
 
