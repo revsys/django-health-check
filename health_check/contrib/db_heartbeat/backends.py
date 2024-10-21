@@ -1,6 +1,7 @@
-from health_check.backends import BaseHealthCheckBackend
-from health_check.exceptions import ServiceUnavailable, ServiceReturnedUnexpectedResult
 from django.db import connection
+
+from health_check.backends import BaseHealthCheckBackend
+from health_check.exceptions import ServiceReturnedUnexpectedResult, ServiceUnavailable
 
 
 class DatabaseHeartBeatCheck(BaseHealthCheckBackend):
