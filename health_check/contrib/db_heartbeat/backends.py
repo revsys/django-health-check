@@ -4,9 +4,7 @@ from django.db import connection
 
 
 class DatabaseHeartBeatCheck(BaseHealthCheckBackend):
-    """
-    Health check that runs a simple SELECT 1; query to test if the database connection is alive.
-    """
+    """ Health check that runs a simple SELECT 1; query to test if the database connection is alive. """
 
     def check_status(self):
         try:
