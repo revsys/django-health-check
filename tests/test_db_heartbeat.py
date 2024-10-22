@@ -1,6 +1,6 @@
 import unittest
 
-from health_check.contrib.db_heartbeat import DatabaseHeartBeatCheck
+from health_check.contrib.db_heartbeat.backends import DatabaseHeartBeatCheck
 from health_check.exceptions import ServiceUnavailable
 
 
@@ -16,7 +16,3 @@ class TestDatabaseHeartBeatCheck(unittest.TestCase):
         health_check = DatabaseHeartBeatCheck()
         with self.assertRaises(ServiceUnavailable):
             health_check.check_status()
-
-
-if __name__ == "__main__":
-    unittest.main()
