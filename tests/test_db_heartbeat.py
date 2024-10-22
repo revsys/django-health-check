@@ -5,7 +5,6 @@ from health_check.exceptions import ServiceUnavailable
 
 
 class TestDatabaseHeartBeatCheck(unittest.TestCase):
-
     def test_check_status_success(self):
         health_check = DatabaseHeartBeatCheck()
         try:
