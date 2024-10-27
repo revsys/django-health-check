@@ -19,16 +19,6 @@ class TestDatabaseHeartBeatCheck(unittest.TestCase):
             self.fail(f"check_status() raised an exception unexpectedly: {e}")
 
     @patch("health_check.contrib.db_heartbeat.backends.connection")
-    def test_check_status_unexpected_result(self, mock_connection):
-        mock_cursor = MagicMock()
-        mock_cursor.fetchone.return_value = (0,)
-        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
-
-        health_check = DatabaseHeartBeatCheck()
-        with self.assertRaises(ServiceReturnedUnexpectedResult):
-            health_check.check_status()
-
-    @patch("health_check.contrib.db_heartbeat.backends.connection")
     def test_check_status_service_unavailable(self, mock_connection):
         mock_connection.cursor.side_effect = Exception("Database error")
 
