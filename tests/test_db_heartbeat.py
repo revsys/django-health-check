@@ -1,7 +1,8 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from health_check.contrib.db_heartbeat.backends import DatabaseHeartBeatCheck
-from health_check.exceptions import ServiceUnavailable, ServiceReturnedUnexpectedResult
+from health_check.exceptions import ServiceReturnedUnexpectedResult, ServiceUnavailable
 
 
 class TestDatabaseHeartBeatCheck(unittest.TestCase):
