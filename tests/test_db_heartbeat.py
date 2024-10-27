@@ -1,18 +1,37 @@
 import unittest
-
+from unittest.mock import patch, MagicMock
 from health_check.contrib.db_heartbeat.backends import DatabaseHeartBeatCheck
-from health_check.exceptions import ServiceUnavailable
+from health_check.exceptions import ServiceUnavailable, ServiceReturnedUnexpectedResult
 
 
 class TestDatabaseHeartBeatCheck(unittest.TestCase):
-    def test_check_status_success(self):
+
+    @patch("health_check.contrib.db_heartbeat.backends.connection")
+    def test_check_status_success(self, mock_connection):
+        mock_cursor = MagicMock()
+        mock_cursor.fetchone.return_value = (1,)
+        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
+
         health_check = DatabaseHeartBeatCheck()
         try:
-            health_check.check_status()  # Should pass without exceptions
+            health_check.check_status()
         except Exception as e:
             self.fail(f"check_status() raised an exception unexpectedly: {e}")
 
-    def test_check_status_unexpected_result(self):
+    @patch("health_check.contrib.db_heartbeat.backends.connection")
+    def test_check_status_unexpected_result(self, mock_connection):
+        mock_cursor = MagicMock()
+        mock_cursor.fetchone.return_value = (0,)
+        mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
+
+        health_check = DatabaseHeartBeatCheck()
+        with self.assertRaises(ServiceReturnedUnexpectedResult):
+            health_check.check_status()
+
+    @patch("health_check.contrib.db_heartbeat.backends.connection")
+    def test_check_status_service_unavailable(self, mock_connection):
+        mock_connection.cursor.side_effect = Exception("Database error")
+
         health_check = DatabaseHeartBeatCheck()
         with self.assertRaises(ServiceUnavailable):
             health_check.check_status()
