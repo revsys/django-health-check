@@ -6,7 +6,6 @@ from health_check.exceptions import ServiceReturnedUnexpectedResult, ServiceUnav
 
 
 class TestDatabaseHeartBeatCheck(unittest.TestCase):
-
     @patch("health_check.contrib.db_heartbeat.backends.connection")
     def test_check_status_success(self, mock_connection):
         mock_cursor = MagicMock()
