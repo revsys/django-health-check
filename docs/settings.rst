@@ -95,3 +95,7 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Number
      - `3`
      - Specifies the maximum total time for a task to complete and return a result, including queue time.
+   * - `HEALTHCHECK_CELERY_PRIORITY`
+     - Number
+     - `None`
+     - Specifies the healthcheck task priority.
