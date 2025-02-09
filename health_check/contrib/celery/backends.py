@@ -12,10 +12,11 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
         timeout = getattr(settings, "HEALTHCHECK_CELERY_TIMEOUT", 3)
         result_timeout = getattr(settings, "HEALTHCHECK_CELERY_RESULT_TIMEOUT", timeout)
         queue_timeout = getattr(settings, "HEALTHCHECK_CELERY_QUEUE_TIMEOUT", timeout)
+        priority = getattr(settings, "HEALTHCHECK_CELERY_PRIORITY", None)
 
         try:
             result = add.apply_async(
-                args=[4, 4], expires=queue_timeout, queue=self.queue
+                args=[4, 4], expires=queue_timeout, queue=self.queue, priority=priority
             )
             result.get(timeout=result_timeout)
             if result.result != 8:
