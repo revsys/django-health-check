@@ -1,35 +1,33 @@
 ---
-title: How to contribute to django-health-check checks
-pageTitle: Contributing to django-health-check checks
-description: Learn how to suggest new features, report bugs, and contribute code to the django-health-check project itself.
+title: How to contribute to django-health-check 
+pageTitle: Contributing to django-health-check 
+description: How to suggest new features, report bugs, and make code contributions to the django-health-check project.
 ---
 
-We welcome contributions, however you should react out in a [github issue](https://github.com/revsys/django-health-check/issues) before spending considerable time implementing a
-new feature or check to ensure it's something we would be willing to accept.
+We welcome contributions, however you should first react to a [github issue](https://github.com/revsys/django-health-check/issues) 
+or equally check in with us to ensure it's something we would be willing to accept.
 
-We don't want anyone wasting time on something that doesn't seem to fit with
-the goals of the project.
+We would hate for you to waste time working on something that does not align with our project goals.
 
 ## Reporting Bugs
 
-If you happen to find a bug in django-health-check, please give us a [detailed
-report as an issue](https://github.com/revsys/django-health-check/issues). The
-more information you can provide the better, but at a minimum you should include
-the following information:
+If you find a bug in django-health-check, please give us a [detailed
+report as an issue](https://github.com/revsys/django-health-check/issues). Please provide as 
+much as information as possible. The following information **must** be included:
 
 - Version of Python in use
 - Version of Django in use
 - Version of django-health-check impacted
 - Detailed description of the problem
 - Any stacktraces you've collected
-- Anything else you think may be useful to us in debuggin it
+- Anything else you think may be useful to us in debugging it
 
 ## Reporting Security Issues
 
-If you think you've found a security related issue that isn't appropriate to
+If you find a security related issue that isn't appropriate to
 discuss on a Github issue, please [email us](mailto:frank@revsys.com)
 directly.
 
 ## Questions
 
-Questions should also be directed to your [Github issue board](https://github.com/revsys/django-health-check/issues).
+Questions should also be directed to our [Github issue board](https://github.com/revsys/django-health-check/issues).
