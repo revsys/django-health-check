@@ -15,7 +15,7 @@ class HealthCheckConfig(AppConfig):
 
         if hasattr(settings, "HEALTHCHECK_CELERY_TIMEOUT"):
             warnings.warn(
-                "HEALTHCHECK_CELERY_TIMEOUT is depricated and may be removed in the "
+                "HEALTHCHECK_CELERY_TIMEOUT is deprecated and may be removed in the "
                 "future. Please use HEALTHCHECK_CELERY_RESULT_TIMEOUT and "
                 "HEALTHCHECK_CELERY_QUEUE_TIMEOUT instead.",
                 DeprecationWarning,
