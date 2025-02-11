@@ -105,3 +105,6 @@ ENV/
 
 .envrc
 .direnv
+
+# mac
+.DS_Store
