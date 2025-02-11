@@ -5,6 +5,7 @@ from django.db.models import Model
 from django.test import TestCase
 
 from health_check.db.backends import DatabaseBackend
+from health_check.mixins import CheckMixin
 
 
 class MockDBModel(Model):
@@ -76,3 +77,25 @@ class HealthCheckDatabaseTests(TestCase):
         db_backend = DatabaseBackend()
         with self.assertRaises(Exception):
             db_backend.run_check()
+
+
+class MultipleDatabasesTests(TestCase):
+    """
+    Tests database specific features.
+    Ensures that all databases are registered as their own backend and each backend runs in its own database.
+    """
+
+    def test_all_databases_registered(self):
+        check_mixin = CheckMixin()
+        all_plugins = check_mixin.plugins
+
+        self.assertIn("DatabaseBackend[default]", all_plugins)
+        self.assertIn("DatabaseBackend[other]", all_plugins)
+
+    @patch("django.db.transaction.atomic")
+    def test_checks_on_database(self, mocked_atomic):
+        db1_health_check = DatabaseBackend(database_name="other")
+
+        db1_health_check.run_check()
+
+        mocked_atomic.assert_called_with(using="other")
