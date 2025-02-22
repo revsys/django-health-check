@@ -105,3 +105,4 @@ ENV/
 
 .envrc
 .direnv
+.DS_Store
