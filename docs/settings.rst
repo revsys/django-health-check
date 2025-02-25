@@ -42,6 +42,24 @@ You can still use any uptime bot that is URL based while enjoying token protecti
     Do NOT use Django's `SECRET_KEY` setting. This should never be exposed,
     to any third party. Not even your trusted uptime bot.
 
+`cache`
+-------
+
+The cache backend uses the following setting:
+
+.. list-table::
+   :widths: 25 10 10 55
+   :header-rows: 1
+
+   * - Name
+     - Type
+     - Default
+     - Description
+   * - `HEALTHCHECK_CACHE_KEY`
+     - String
+     - `djangohealthcheck_test`
+     - Specifies the name of the key to write to and read from to validate that the cache is working.
+
 `psutil`
 --------
 
@@ -83,10 +101,6 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Type
      - Default
      - Description
-   * - `HEALTHCHECK_CACHE_KEY`
-     - String
-     - `djangohealtcheck_test`
-     - Specifies the name of the key to write to and read from to validate that the cache is working.
    * - `HEALTHCHECK_CELERY_QUEUE_TIMEOUT`
      - Number
      - `3`
@@ -95,3 +109,7 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Number
      - `3`
      - Specifies the maximum total time for a task to complete and return a result, including queue time.
+   * - `HEALTHCHECK_CELERY_PRIORITY`
+     - Number
+     - `None`
+     - Specifies the healthcheck task priority.

@@ -75,6 +75,8 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             file_name = self.check_save(file_name, file_content)
             self.check_delete(file_name)
             return True
+        except ServiceUnavailable as e:
+            raise e
         except Exception as e:
             raise ServiceUnavailable("Unknown exception") from e
 
