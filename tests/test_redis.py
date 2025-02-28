@@ -28,7 +28,7 @@ class TestRedisHealthCheck:
         assert len(redis_healthchecker.errors), 1
 
         # mock assertions
-        mocked_connection.assert_called_once_with("redis://localhost/1")
+        mocked_connection.assert_called_once_with("redis://localhost/1", **{})
 
     @mock.patch("health_check.contrib.redis.backends.getattr")
     @mock.patch("health_check.contrib.redis.backends.from_url")
@@ -50,7 +50,7 @@ class TestRedisHealthCheck:
         assert len(redis_healthchecker.errors), 1
 
         # mock assertions
-        mocked_connection.assert_called_once_with("redis://localhost/1")
+        mocked_connection.assert_called_once_with("redis://localhost/1", **{})
 
     @mock.patch("health_check.contrib.redis.backends.getattr")
     @mock.patch("health_check.contrib.redis.backends.from_url")
@@ -72,7 +72,7 @@ class TestRedisHealthCheck:
         assert len(redis_healthchecker.errors), 1
 
         # mock assertions
-        mocked_connection.assert_called_once_with("redis://localhost/1")
+        mocked_connection.assert_called_once_with("redis://localhost/1", **{})
 
     @mock.patch("health_check.contrib.redis.backends.getattr")
     @mock.patch("health_check.contrib.redis.backends.from_url")
@@ -92,4 +92,4 @@ class TestRedisHealthCheck:
         assert len(redis_healthchecker.errors), 0
 
         # mock assertions
-        mocked_connection.assert_called_once_with("redis://localhost/1")
+        mocked_connection.assert_called_once_with("redis://localhost/1", **{})
