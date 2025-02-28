@@ -108,3 +108,4 @@ ENV/
 
 # mac
 .DS_Store
+.aider*
