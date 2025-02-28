@@ -59,6 +59,10 @@ The cache backend uses the following setting:
      - String
      - `djangohealthcheck_test`
      - Specifies the name of the key to write to and read from to validate that the cache is working.
+   * - `HEALTHCHECK_REDIS_URL_OPTIONS`
+     - Dict
+     - {}
+     - Additional arguments which will be passed as keyword arguments to the Redis connection class initialiser.
 
 `psutil`
 --------

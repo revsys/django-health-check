@@ -138,6 +138,8 @@ It can be customized by setting `HEALTHCHECK_CACHE_KEY` to another value:
     HEALTHCHECK_CACHE_KEY = "custom_healthcheck_key"
 ```
 
+Additional connection options may be specified by defining a variable ``HEALTHCHECK_REDIS_URL_OPTIONS`` on the settings module.
+
 ## Setting up monitoring
 
 You can use tools like Pingdom, StatusCake or other uptime robots to monitor service status.
