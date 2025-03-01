@@ -22,7 +22,9 @@ class TestAutoDiscover:
         ]
 
         # The number of installed apps excluding celery should equal to all plugins except celery
-        assert len(non_celery_plugins) == len(health_check_plugins)
+        assert len(non_celery_plugins) == len(health_check_plugins) + len(
+            settings.DATABASES  # Each database creates specific health_check attached to it
+        )
 
     def test_discover_celery_queues(self):
         celery_plugins = [
