@@ -1,5 +1,0 @@
-bandit==1.8.3
-black==23.12.1
-isort==6.0.1
-flake8==7.0.0
-pydocstyle[toml]==6.2.3
