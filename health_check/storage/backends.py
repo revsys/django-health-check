@@ -43,7 +43,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
                 return self.storage
 
     def get_file_name(self):
-        return "health_check_storage_test/test-%s.txt" % uuid.uuid4()
+        return f"health_check_storage_test/test-{uuid.uuid4()}.txt"
 
     def get_file_content(self):
         return b"this is the healthtest file content"

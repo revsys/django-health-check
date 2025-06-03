@@ -29,15 +29,10 @@ class CheckMixin:
 
         if not self._plugins:
             registering_plugins = (
-                plugin_class(**copy.deepcopy(options))
-                for plugin_class, options in plugin_dir._registry
+                plugin_class(**copy.deepcopy(options)) for plugin_class, options in plugin_dir._registry
             )
-            registering_plugins = sorted(
-                registering_plugins, key=lambda plugin: plugin.identifier()
-            )
-            self._plugins = OrderedDict(
-                {plugin.identifier(): plugin for plugin in registering_plugins}
-            )
+            registering_plugins = sorted(registering_plugins, key=lambda plugin: plugin.identifier())
+            self._plugins = OrderedDict({plugin.identifier(): plugin for plugin in registering_plugins})
         return self._plugins
 
     def filter_plugins(self, subset=None):
@@ -70,9 +65,7 @@ class CheckMixin:
         def _collect_errors(plugin):
             if plugin.critical_service:
                 if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
-                    errors.extend(
-                        e for e in plugin.errors if not isinstance(e, ServiceWarning)
-                    )
+                    errors.extend(e for e in plugin.errors if not isinstance(e, ServiceWarning))
                 else:
                     errors.extend(plugin.errors)
 

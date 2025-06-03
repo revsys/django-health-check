@@ -52,7 +52,7 @@ class MediaType:
         """Return single instance parsed from given accept header string."""
         match = cls.pattern.search(value)
         if match is None:
-            raise ValueError('"%s" is not a valid media type' % value)
+            raise ValueError(f'"{value}" is not a valid media type')
         try:
             return cls(match.group("mime_type"), float(match.group("weight") or 1))
         except ValueError:
@@ -62,19 +62,15 @@ class MediaType:
     def parse_header(cls, value="*/*"):
         """Parse HTTP accept header and return instances sorted by weight."""
         yield from sorted(
-            (
-                cls.from_string(token.strip())
-                for token in value.split(",")
-                if token.strip()
-            ),
+            (cls.from_string(token.strip()) for token in value.split(",") if token.strip()),
             reverse=True,
         )
 
     def __str__(self):
-        return "%s; q=%s" % (self.mime_type, self.weight)
+        return f"{self.mime_type}; q={self.weight}"
 
     def __repr__(self):
-        return "%s: %s" % (type(self).__name__, self.__str__())
+        return f"{type(self).__name__}: {self.__str__()}"
 
     def __eq__(self, other):
         return self.weight == other.weight and self.mime_type == other.mime_type
@@ -88,15 +84,13 @@ class MainView(CheckMixin, TemplateView):
 
     @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
-        subset = kwargs.get("subset", None)
+        subset = kwargs.get("subset")
         health_check_has_error = self.check(subset)
         status_code = 500 if health_check_has_error else 200
         format_override = request.GET.get("format")
 
         if format_override == "json":
-            return self.render_to_response_json(
-                self.filter_plugins(subset=subset), status_code
-            )
+            return self.render_to_response_json(self.filter_plugins(subset=subset), status_code)
 
         accept_header = request.META.get("HTTP_ACCEPT", "*/*")
         for media in MediaType.parse_header(accept_header):
@@ -109,9 +103,7 @@ class MainView(CheckMixin, TemplateView):
                 context = self.get_context_data(**kwargs)
                 return self.render_to_response(context, status=status_code)
             elif media.mime_type in ("application/json", "application/*"):
-                return self.render_to_response_json(
-                    self.filter_plugins(subset=subset), status_code
-                )
+                return self.render_to_response_json(self.filter_plugins(subset=subset), status_code)
         return HttpResponse(
             "Not Acceptable: Supported content types: text/html, application/json",
             status=406,
@@ -119,7 +111,7 @@ class MainView(CheckMixin, TemplateView):
         )
 
     def get_context_data(self, **kwargs):
-        subset = kwargs.get("subset", None)
+        subset = kwargs.get("subset")
         return {
             **super().get_context_data(**kwargs),
             "plugins": self.filter_plugins(subset=subset).values(),
@@ -127,9 +119,6 @@ class MainView(CheckMixin, TemplateView):
 
     def render_to_response_json(self, plugins, status):
         return JsonResponse(
-            {
-                str(plugin_identifier): str(p.pretty_status())
-                for plugin_identifier, p in plugins.items()
-            },
+            {str(plugin_identifier): str(p.pretty_status()) for plugin_identifier, p in plugins.items()},
             status=status,
         )
