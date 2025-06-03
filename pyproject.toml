@@ -54,11 +54,7 @@ test = [
 ]
 docs = ["sphinx"]
 lint = [
-  "bandit==1.8.3",
-  "black==23.12.1",
-  "isort==6.0.1",
-  "flake8==7.0.0",
-  "pydocstyle[toml]==6.2.3",
+  "ruff==0.11.12",
 ]
 
 [tool.flit.module]
@@ -89,21 +85,26 @@ show_missing = true
 skip_covered = true
 sort = "Cover"
 
-[tool.isort]
-atomic = true
-line_length = 88
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-known_first_party = ["health_check", "tests"]
-default_section = "THIRDPARTY"
-combine_as_imports = true
-skip = ["health_check/_version.py"]
+[tool.ruff]
+line-length = 120
+target-version = "py39"
 
-[tool.pydocstyle]
-add-ignore = ["D1"]
-match-dir = "(?!tests|env|.eggs|\\.).*"
+[tool.ruff.lint]
+select = [
+    "D", # pydocstyle
+    "E", # pycodestyle errors
+    "EXE", # flake8-executable
+    "F", # pyflakes
+    "I", # isort
+    "S", # flake8-bandit
+    "SIM", # flake8-simplify
+    "UP", # pyupgrade
+    "W", # pycodestyle warnings
+]
+ignore = ["D1", "D203", "D212"]
 
-[tool.black]
-target-version = ["py39"]
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S101", "S105", "PLR2004"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["measurement", "tests"]
