@@ -21,10 +21,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.x"
           cache: 'pip'
-          cache-dependency-path: 'linter-requirements.txt'
-      - run: python -m pip install -r linter-requirements.txt
+          cache-dependency-path: '**/pyproject.toml'
+      - run: python -m pip install -e .[lint]
       - run: ${{ matrix.lint-command }}
 
   dist:
@@ -37,7 +37,7 @@ jobs:
           python-version: "3.x"
           cache: 'pip'
           cache-dependency-path: '**/pyproject.toml'
-      - run: python -m pip install --upgrade pip build wheel twine
+      - run: python -m pip install --upgrade pip build twine
       - run: python -m build --sdist --wheel
       - run: python -m twine check dist/*
 

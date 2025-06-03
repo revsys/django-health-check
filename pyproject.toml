@@ -1,5 +1,71 @@
-[tool.black]
-target-version = ["py38"]
+[build-system]
+requires = ["flit_core>=3.2", "flit_scm", "wheel"]
+build-backend = "flit_scm:buildapi"
+
+[project]
+name = "django-health-check"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
+authors = [
+  { name = "Kristian Ollegaard", email = "kristian@oellegaard.com" },
+  { name = "Johannes Maron", email = "johannes@maron.family" }
+]
+homepage = "https://github.com/revsys/django-health-check"
+keywords = ["django", "postgresql"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: Django",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.2",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: System :: Logging",
+  "Topic :: System :: Monitoring",
+  "Topic :: Utilities"
+]
+requires-python = ">=3.9"
+dynamic = [
+  "version",
+  "description",
+]
+dependencies = [
+  "Django>=4.2",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "celery",
+  "redis",
+  "django-storages",
+  "boto3",
+]
+docs = ["sphinx"]
+lint = [
+  "bandit==1.8.3",
+  "black==23.12.1",
+  "isort==6.0.1",
+  "flake8==7.0.0",
+  "pydocstyle[toml]==6.2.3",
+]
+
+[tool.flit.module]
+name = "health_check"
+
+[tool.setuptools_scm]
+write_to = "health_check/_version.py"
 
 [tool.pytest.ini_options]
 addopts = "--nomigrations --reuse-db --strict-markers"
@@ -7,3 +73,37 @@ DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
 norecursedirs = ".git"
 python_files = "test_*.py"
 xfail_strict = true
+
+[tool.coverage.run]
+branch = true
+omit = [
+  "*/migrations/*",
+  "*/tests/*",
+  "*/test_*.py",
+  ".eggs/*"
+]
+
+[tool.coverage.report]
+ignore_errors = true
+show_missing = true
+skip_covered = true
+sort = "Cover"
+
+[tool.isort]
+atomic = true
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+known_first_party = ["health_check", "tests"]
+default_section = "THIRDPARTY"
+combine_as_imports = true
+skip = ["health_check/_version.py"]
+
+[tool.pydocstyle]
+add-ignore = ["D1"]
+match-dir = "(?!tests|env|.eggs|\\.).*"
+
+[tool.black]
+target-version = ["py39"]
