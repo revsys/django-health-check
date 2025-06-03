@@ -21,9 +21,7 @@ class CacheBackend(BaseHealthCheckBackend):
     def __init__(self, backend="default"):
         super().__init__()
         self.backend = backend
-        self.cache_key = getattr(
-            settings, "HEALTHCHECK_CACHE_KEY", "djangohealthcheck_test"
-        )
+        self.cache_key = getattr(settings, "HEALTHCHECK_CACHE_KEY", "djangohealthcheck_test")
 
     def identifier(self):
         return f"Cache backend: {self.backend}"

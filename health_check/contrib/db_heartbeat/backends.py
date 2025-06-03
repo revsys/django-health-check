@@ -15,8 +15,6 @@ class DatabaseHeartBeatCheck(BaseHealthCheckBackend):
                 result = cursor.fetchone()
 
             if result != (1,):
-                raise ServiceUnavailable(
-                    "Health Check query did not return the expected result."
-                )
+                raise ServiceUnavailable("Health Check query did not return the expected result.")
         except Exception as e:
             raise ServiceUnavailable(f"Database health check failed: {e}")

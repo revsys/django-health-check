@@ -1,4 +1,4 @@
-"""Run a full check on the deployment,using a number of plugins to check internal and external services."""
+"""Monitor the health of your Django app and its connected services."""
 
 from . import _version  # noqa
 

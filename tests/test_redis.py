@@ -16,9 +16,7 @@ class TestRedisHealthCheck:
 
         # mock returns
         mocked_connection.return_value = mock.MagicMock()
-        mocked_connection.return_value.__enter__.side_effect = ConnectionRefusedError(
-            "Refused connection"
-        )
+        mocked_connection.return_value.__enter__.side_effect = ConnectionRefusedError("Refused connection")
 
         # instantiates the class
         redis_healthchecker = RedisHealthCheck()
@@ -38,9 +36,7 @@ class TestRedisHealthCheck:
 
         # mock returns
         mocked_connection.return_value = mock.MagicMock()
-        mocked_connection.return_value.__enter__.side_effect = TimeoutError(
-            "Timeout Error"
-        )
+        mocked_connection.return_value.__enter__.side_effect = TimeoutError("Timeout Error")
 
         # instantiates the class
         redis_healthchecker = RedisHealthCheck()
@@ -60,9 +56,7 @@ class TestRedisHealthCheck:
 
         # mock returns
         mocked_connection.return_value = mock.MagicMock()
-        mocked_connection.return_value.__enter__.side_effect = ConnectionError(
-            "Connection Error"
-        )
+        mocked_connection.return_value.__enter__.side_effect = ConnectionError("Connection Error")
 
         # instantiates the class
         redis_healthchecker = RedisHealthCheck()

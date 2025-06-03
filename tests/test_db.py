@@ -10,13 +10,14 @@ from health_check.db.backends import DatabaseBackend
 class MockDBModel(Model):
     """
     A Mock database used for testing.
-    error_thrown - The Exception to be raised when save() is called, if any
+
+    error_thrown - The Exception to be raised when save() is called, if any.
     """
 
     error_thrown = None
 
     def __init__(self, error_thrown=None, *args, **kwargs):
-        super(MockDBModel, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.error_thrown = error_thrown
 
     def save(self, *args, **kwargs):
@@ -36,6 +37,7 @@ def raise_(ex):
 class HealthCheckDatabaseTests(TestCase):
     """
     Tests health check behavior with a mocked database backend.
+
     Ensures check_status returns/raises the expected result when the database works or raises exceptions.
     """
 
