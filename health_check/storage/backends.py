@@ -1,10 +1,8 @@
 import uuid
 
-import django
 from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
+from django.core.files.storage import InvalidStorageError, default_storage, storages
 
-from django.core.files.storage import InvalidStorageError, storages
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
 
