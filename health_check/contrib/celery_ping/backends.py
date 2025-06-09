@@ -51,7 +51,7 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
         if not defined_queues:
             return
 
-        defined_queues = set([queue.name for queue in defined_queues])
+        defined_queues = {queue.name for queue in defined_queues}
         active_queues = set()
 
         for queues in app.control.inspect(active_workers).active_queues().values():
