@@ -1,13 +1,7 @@
 import uuid
 
-import django
 from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
-
-if django.VERSION >= (4, 2):
-    from django.core.files.storage import InvalidStorageError, storages
-else:
-    from django.core.files.storage import get_storage_class
+from django.core.files.storage import InvalidStorageError, default_storage, storages
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
@@ -31,16 +25,10 @@ class StorageHealthCheck(BaseHealthCheckBackend):
     storage = None
 
     def get_storage(self):
-        if django.VERSION >= (4, 2):
-            try:
-                return storages[self.storage_alias]
-            except InvalidStorageError:
-                return None
-        else:
-            if isinstance(self.storage, str):
-                return get_storage_class(self.storage)()
-            else:
-                return self.storage
+        try:
+            return storages[self.storage_alias]
+        except InvalidStorageError:
+            return None
 
     def get_file_name(self):
         return f"health_check_storage_test/test-{uuid.uuid4()}.txt"

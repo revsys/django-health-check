@@ -1,17 +1,13 @@
 import json
 
 import pytest
+from django.urls import reverse
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceWarning
 from health_check.plugins import plugin_dir
 from health_check.views import MediaType
-
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
 
 
 class TestMediaType:

@@ -143,7 +143,6 @@ class HealthCheckStorageTests(TestCase):
             default_storage = DefaultFileStorageHealthCheck()
             self.assertIsInstance(default_storage.get_storage(), CustomStorage)
 
-    @unittest.skipUnless(django.VERSION >= (4, 2), "Django 4.2+ required")
     def test_get_storage_django_42_plus(self):
         """Check that the new STORAGES setting is supported."""
         with self.settings(STORAGES={"default": {"BACKEND": "tests.test_storage.CustomStorage"}}):
@@ -168,45 +167,21 @@ class HealthCheckStorageTests(TestCase):
         ):
             self.assertTrue(default_storage_health.check_status())
 
-    @unittest.skipUnless(django.VERSION <= (4, 1), "Only for Django 4.1 and earlier")
-    @mock.patch(
-        "health_check.storage.backends.DefaultFileStorageHealthCheck.storage",
-        MockStorage(saves=False),
-    )
-    def test_file_does_not_exist_django_41_earlier(self):
-        """Test check_status raises ServiceUnavailable when file is not saved."""
-        default_storage_health = DefaultFileStorageHealthCheck()
-        with self.assertRaises(ServiceUnavailable):
-            default_storage_health.check_status()
-
-    @unittest.skipUnless(django.VERSION >= (4, 2), "Only for Django 4.2+")
     @mock.patch(
         "health_check.storage.backends.storages",
         {"default": MockStorage(saves=False)},
     )
-    def test_file_does_not_exist_django_42_plus(self):
+    def test_file_does_not_exist(self):
         """Test check_status raises ServiceUnavailable when file is not saved."""
         default_storage_health = DefaultFileStorageHealthCheck()
         with self.assertRaises(ServiceUnavailable):
             default_storage_health.check_status()
 
-    @unittest.skipUnless(django.VERSION <= (4, 1), "Only for Django 4.1 and earlier")
-    @mock.patch(
-        "health_check.storage.backends.DefaultFileStorageHealthCheck.storage",
-        MockStorage(deletes=False),
-    )
-    def test_file_not_deleted_django_41_earlier(self):
-        """Test check_status raises ServiceUnavailable when file is not deleted."""
-        default_storage_health = DefaultFileStorageHealthCheck()
-        with self.assertRaises(ServiceUnavailable):
-            default_storage_health.check_status()
-
-    @unittest.skipUnless(django.VERSION >= (4, 2), "Only for Django 4.2+")
     @mock.patch(
         "health_check.storage.backends.storages",
         {"default": MockStorage(deletes=False)},
     )
-    def test_file_not_deleted_django_42_plus(self):
+    def test_file_not_deleted(self):
         """Test check_status raises ServiceUnavailable when file is not deleted."""
         default_storage_health = DefaultFileStorageHealthCheck()
         with self.assertRaises(ServiceUnavailable):
@@ -222,23 +197,6 @@ class HealthCheckStorageTests(TestCase):
 class HealthCheckS3Boto3StorageTests(TestCase):
     """Tests health check behavior with a mocked S3Boto3Storage backend."""
 
-    @unittest.skipUnless(django.VERSION <= (4, 1), "Only for Django 4.1 and earlier")
-    @mock.patch(
-        "storages.backends.s3boto3.S3Boto3Storage",
-        MockS3Boto3Storage(deletes=False),
-    )
-    def test_check_delete_success_django_41_earlier(self):
-        """Test that check_delete correctly deletes a file when S3Boto3Storage is working."""
-        health_check = S3Boto3StorageHealthCheck()
-        mock_storage = health_check.get_storage()
-        file_name = "testfile.txt"
-        content = BytesIO(b"Test content")
-        mock_storage.save(file_name, content)
-
-        with self.assertRaises(ServiceUnavailable):
-            health_check.check_delete(file_name)
-
-    @unittest.skipUnless(django.VERSION >= (4, 2), "Only for Django 4.2+")
     def test_check_delete_success(self):
         """Test that check_delete correctly deletes a file when S3Boto3Storage is working."""
         health_check = S3Boto3StorageHealthCheck()
@@ -261,18 +219,6 @@ class HealthCheckS3Boto3StorageTests(TestCase):
             with self.assertRaises(ServiceUnavailable):
                 health_check.check_delete("testfile.txt")
 
-    @unittest.skipUnless(django.VERSION <= (4, 1), "Only for Django 4.1 and earlier")
-    @mock.patch(
-        "storages.backends.s3boto3.S3Boto3Storage",
-        MockS3Boto3Storage(deletes=False),
-    )
-    def test_check_status_working_django_41_earlier(self):
-        """Test check_status returns True when S3Boto3Storage can save and delete files."""
-        health_check = S3Boto3StorageHealthCheck()
-        with self.assertRaises(ServiceUnavailable):
-            self.assertTrue(health_check.check_status())
-
-    @unittest.skipUnless(django.VERSION >= (4, 2), "Only for Django 4.2+")
     def test_check_status_working(self):
         """Test check_status returns True when S3Boto3Storage can save and delete files."""
         health_check = S3Boto3StorageHealthCheck()

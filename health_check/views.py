@@ -92,7 +92,7 @@ class MainView(CheckMixin, TemplateView):
         if format_override == "json":
             return self.render_to_response_json(self.filter_plugins(subset=subset), status_code)
 
-        accept_header = request.META.get("HTTP_ACCEPT", "*/*")
+        accept_header = request.headers.get("accept", "*/*")
         for media in MediaType.parse_header(accept_header):
             if media.mime_type in (
                 "text/html",
