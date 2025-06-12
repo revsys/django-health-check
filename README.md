@@ -21,6 +21,7 @@ The following health checks are bundled with this project:
 - RabbitMQ
 - Migrations
 - Database Heartbeat (Lightweight version of `health_check.db`)
+- email (SMTP)
 
 Writing your own custom health checks is also very quick and easy.
 
@@ -76,6 +77,7 @@ Add the `health_check` applications to your `INSTALLED_APPS`:
         'health_check.contrib.rabbitmq',            # requires RabbitMQ broker
         'health_check.contrib.redis',               # requires Redis broker
         'health_check.contrib.db_heartbeat',
+        'health_check.contrib.mail',
     ]
 ```
 
@@ -89,6 +91,15 @@ one of these checks, set its value to `None`.
     HEALTH_CHECK = {
         'DISK_USAGE_MAX': 90,  # percent
         'MEMORY_MIN': 100,    # in MB
+    }
+```
+
+(Optional) If using the `mail` app, you can configure timeout
+threshold settings; otherwise below defaults are assumed.
+
+```python
+    HEALTH_CHECK = {
+        'MAIL_TIMEOUT': 15,  # seconds
     }
 ```
 
