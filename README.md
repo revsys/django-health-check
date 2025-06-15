@@ -81,6 +81,14 @@ Add the `health_check` applications to your `INSTALLED_APPS`:
 
 **Note:** If using `boto 2.x.x` use `health_check.contrib.s3boto_storage`
 
+If you want to customize some settings, you can do so by adding a `HEALTH_CHECK` dictionary to your `settings.py` file:
+
+```python
+    HEALTH_CHECK = {
+        'STORAGE_DIR': 'another-dir-under-my-project/',  # needs to be in a permitted directory like MEDIA_ROOT
+    }
+```
+
 (Optional) If using the `psutil` app, you can configure disk and memory
 threshold settings; otherwise below defaults are assumed. If you want to disable
 one of these checks, set its value to `None`.
