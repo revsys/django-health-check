@@ -1,8 +1,10 @@
+import tempfile
 import unittest
 from io import BytesIO
 from unittest import mock
 
 import django
+from django.conf import settings
 from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.test import TestCase, override_settings
@@ -13,6 +15,8 @@ from health_check.storage.backends import (
     DefaultFileStorageHealthCheck,
     StorageHealthCheck,
 )
+
+original_get_file_name = StorageHealthCheck.get_file_name
 
 
 class CustomStorage(Storage):
@@ -105,8 +109,7 @@ class MockS3Boto3Storage:
         return name in self.files
 
 
-def get_file_name(*args, **kwargs):
-    return "mockfile.txt"
+get_file_name = mock.MagicMock(return_value="mockfile.txt")
 
 
 def get_file_content(*args, **kwargs):
@@ -166,6 +169,27 @@ class HealthCheckStorageTests(TestCase):
             mock.mock_open(read_data=default_storage_health.get_file_content()),
         ):
             self.assertTrue(default_storage_health.check_status())
+
+    def test_check_status_working_with_custom_dir(self):
+        default_storage = DefaultFileStorageHealthCheck()
+        # restore the original get_file_name method
+        get_file_name.side_effect = lambda *args, **kwargs: original_get_file_name(default_storage, *args, **kwargs)
+
+        # check that it will be stored in the relative path
+        self.assertTrue(default_storage.check_status())
+        expected_pattern = r"health_check_storage_test\/test.*\.txt"
+        self.assertRegex(original_get_file_name(default_storage), expected_pattern)
+
+        tmp_dir = tempfile.mkdtemp(dir=settings.MEDIA_ROOT)
+        with mock.patch("health_check.storage.backends.STORAGE_DIR", tmp_dir):
+            # check that it will be stored in the custom path
+            default_storage = DefaultFileStorageHealthCheck()
+            get_file_name.side_effect = lambda *args, **kwargs: original_get_file_name(default_storage, *args, **kwargs)
+            self.assertTrue(default_storage.check_status())
+
+            # relative path in media directory
+            expected_pattern = r"media\/.*\/health_check_storage_test\/test.*\.txt"
+            self.assertRegex(original_get_file_name(default_storage), expected_pattern)
 
     @mock.patch(
         "health_check.storage.backends.storages",
