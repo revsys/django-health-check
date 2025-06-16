@@ -11,8 +11,6 @@ class TestMailHealthCheck:
 
     @mock.patch("health_check.contrib.mail.backends.get_connection")
     def test_mail_conn_ok(self, mocked_backend):
-        """Test everything is OK."""
-
         # instantiates the class
         mail_health_checker = MailHealthCheck()
 
