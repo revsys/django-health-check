@@ -13,5 +13,5 @@ class HealthCheckConfig(AppConfig):
 
         plugin_dir.register(DatabaseBackend)
 
-        for database_name in settings.DATABASES.keys():
+        for database_name in settings.DATABASES:
             plugin_dir.register(DatabaseBackend, database_name=database_name)
