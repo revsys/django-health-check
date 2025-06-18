@@ -38,10 +38,7 @@ class TestMailHealthCheck:
                 ConnectionRefusedError(),
                 "Connection refused error",
             ],
-            [
-                Exception(),
-                f"Unknown error {Exception}"
-            ],
+            [Exception(), f"Unknown error {Exception}"],
         ],
     )
     def test_mail_conn_refused(
