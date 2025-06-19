@@ -1,5 +1,6 @@
 import re
 
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -78,8 +79,21 @@ class MediaType:
     def __lt__(self, other):
         return self.weight.__lt__(other.weight)
 
-
+@transaction.non_atomic_requests
 class MainView(CheckMixin, TemplateView):
+    """
+    Views for healthcheck endpoints.
+
+    Disable atomic requests, because when `ATOMIC_REQUEST=True` django would
+    still go to db to check the state, meaning there would an error when db is
+    not available, which would result in django error 500 page rather than
+    HealthCheck 500 response.
+
+    Note: these endpoints are still dependant on db, if you logged in via
+    browser, or in other words have session cookies.
+
+    """
+
     template_name = "health_check/index.html"
 
     @method_decorator(never_cache)
