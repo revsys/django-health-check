@@ -3,4 +3,4 @@
 from . import _version  # noqa
 
 __version__ = _version.__version__
-VERSION = _version.VERSION_TUPLE
+VERSION = _version.__version_tuple__
