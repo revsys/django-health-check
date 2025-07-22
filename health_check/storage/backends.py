@@ -1,10 +1,16 @@
+import os
 import uuid
 
+from django.conf import settings
+
+from health_check.conf import HEALTH_CHECK
 from django.core.files.base import ContentFile
 from django.core.files.storage import InvalidStorageError, default_storage, storages
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
+
+STORAGE_DIR = HEALTH_CHECK["STORAGE_DIR"]
 
 
 class StorageHealthCheck(BaseHealthCheckBackend):
@@ -31,7 +37,14 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             return None
 
     def get_file_name(self):
-        return f"health_check_storage_test/test-{uuid.uuid4()}.txt"
+        """Return a unique file name for the health check.
+
+        It needs to be a relative path to the storage directory to ensure
+        that the file can be created in the storage backend."""
+        relative_file_path = f"health_check_storage_test/test-{uuid.uuid4()}.txt"
+        if STORAGE_DIR:
+            return os.path.relpath(f"{STORAGE_DIR}/{relative_file_path}", settings.BASE_DIR)
+        return relative_file_path
 
     def get_file_content(self):
         return b"this is the healthtest file content"
