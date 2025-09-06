@@ -11,7 +11,10 @@ class DatabaseHeartBeatCheck(BaseHealthCheckBackend):
         try:
             result = None
             with connection.cursor() as cursor:
-                cursor.execute("SELECT 1;")
+                if cursor.db.vendor == 'oracle':
+                    cursor.execute("SELECT 1 FROM DUAL;")
+                else:
+                    cursor.execute("SELECT 1;")
                 result = cursor.fetchone()
 
             if result != (1,):
