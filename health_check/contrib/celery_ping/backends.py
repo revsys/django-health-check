@@ -1,4 +1,4 @@
-from celery.app import default_app as app
+from celery import current_app as app
 from django.conf import settings
 
 from health_check.backends import BaseHealthCheckBackend
