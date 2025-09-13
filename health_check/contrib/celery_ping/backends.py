@@ -10,9 +10,10 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
 
     def check_status(self):
         timeout = getattr(settings, "HEALTHCHECK_CELERY_PING_TIMEOUT", 1)
+        destination = getattr(settings, "HEALTHCHECK_CELERY_PING_DESTINATION", None)
 
         try:
-            ping_result = app.control.ping(timeout=timeout)
+            ping_result = app.control.ping(destination=destination, timeout=timeout)
         except OSError as e:
             self.add_error(ServiceUnavailable("IOError"), e)
         except NotImplementedError as exc:
@@ -28,9 +29,9 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
                     ServiceUnavailable("Celery workers unavailable"),
                 )
             else:
-                self._check_ping_result(ping_result)
+                self._check_ping_result(ping_result, destination)
 
-    def _check_ping_result(self, ping_result):
+    def _check_ping_result(self, ping_result, destination):
         active_workers = []
 
         for result in ping_result:
@@ -41,6 +42,15 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
                 )
                 continue
             active_workers.append(worker)
+
+        if destination:
+            inactive_workers = set(destination) - set(active_workers)
+            if inactive_workers:
+                self.add_error(
+                    ServiceUnavailable(
+                        f"Celery workers {inactive_workers} did not respond"
+                    )
+                )
 
         if not self.errors:
             self._check_active_queues(active_workers)
