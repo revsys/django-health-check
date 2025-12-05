@@ -54,7 +54,7 @@ test = [
 ]
 docs = ["sphinx"]
 lint = [
-  "ruff==0.14.0",
+  "ruff==0.14.8",
 ]
 
 [tool.flit.module]
