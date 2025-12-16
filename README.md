@@ -56,7 +56,7 @@ Add the health checker to a URL you want to use:
 ```python
     urlpatterns = [
         # ...
-        path(r'ht/', include('health_check.urls')),
+        path('ht/', include('health_check.urls')),
     ]
 ```
 
@@ -285,7 +285,7 @@ and `render_to_response_json` properties:
 
     urlpatterns = [
         # ...
-        path(r'ht/', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
+        path('ht/', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
     ]
 ```
 
