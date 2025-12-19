@@ -51,7 +51,6 @@ class TestCheckMixin:
 
     def test_run_check_threading_enabled(self, monkeypatch):
         """Ensure threading used when not disabled."""
-
         # Ensure threading is enabled.
         monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", False)
 
@@ -62,7 +61,6 @@ class TestCheckMixin:
 
     def test_run_check_threading_disabled(self, monkeypatch):
         """Ensure threading not used when disabled."""
-
         # Ensure threading is disabled.
         monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", True)
 
