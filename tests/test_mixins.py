@@ -1,13 +1,16 @@
+from unittest.mock import patch
+
 import pytest
 
 from health_check.backends import BaseHealthCheckBackend
+from health_check.conf import HEALTH_CHECK
 from health_check.mixins import CheckMixin
 from health_check.plugins import plugin_dir
 
 
 class FailPlugin(BaseHealthCheckBackend):
     def check_status(self):
-        self.add_error('Oops')
+        self.add_error("Oops")
 
 
 class OkPlugin(BaseHealthCheckBackend):
@@ -20,7 +23,7 @@ class Checker(CheckMixin):
 
 
 class TestCheckMixin:
-    @pytest.yield_fixture(autouse=True)
+    @pytest.fixture(autouse=True)
     def setup(self):
         plugin_dir.reset()
         plugin_dir.register(FailPlugin)
@@ -28,11 +31,54 @@ class TestCheckMixin:
         yield
         plugin_dir.reset()
 
-    def test_plugins(self):
+    @pytest.mark.parametrize("disable_threading", [(True,), (False,)])
+    def test_plugins(self, monkeypatch, disable_threading):
+        monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", disable_threading)
+
         assert len(Checker().plugins) == 2
 
-    def test_errors(self):
+    @pytest.mark.parametrize("disable_threading", [(True,), (False,)])
+    def test_errors(self, monkeypatch, disable_threading):
+        monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", disable_threading)
+
         assert len(Checker().errors) == 1
 
-    def test_run_check(self):
+    @pytest.mark.parametrize("disable_threading", [(True,), (False,)])
+    def test_run_check(self, monkeypatch, disable_threading):
+        monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", disable_threading)
+
         assert len(Checker().run_check()) == 1
+
+    def test_run_check_threading_enabled(self, monkeypatch):
+        """Ensure threading used when not disabled."""
+        # Ensure threading is enabled.
+        monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", False)
+
+        # Ensure ThreadPoolExecutor is used
+        with patch("health_check.mixins.ThreadPoolExecutor") as tpe:
+            Checker().run_check()
+            tpe.assert_called()
+
+        # Ensure ThreadPoolExecutor is used
+        with patch(
+            "django.db.connections.close_all",
+        ) as close_all:
+            Checker().run_check()
+            close_all.assert_called()
+
+    def test_run_check_threading_disabled(self, monkeypatch):
+        """Ensure threading not used when disabled."""
+        # Ensure threading is disabled.
+        monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", True)
+
+        # Ensure ThreadPoolExecutor is not used
+        with patch("health_check.mixins.ThreadPoolExecutor") as tpe:
+            Checker().run_check()
+            tpe.assert_not_called()
+
+            # Ensure ThreadPoolExecutor is used
+            with patch(
+                "django.db.connections.close_all",
+            ) as close_all:
+                Checker().run_check()
+                close_all.assert_not_called()

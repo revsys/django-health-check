@@ -1,10 +1,7 @@
-try:
-    import sphinx_rtd_theme
-except ImportError:
-    sphinx_rtd_theme = None
+import health_check
 
-master_doc = 'index'
-
-if sphinx_rtd_theme:
-    html_theme = "sphinx_rtd_theme"
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+project = "Django HealthCheck"
+version = f"{health_check.VERSION[0]}.{health_check.VERSION[1]}"
+release = health_check.__version__
+master_doc = "index"
+html_theme = "furo"
