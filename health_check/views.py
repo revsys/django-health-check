@@ -1,5 +1,6 @@
 import re
 
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -79,6 +80,7 @@ class MediaType:
         return self.weight.__lt__(other.weight)
 
 
+@method_decorator(transaction.non_atomic_requests, name="dispatch")
 class MainView(CheckMixin, TemplateView):
     template_name = "health_check/index.html"
 

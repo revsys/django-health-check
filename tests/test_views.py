@@ -1,6 +1,8 @@
 import json
+from unittest.mock import Mock
 
 import pytest
+from django.db import DatabaseError
 from django.urls import reverse
 
 from health_check.backends import BaseHealthCheckBackend
@@ -309,3 +311,15 @@ class TestMainView:
         assert response.status_code == 500, response.content.decode("utf-8")
         assert response["content-type"] == "application/json"
         assert "JSON Error" in json.loads(response.content.decode("utf-8"))[JSONErrorBackend().identifier()]
+
+    @pytest.mark.django_db(transaction=True)
+    def test_non_native_atomic_request(self, settings, monkeypatch, client):
+        # See also: https://github.com/revsys/django-health-check/pull/469
+        settings.DATABASES["default"]["ATOMIC_REQUESTS"] = True
+        # disable the ensure_connection
+        monkeypatch.setattr(
+            "django.db.backends.base.base.BaseDatabaseWrapper.ensure_connection", Mock(side_effect=DatabaseError())
+        )
+        response = client.get(self.url)
+        assert response.status_code == 500
+        assert b"<title>System status</title>" in response.content
