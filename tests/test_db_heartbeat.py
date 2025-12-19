@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from health_check.contrib.db_heartbeat.backends import DatabaseHeartBeatCheck, SelectOne
 from health_check.exceptions import ServiceUnavailable
 
@@ -20,8 +22,13 @@ class TestSelectOne:
 
 
 class TestDatabaseHeartBeatCheck(unittest.TestCase):
+    @pytest.mark.django_db
+    def test_check_status__success(self):
+        health_check = DatabaseHeartBeatCheck()
+        health_check.check_status()
+
     @patch("health_check.contrib.db_heartbeat.backends.connection")
-    def test_check_status_success(self, mock_connection):
+    def test_check_status__failure(self, mock_connection):
         mock_cursor = MagicMock()
         mock_cursor.fetchone.return_value = (1,)
         mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
