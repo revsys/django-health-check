@@ -25,30 +25,20 @@ jobs:
       - run: SKIP=$(yq '.ci.skip' -o csv .pre-commit-config.yaml) uvx pre-commit run --all-files --show-diff-on-failure
   dist:
     runs-on: ubuntu-latest
-    needs: [pre-commit]
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v7
+      - run: uvx --from build pyproject-build --sdist --wheel
+      - run: uvx twine check dist/*
+      - uses: actions/upload-artifact@v6
         with:
-          python-version: "3.x"
-          cache: 'pip'
-          cache-dependency-path: '**/pyproject.toml'
-      - run: python -m pip install --upgrade pip build twine
-      - run: python -m build --sdist --wheel
-      - run: python -m twine check dist/*
+          path: dist/*
   docs:
     runs-on: ubuntu-latest
-    needs: [pre-commit]
     steps:
       - uses: actions/checkout@v6
-      - name: setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-          cache: 'pip'
-          cache-dependency-path: '**/pyproject.toml'
-      - run: python -m pip install -e .[docs]
-      - run: python -m sphinx -b html -W docs docs/_build
+      - uses: astral-sh/setup-uv@v7
+      - run: uv run --group docs sphinx-build -W -b doctest -b html docs docs/_build
   PyTest:
     runs-on: ubuntu-latest
     needs: [pre-commit]
@@ -68,13 +58,11 @@ jobs:
             django-version: "5.2"
     steps:
       - uses: actions/checkout@v6
-      - name: Setup Python version ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-          cache-dependency-path: '**/pyproject.toml'
-      - run: python -m pip install .[test]
-      - run: python -m pip install Django~="${{ matrix.django-version }}.0"
-      - run: python -m pytest
-      - uses: codecov/codecov-action@v3
+      - run: uv run --with Django~=${{ matrix.django-version }}.0 pytest
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: python-${{ matrix.python-version }}-django-${{ matrix.django-version }}
