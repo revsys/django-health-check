@@ -9,7 +9,7 @@ def remove_test_model_default_permissions(apps, schema_editor):
     db_alias = schema_editor.connection.alias
 
     try:
-        test_model_content_type = ContentType.objects.using(db_alias).get(app_label='db', model='testmodel')
+        test_model_content_type = ContentType.objects.using(db_alias).get(app_label="db", model="testmodel")
         Permission.objects.using(db_alias).filter(content_type=test_model_content_type).delete()
     except ContentType.DoesNotExist:
         return
@@ -17,13 +17,13 @@ def remove_test_model_default_permissions(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('db', '0001_initial'),
+        ("db", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='testmodel',
-            options={'default_permissions': ()},
+            name="testmodel",
+            options={"default_permissions": ()},
         ),
         migrations.RunPython(
             code=remove_test_model_default_permissions,
