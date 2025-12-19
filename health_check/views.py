@@ -79,7 +79,8 @@ class MediaType:
     def __lt__(self, other):
         return self.weight.__lt__(other.weight)
 
-@transaction.non_atomic_requests
+
+@method_decorator(transaction.non_atomic_requests, name="dispatch")
 class MainView(CheckMixin, TemplateView):
     """
     Views for healthcheck endpoints.
