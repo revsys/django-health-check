@@ -1,13 +1,7 @@
 import uuid
 
-import django
-from django.conf import settings
 from django.core.files.base import ContentFile
-
-if django.VERSION >= (4, 2):
-    from django.core.files.storage import InvalidStorageError, storages
-else:
-    from django.core.files.storage import get_storage_class
+from django.core.files.storage import InvalidStorageError, default_storage, storages
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
@@ -31,19 +25,13 @@ class StorageHealthCheck(BaseHealthCheckBackend):
     storage = None
 
     def get_storage(self):
-        if django.VERSION >= (4, 2):
-            try:
-                return storages[self.storage_alias]
-            except InvalidStorageError:
-                return None
-        else:
-            if isinstance(self.storage, str):
-                return get_storage_class(self.storage)()
-            else:
-                return self.storage
+        try:
+            return storages[self.storage_alias]
+        except InvalidStorageError:
+            return None
 
     def get_file_name(self):
-        return "health_check_storage_test/test-%s.txt" % uuid.uuid4()
+        return f"health_check_storage_test/test-{uuid.uuid4()}.txt"
 
     def get_file_content(self):
         return b"this is the healthtest file content"
@@ -67,7 +55,7 @@ class StorageHealthCheck(BaseHealthCheckBackend):
         if storage.exists(file_name):
             raise ServiceUnavailable("File was not deleted")
 
-    def check_status(self, subset=None):
+    def check_status(self):
         try:
             # write the file to the storage backend
             file_name = self.get_file_name()
@@ -75,10 +63,12 @@ class StorageHealthCheck(BaseHealthCheckBackend):
             file_name = self.check_save(file_name, file_content)
             self.check_delete(file_name)
             return True
+        except ServiceUnavailable as e:
+            raise e
         except Exception as e:
             raise ServiceUnavailable("Unknown exception") from e
 
 
 class DefaultFileStorageHealthCheck(StorageHealthCheck):
     storage_alias = "default"
-    storage = settings.DEFAULT_FILE_STORAGE
+    storage = default_storage

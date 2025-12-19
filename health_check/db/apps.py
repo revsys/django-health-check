@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.conf import settings
 
 from health_check.plugins import plugin_dir
 
@@ -11,3 +12,6 @@ class HealthCheckConfig(AppConfig):
         from .backends import DatabaseBackend
 
         plugin_dir.register(DatabaseBackend)
+
+        for database_name in settings.DATABASES:
+            plugin_dir.register(DatabaseBackend, database_name=database_name)

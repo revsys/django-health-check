@@ -9,12 +9,12 @@ from health_check.plugins import plugin_dir
 
 
 class FailPlugin(BaseHealthCheckBackend):
-    def check_status(self, subset=None):
+    def check_status(self):
         self.add_error("Oops")
 
 
 class OkPlugin(BaseHealthCheckBackend):
-    def check_status(self, subset=None):
+    def check_status(self):
         pass
 
 
@@ -51,7 +51,6 @@ class TestCheckMixin:
 
     def test_run_check_threading_enabled(self, monkeypatch):
         """Ensure threading used when not disabled."""
-
         # Ensure threading is enabled.
         monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", False)
 
@@ -60,9 +59,15 @@ class TestCheckMixin:
             Checker().run_check()
             tpe.assert_called()
 
+        # Ensure ThreadPoolExecutor is used
+        with patch(
+            "django.db.connections.close_all",
+        ) as close_all:
+            Checker().run_check()
+            close_all.assert_called()
+
     def test_run_check_threading_disabled(self, monkeypatch):
         """Ensure threading not used when disabled."""
-
         # Ensure threading is disabled.
         monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", True)
 
@@ -70,3 +75,10 @@ class TestCheckMixin:
         with patch("health_check.mixins.ThreadPoolExecutor") as tpe:
             Checker().run_check()
             tpe.assert_not_called()
+
+            # Ensure ThreadPoolExecutor is used
+            with patch(
+                "django.db.connections.close_all",
+            ) as close_all:
+                Checker().run_check()
+                close_all.assert_not_called()

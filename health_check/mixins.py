@@ -2,6 +2,7 @@ import copy
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 
+from django.db import connections
 from django.http import Http404
 
 from health_check.conf import HEALTH_CHECK
@@ -29,15 +30,10 @@ class CheckMixin:
 
         if not self._plugins:
             registering_plugins = (
-                plugin_class(**copy.deepcopy(options))
-                for plugin_class, options in plugin_dir._registry
+                plugin_class(**copy.deepcopy(options)) for plugin_class, options in plugin_dir._registry
             )
-            registering_plugins = sorted(
-                registering_plugins, key=lambda plugin: plugin.identifier()
-            )
-            self._plugins = OrderedDict(
-                {plugin.identifier(): plugin for plugin in registering_plugins}
-            )
+            registering_plugins = sorted(registering_plugins, key=lambda plugin: plugin.identifier())
+            self._plugins = OrderedDict({plugin.identifier(): plugin for plugin in registering_plugins})
         return self._plugins
 
     def filter_plugins(self, subset=None):
@@ -46,7 +42,7 @@ class CheckMixin:
 
         health_check_subsets = HEALTH_CHECK["SUBSETS"]
         if subset not in health_check_subsets or not self.plugins:
-            raise Http404(f"Specify subset: '{subset}' does not exists.")
+            raise Http404(f"Subset: '{subset}' does not exist.")
 
         selected_subset = set(health_check_subsets[subset])
         return {
@@ -63,16 +59,14 @@ class CheckMixin:
             try:
                 return plugin
             finally:
-                from django.db import connections
-
-                connections.close_all()
+                if not HEALTH_CHECK["DISABLE_THREADING"]:
+                    # DB connections are thread-local so we need to close them here
+                    connections.close_all()
 
         def _collect_errors(plugin):
             if plugin.critical_service:
                 if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
-                    errors.extend(
-                        e for e in plugin.errors if not isinstance(e, ServiceWarning)
-                    )
+                    errors.extend(e for e in plugin.errors if not isinstance(e, ServiceWarning))
                 else:
                     errors.extend(plugin.errors)
 

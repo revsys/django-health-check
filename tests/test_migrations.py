@@ -6,8 +6,7 @@ from django.test import TestCase
 from health_check.contrib.migrations.backends import MigrationsHealthCheck
 
 
-class MockMigration(Migration):
-    ...
+class MockMigration(Migration): ...
 
 
 class TestMigrationsHealthCheck(TestCase):
