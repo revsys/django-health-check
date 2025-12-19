@@ -118,6 +118,27 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - `None`
      - Specifies the healthcheck task priority.
 
+Beat Health Check
+----------------------
+Use `django.settings` to customize the target scheduler and buffer of the celery beat health check
+
+.. list-table:: Additional Settings
+   :widths: 25 10 10 55
+   :header-rows: 1
+
+   * - Name
+     - Type
+     - Default
+     - Description
+   * - `CELERY_BEAT_SCHEDULER`
+     - String
+     - `django_celery_beat.schedulers.DatabaseScheduler`
+     - The Scheduler module dotted path
+   * - `BEAT_HEALTH_CHECK_BUFFER_SECONDS`
+     - Number
+     - 30
+     - The number of seconds a task needs to be overdue for the heath check to fail
+
 Threading
 -------------------
 
