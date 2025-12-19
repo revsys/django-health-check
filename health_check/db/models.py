@@ -6,3 +6,4 @@ class TestModel(models.Model):
 
     class Meta:
         db_table = "health_check_db_testmodel"
+        default_permissions = ()

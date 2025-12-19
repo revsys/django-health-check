@@ -16,16 +16,14 @@ class TestAutoDiscover:
         )
 
         non_celery_plugins = [
-            x
-            for x in plugin_dir._registry
-            if not issubclass(x[0], (CeleryHealthCheck, CeleryPingHealthCheck))
+            x for x in plugin_dir._registry if not issubclass(x[0], (CeleryHealthCheck, CeleryPingHealthCheck))
         ]
 
         # The number of installed apps excluding celery should equal to all plugins except celery
-        assert len(non_celery_plugins) == len(health_check_plugins)
+        assert len(non_celery_plugins) == len(health_check_plugins) + len(
+            settings.DATABASES  # Each database creates specific health_check attached to it
+        )
 
     def test_discover_celery_queues(self):
-        celery_plugins = [
-            x for x in plugin_dir._registry if issubclass(x[0], CeleryHealthCheck)
-        ]
+        celery_plugins = [x for x in plugin_dir._registry if issubclass(x[0], CeleryHealthCheck)]
         assert len(celery_plugins) == len(current_app.amqp.queues)
