@@ -5,7 +5,6 @@
 [![djversion](https://img.shields.io/pypi/djversions/django-health-check.svg)](https://pypi.python.org/pypi/django-health-check/)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://pypi.python.org/pypi/django-health-check/)
 
-
 This project checks for various conditions and provides reports when anomalous
 behavior is detected.
 
@@ -21,6 +20,7 @@ The following health checks are bundled with this project:
 - RabbitMQ
 - Migrations
 - Database Heartbeat (Lightweight version of `health_check.db`)
+- email (SMTP)
 
 Writing your own custom health checks is also very quick and easy.
 
@@ -55,7 +55,7 @@ Add the health checker to a URL you want to use:
 ```python
     urlpatterns = [
         # ...
-        path(r'ht/', include('health_check.urls')),
+        path('ht/', include('health_check.urls')),
     ]
 ```
 
@@ -76,6 +76,7 @@ Add the `health_check` applications to your `INSTALLED_APPS`:
         'health_check.contrib.rabbitmq',            # requires RabbitMQ broker
         'health_check.contrib.redis',               # requires Redis broker
         'health_check.contrib.db_heartbeat',
+        'health_check.contrib.mail',
     ]
 ```
 
@@ -92,7 +93,17 @@ one of these checks, set its value to `None`.
     }
 ```
 
+(Optional) If using the `mail` app, you can configure timeout
+threshold settings; otherwise below defaults are assumed.
+
+```python
+    HEALTH_CHECK = {
+        'MAIL_TIMEOUT': 15,  # seconds
+    }
+```
+
 To use Health Check Subsets, Specify a subset name and associate it with the relevant health check services to utilize Health Check Subsets. (New in version 3.18.0)
+
 ```python
     HEALTH_CHECK = {
         # .....
@@ -105,7 +116,23 @@ To use Health Check Subsets, Specify a subset name and associate it with the rel
     }
 ```
 
+To add checks on a specific database, it's possible to parameterize `DatabaseBackend` to use a specific database:
+
+```python
+    HEALTH_CHECK = {
+        # .....
+        "SUBSETS": {
+            "database-probe": [
+                "DatabaseBackend[default]",  # This is equivalent to "DatabaseBackend"
+                "DatabaseBackend[secondary]",
+            ],
+        },
+        # .....
+    }
+```
+
 To only execute specific subset of health check
+
 ```shell
 curl -X GET -H "Accept: application/json" http://www.example.com/ht/startup-probe/
 ```
@@ -124,7 +151,7 @@ rabbit server. For example:
     BROKER_URL = "amqp://myuser:mypassword@localhost:5672/myvhost"
 ```
 
-To use the Redis healthcheck, please make sure that there is a variable named ``REDIS_URL``
+To use the Redis healthcheck, please make sure that there is a variable named `REDIS_URL`
 on django.conf.settings with the required format to connect to your redis server. For example:
 
 ```python
@@ -138,7 +165,7 @@ It can be customized by setting `HEALTHCHECK_CACHE_KEY` to another value:
     HEALTHCHECK_CACHE_KEY = "custom_healthcheck_key"
 ```
 
-Additional connection options may be specified by defining a variable ``HEALTHCHECK_REDIS_URL_OPTIONS`` on the settings module.
+Additional connection options may be specified by defining a variable `HEALTHCHECK_REDIS_URL_OPTIONS` on the settings module.
 
 ## Setting up monitoring
 
@@ -260,7 +287,7 @@ and `render_to_response_json` properties:
 
     urlpatterns = [
         # ...
-        path(r'ht/', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
+        path('ht/', views.HealthCheckCustomView.as_view(), name='health_check_custom'),
     ]
 ```
 
@@ -281,7 +308,6 @@ This should yield the following output:
 ```
 
 Similar to the http version, a critical error will cause the command to quit with the exit code `1`.
-
 
 ## Other resources
 

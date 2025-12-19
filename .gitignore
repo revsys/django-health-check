@@ -109,3 +109,9 @@ ENV/
 # mac
 .DS_Store
 .aider*
+
+# SCM
+_version.py
+
+# uv
+uv.lock
