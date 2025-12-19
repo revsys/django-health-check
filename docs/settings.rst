@@ -117,3 +117,16 @@ Using `django.settings` you may exert more fine-grained control over the behavio
      - Number
      - `None`
      - Specifies the healthcheck task priority.
+
+Threading
+-------------------
+
+Django Health Check runs each check in a separate thread by default to improve performance.
+
+In some cases, this might cause unwanted side effects and can be disabled with:
+
+.. code:: python
+
+    HEALTH_CHECK = {
+        'DISABLE_THREADING': True
+    }
