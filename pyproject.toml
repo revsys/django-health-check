@@ -50,7 +50,11 @@ Releasenotes = "https://github.com/revsys/django-health-check/releases/latest"
 Documentation = "https://django-health-check.readthedocs.io/"
 Issues = "https://github.com/revsys/django-health-check/issues"
 
-[project.optional-dependencies]
+[dependency-groups]
+dev = [
+  { include-group = "test" },
+  { include-group = "docs" },
+]
 test = [
   "pytest",
   "pytest-cov",
@@ -60,7 +64,7 @@ test = [
   "django-storages",
   "boto3",
 ]
-docs = ["sphinx"]
+docs = ["sphinx", "furo"]
 
 [tool.flit.module]
 name = "health_check"
