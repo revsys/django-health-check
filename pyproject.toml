@@ -61,9 +61,6 @@ test = [
   "boto3",
 ]
 docs = ["sphinx"]
-lint = [
-  "ruff==0.14.10",
-]
 
 [tool.flit.module]
 name = "health_check"
