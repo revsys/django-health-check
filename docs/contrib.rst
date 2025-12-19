@@ -43,6 +43,7 @@ If you are using Celery you may choose between two different Celery checks.
 
 `health_check.contrib.celery` sends a task to the queue and it expects that task
 to be executed in `HEALTHCHECK_CELERY_TIMEOUT` seconds which by default is three seconds.
+The task is sent with a priority of `HEALTHCHECK_CELERY_PRIORITY` (default priority by default).
 You may override that in your Django settings module. This check is suitable for use cases
 which require that tasks can be processed frequently all the time.
 
@@ -56,9 +57,3 @@ all the time.
 
 You may also use both of them. To use these checks add them to `INSTALLED_APPS` in your
 Django settings module.
-
-`cache`
--------
-
-The key `djangohealtcheck_test` will be written to the cache backend to validate that the cache is working.  
-The name of the key can be customized by setting `HEALTHCHECK_CACHE_KEY` to another value.

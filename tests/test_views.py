@@ -1,17 +1,15 @@
 import json
+from unittest.mock import Mock
 
 import pytest
+from django.db import DatabaseError
+from django.urls import reverse
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceWarning
 from health_check.plugins import plugin_dir
 from health_check.views import MediaType
-
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
 
 
 class TestMediaType:
@@ -64,18 +62,14 @@ class TestMediaType:
     def test_from_invalid_strings(self, type):
         with pytest.raises(ValueError) as e:
             MediaType.from_string(type)
-        expected_error = '"%s" is not a valid media type' % type
+        expected_error = f'"{type}" is not a valid media type'
         assert expected_error in str(e.value)
 
     def test_parse_header(self):
         assert list(MediaType.parse_header()) == [
             MediaType("*/*"),
         ]
-        assert list(
-            MediaType.parse_header(
-                "text/html; q=0.1, application/xhtml+xml; q=0.1 ,application/json"
-            )
-        ) == [
+        assert list(MediaType.parse_header("text/html; q=0.1, application/xhtml+xml; q=0.1 ,application/json")) == [
             MediaType("application/json"),
             MediaType("text/html", 0.1),
             MediaType("application/xhtml+xml", 0.1),
@@ -152,9 +146,7 @@ class TestMainView:
 
         plugin_dir.reset()
         plugin_dir.register(JSONSuccessBackend)
-        response = client.get(
-            self.url, HTTP_ACCEPT="application/json; q=0.8, text/html; q=0.5"
-        )
+        response = client.get(self.url, HTTP_ACCEPT="application/json; q=0.8, text/html; q=0.5")
         assert response["content-type"] == "application/json"
         assert response.status_code == 200
 
@@ -179,10 +171,7 @@ class TestMainView:
         response = client.get(self.url, HTTP_ACCEPT="application/octet-stream")
         assert response["content-type"] == "text/plain"
         assert response.status_code == 406
-        assert (
-            response.content
-            == b"Not Acceptable: Supported content types: text/html, application/json"
-        )
+        assert response.content == b"Not Acceptable: Supported content types: text/html, application/json"
 
     def test_success_unsupported_and_supported_accept(self, client):
         class SuccessBackend(BaseHealthCheckBackend):
@@ -191,9 +180,7 @@ class TestMainView:
 
         plugin_dir.reset()
         plugin_dir.register(SuccessBackend)
-        response = client.get(
-            self.url, HTTP_ACCEPT="application/octet-stream, application/json; q=0.9"
-        )
+        response = client.get(self.url, HTTP_ACCEPT="application/octet-stream, application/json; q=0.9")
         assert response["content-type"] == "application/json"
         assert response.status_code == 200
 
@@ -257,12 +244,7 @@ class TestMainView:
         response = client.get(self.url, HTTP_ACCEPT="application/json")
         assert response.status_code == 500, response.content.decode("utf-8")
         assert response["content-type"] == "application/json"
-        assert (
-            "JSON Error"
-            in json.loads(response.content.decode("utf-8"))[
-                JSONErrorBackend().identifier()
-            ]
-        )
+        assert "JSON Error" in json.loads(response.content.decode("utf-8"))[JSONErrorBackend().identifier()]
 
     def test_success_param_json(self, client):
         class JSONSuccessBackend(BaseHealthCheckBackend):
@@ -296,24 +278,16 @@ class TestMainView:
             "liveness-probe": ["SuccessTwoBackend"],
         }
 
-        response_startup_probe = client.get(
-            self.url + "startup-probe/", {"format": "json"}
-        )
-        assert (
-            response_startup_probe.status_code == 200
-        ), response_startup_probe.content.decode("utf-8")
+        response_startup_probe = client.get(self.url + "startup-probe/", {"format": "json"})
+        assert response_startup_probe.status_code == 200, response_startup_probe.content.decode("utf-8")
         assert response_startup_probe["content-type"] == "application/json"
         assert json.loads(response_startup_probe.content.decode("utf-8")) == {
             SuccessOneBackend().identifier(): SuccessOneBackend().pretty_status(),
             SuccessTwoBackend().identifier(): SuccessTwoBackend().pretty_status(),
         }
 
-        response_liveness_probe = client.get(
-            self.url + "liveness-probe/", {"format": "json"}
-        )
-        assert (
-            response_liveness_probe.status_code == 200
-        ), response_liveness_probe.content.decode("utf-8")
+        response_liveness_probe = client.get(self.url + "liveness-probe/", {"format": "json"})
+        assert response_liveness_probe.status_code == 200, response_liveness_probe.content.decode("utf-8")
         assert response_liveness_probe["content-type"] == "application/json"
         assert json.loads(response_liveness_probe.content.decode("utf-8")) == {
             SuccessTwoBackend().identifier(): SuccessTwoBackend().pretty_status(),
@@ -336,9 +310,16 @@ class TestMainView:
         response = client.get(self.url, {"format": "json"})
         assert response.status_code == 500, response.content.decode("utf-8")
         assert response["content-type"] == "application/json"
-        assert (
-            "JSON Error"
-            in json.loads(response.content.decode("utf-8"))[
-                JSONErrorBackend().identifier()
-            ]
+        assert "JSON Error" in json.loads(response.content.decode("utf-8"))[JSONErrorBackend().identifier()]
+
+    @pytest.mark.django_db(transaction=True)
+    def test_non_native_atomic_request(self, settings, monkeypatch, client):
+        # See also: https://github.com/revsys/django-health-check/pull/469
+        settings.DATABASES["default"]["ATOMIC_REQUESTS"] = True
+        # disable the ensure_connection
+        monkeypatch.setattr(
+            "django.db.backends.base.base.BaseDatabaseWrapper.ensure_connection", Mock(side_effect=DatabaseError())
         )
+        response = client.get(self.url)
+        assert response.status_code == 500
+        assert b"<title>System status</title>" in response.content

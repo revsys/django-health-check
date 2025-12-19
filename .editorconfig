@@ -27,7 +27,7 @@ not_skip = __init__.py
 indent_style = space
 indent_size = 4
 
-[*.{yml,html,xml,xsl,json}]
+[*.{yml,html,xml,xsl,json,toml}]
 indent_style = space
 indent_size = 2
 
