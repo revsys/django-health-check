@@ -23,7 +23,7 @@ class DatabaseHeartBeatCheck(BaseHealthCheckBackend):
             result = None
             compiler = connection.ops.compiler("SQLCompiler")(SelectOne(), connection, None)
             with connection.cursor() as cursor:
-                cursor.execute(compiler.compile(SelectOne()))
+                cursor.execute(*compiler.compile(SelectOne()))
                 result = cursor.fetchone()
 
             if result != (1,):
