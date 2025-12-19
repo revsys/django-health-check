@@ -15,36 +15,27 @@ class CeleryHealthCheck(BaseHealthCheckBackend):
         priority = getattr(settings, "HEALTHCHECK_CELERY_PRIORITY", None)
 
         try:
-            result = add.apply_async(
-                args=[4, 4], expires=queue_timeout, queue=self.queue, priority=priority
-            )
+            result = add.apply_async(args=[4, 4], expires=queue_timeout, queue=self.queue, priority=priority)
             result.get(timeout=result_timeout)
             if result.result != 8:
-                self.add_error(
-                    ServiceReturnedUnexpectedResult("Celery returned wrong result")
-                )
-        except IOError as e:
+                self.add_error(ServiceReturnedUnexpectedResult("Celery returned wrong result"))
+        except OSError as e:
             self.add_error(ServiceUnavailable("IOError"), e)
         except NotImplementedError as e:
             self.add_error(
-                ServiceUnavailable(
-                    "NotImplementedError: Make sure CELERY_RESULT_BACKEND is set"
-                ),
+                ServiceUnavailable("NotImplementedError: Make sure CELERY_RESULT_BACKEND is set"),
                 e,
             )
         except TaskRevokedError as e:
             self.add_error(
                 ServiceUnavailable(
-                    "TaskRevokedError: The task was revoked, likely because it spent "
-                    "too long in the queue"
+                    "TaskRevokedError: The task was revoked, likely because it spent too long in the queue"
                 ),
                 e,
             )
         except TimeoutError as e:
             self.add_error(
-                ServiceUnavailable(
-                    "TimeoutError: The task took too long to return a result"
-                ),
+                ServiceUnavailable("TimeoutError: The task took too long to return a result"),
                 e,
             )
         except BaseException as e:

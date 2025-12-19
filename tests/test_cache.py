@@ -10,8 +10,9 @@ from health_check.cache.backends import CacheBackend
 class MockCache(BaseCache):
     """
     A Mock Cache used for testing.
+
     set_works - set to False to make the mocked set method fail, but not raise
-    set_raises - The Exception to be raised when set() is called, if any
+    set_raises - The Exception to be raised when set() is called, if any.
     """
 
     key = None
@@ -20,7 +21,7 @@ class MockCache(BaseCache):
     set_raises = None
 
     def __init__(self, set_works=True, set_raises=None):
-        super(MockCache, self).__init__(params={})
+        super().__init__(params={})
         self.set_works = set_works
         self.set_raises = set_raises
 
@@ -44,6 +45,7 @@ class MockCache(BaseCache):
 class HealthCheckCacheTests(TestCase):
     """
     Tests health check behavior with a mocked cache backend.
+
     Ensures check_status returns/raises the expected result when the cache works, fails, or raises exceptions.
     """
 
@@ -74,9 +76,7 @@ class HealthCheckCacheTests(TestCase):
         self.assertIn("does not match", cache_backend.pretty_status())
 
     # check_status should raise ServiceUnavailable when values at cache key do not match
-    @patch(
-        "health_check.cache.backends.caches", dict(default=MockCache(set_works=False))
-    )
+    @patch("health_check.cache.backends.caches", dict(default=MockCache(set_works=False)))
     def test_set_fails(self):
         cache_backend = CacheBackend()
         cache_backend.run_check()
@@ -102,6 +102,4 @@ class HealthCheckCacheTests(TestCase):
         cache_backend = CacheBackend()
         cache_backend.check_status()
         cache_backend.run_check()
-        self.assertIn(
-            "unexpected result: Cache key warning", cache_backend.pretty_status()
-        )
+        self.assertIn("unexpected result: Cache key warning", cache_backend.pretty_status())

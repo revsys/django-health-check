@@ -1,9 +1,111 @@
-[tool.black]
-target-version = ["py38"]
+[build-system]
+requires = ["flit_core>=3.2", "flit_scm", "wheel"]
+build-backend = "flit_scm:buildapi"
+
+[project]
+name = "django-health-check"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
+authors = [
+  { name = "Kristian Ollegaard", email = "kristian@oellegaard.com" },
+  { name = "Johannes Maron", email = "johannes@maron.family" }
+]
+keywords = ["django", "postgresql"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: Django",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.2",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: System :: Logging",
+  "Topic :: System :: Monitoring",
+  "Topic :: Utilities"
+]
+requires-python = ">=3.9"
+dynamic = [
+  "version",
+  "description",
+]
+dependencies = [
+  "Django>=4.2",
+]
+
+[project.urls]
+# https://packaging.python.org/en/latest/specifications/well-known-project-urls/#well-known-labels
+Homepage = "https://django-health-check.readthedocs.io/"
+Changelog = "https://github.com/revsys/django-health-check/releases"
+Source = "https://github.com/revsys/django-health-check"
+Releasenotes = "https://github.com/revsys/django-health-check/releases/latest"
+Documentation = "https://django-health-check.readthedocs.io/"
+Issues = "https://github.com/revsys/django-health-check/issues"
+
+[dependency-groups]
+dev = [
+  { include-group = "test" },
+  { include-group = "docs" },
+]
+test = [
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "celery",
+  "redis",
+  "django-storages",
+  "boto3",
+]
+docs = ["sphinx", "furo"]
+
+[tool.flit.module]
+name = "health_check"
+
+[tool.setuptools_scm]
+write_to = "health_check/_version.py"
 
 [tool.pytest.ini_options]
-addopts = "--nomigrations --reuse-db --strict-markers"
+addopts = "--nomigrations --cov --reuse-db --strict-markers --cov-report=xml --cov-report=term --doctest-modules"
+testpaths = [
+  "tests",
+]
 DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
 norecursedirs = ".git"
 python_files = "test_*.py"
 xfail_strict = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "D", # pydocstyle
+    "E", # pycodestyle errors
+    "EXE", # flake8-executable
+    "F", # pyflakes
+    "I", # isort
+    "S", # flake8-bandit
+    "SIM", # flake8-simplify
+    "UP", # pyupgrade
+    "W", # pycodestyle warnings
+]
+ignore = ["D1", "D203", "D212"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S101", "S105", "PLR2004"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["measurement", "tests"]

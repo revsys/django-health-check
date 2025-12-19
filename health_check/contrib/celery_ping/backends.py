@@ -13,13 +13,11 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
 
         try:
             ping_result = app.control.ping(timeout=timeout)
-        except IOError as e:
+        except OSError as e:
             self.add_error(ServiceUnavailable("IOError"), e)
         except NotImplementedError as exc:
             self.add_error(
-                ServiceUnavailable(
-                    "NotImplementedError: Make sure CELERY_RESULT_BACKEND is set"
-                ),
+                ServiceUnavailable("NotImplementedError: Make sure CELERY_RESULT_BACKEND is set"),
                 exc,
             )
         except BaseException as exc:
@@ -39,9 +37,7 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
             worker, response = list(result.items())[0]
             if response != self.CORRECT_PING_RESPONSE:
                 self.add_error(
-                    ServiceUnavailable(
-                        f"Celery worker {worker} response was incorrect"
-                    ),
+                    ServiceUnavailable(f"Celery worker {worker} response was incorrect"),
                 )
                 continue
             active_workers.append(worker)
@@ -50,14 +46,12 @@ class CeleryPingHealthCheck(BaseHealthCheckBackend):
             self._check_active_queues(active_workers)
 
     def _check_active_queues(self, active_workers):
-        defined_queues = getattr(app.conf, "task_queues", None) or getattr(
-            app.conf, "CELERY_QUEUES", None
-        )
+        defined_queues = getattr(app.conf, "task_queues", None) or getattr(app.conf, "CELERY_QUEUES", None)
 
         if not defined_queues:
             return
 
-        defined_queues = set([queue.name for queue in defined_queues])
+        defined_queues = {queue.name for queue in defined_queues}
         active_queues = set()
 
         for queues in app.control.inspect(active_workers).active_queues().values():

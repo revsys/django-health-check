@@ -1,8 +1,22 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from health_check.contrib.db_heartbeat.backends import DatabaseHeartBeatCheck
+from health_check.contrib.db_heartbeat.backends import DatabaseHeartBeatCheck, SelectOne
 from health_check.exceptions import ServiceUnavailable
+
+
+class TestSelectOne:
+    def test_as_sql(self):
+        select_one = SelectOne()
+        sql, params = select_one.as_sql(None, None)
+        assert sql == "SELECT 1"
+        assert not params
+
+    def test_as_oracle(self):
+        select_one = SelectOne()
+        sql, params = select_one.as_oracle(None, None)
+        assert sql == "SELECT 1 FROM DUAL"
+        assert not params
 
 
 class TestDatabaseHeartBeatCheck(unittest.TestCase):
