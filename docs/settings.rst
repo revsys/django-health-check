@@ -121,9 +121,9 @@ Using `django.settings` you may exert more fine-grained control over the behavio
 Threading
 -------------------
 
-Django Health Check runs each check in `its own thread<https://github.com/revsys/django-health-check/blob/8f7e966e6dc6c7773f2340deabb4f0e2a2ab0873/health_check/mixins.py#L87>`_ by default.
+Django Health Check runs each check in a separate thread by default to improve performance.
 
-This behavior can be disabled with:
+In some cases, this might cause unwanted side effects and can be disabled with:
 
 .. code:: python
 
