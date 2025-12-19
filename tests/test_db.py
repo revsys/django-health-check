@@ -82,10 +82,7 @@ class HealthCheckDatabaseTests(TestCase):
 
 
 class MultipleDatabasesTests(TestCase):
-    """
-    Tests database specific features.
-    Ensures that all databases are registered as their own backend and each backend runs in its own database.
-    """
+    """Ensures all databases are registered as their own backend and each backend runs in its own database."""
 
     def test_all_databases_registered(self):
         check_mixin = CheckMixin()

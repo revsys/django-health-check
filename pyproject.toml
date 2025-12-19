@@ -10,7 +10,6 @@ authors = [
   { name = "Kristian Ollegaard", email = "kristian@oellegaard.com" },
   { name = "Johannes Maron", email = "johannes@maron.family" }
 ]
-homepage = "https://github.com/revsys/django-health-check"
 keywords = ["django", "postgresql"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -42,7 +41,20 @@ dependencies = [
   "Django>=4.2",
 ]
 
-[project.optional-dependencies]
+[project.urls]
+# https://packaging.python.org/en/latest/specifications/well-known-project-urls/#well-known-labels
+Homepage = "https://django-health-check.readthedocs.io/"
+Changelog = "https://github.com/revsys/django-health-check/releases"
+Source = "https://github.com/revsys/django-health-check"
+Releasenotes = "https://github.com/revsys/django-health-check/releases/latest"
+Documentation = "https://django-health-check.readthedocs.io/"
+Issues = "https://github.com/revsys/django-health-check/issues"
+
+[dependency-groups]
+dev = [
+  { include-group = "test" },
+  { include-group = "docs" },
+]
 test = [
   "pytest",
   "pytest-cov",
@@ -52,10 +64,7 @@ test = [
   "django-storages",
   "boto3",
 ]
-docs = ["sphinx"]
-lint = [
-  "ruff==0.11.13",
-]
+docs = ["sphinx", "furo"]
 
 [tool.flit.module]
 name = "health_check"
@@ -64,26 +73,18 @@ name = "health_check"
 write_to = "health_check/_version.py"
 
 [tool.pytest.ini_options]
-addopts = "--nomigrations --reuse-db --strict-markers"
+addopts = "--nomigrations --cov --reuse-db --strict-markers --cov-report=xml --cov-report=term --doctest-modules"
+testpaths = [
+  "tests",
+]
 DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
 norecursedirs = ".git"
 python_files = "test_*.py"
 xfail_strict = true
 
-[tool.coverage.run]
-branch = true
-omit = [
-  "*/migrations/*",
-  "*/tests/*",
-  "*/test_*.py",
-  ".eggs/*"
-]
-
 [tool.coverage.report]
-ignore_errors = true
 show_missing = true
 skip_covered = true
-sort = "Cover"
 
 [tool.ruff]
 line-length = 120
