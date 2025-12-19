@@ -2,6 +2,7 @@ import copy
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 
+from django.db import connections
 from django.http import Http404
 
 from health_check.conf import HEALTH_CHECK
@@ -58,9 +59,9 @@ class CheckMixin:
             try:
                 return plugin
             finally:
-                from django.db import connections
-
-                connections.close_all()
+                if not HEALTH_CHECK["DISABLE_THREADING"]:
+                    # DB connections are thread-local so we need to close them here
+                    connections.close_all()
 
         def _collect_errors(plugin):
             if plugin.critical_service:
