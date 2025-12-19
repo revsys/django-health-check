@@ -59,6 +59,13 @@ class TestCheckMixin:
             Checker().run_check()
             tpe.assert_called()
 
+        # Ensure ThreadPoolExecutor is used
+        with patch(
+            "django.db.connections.close_all",
+        ) as close_all:
+            Checker().run_check()
+            close_all.assert_called()
+
     def test_run_check_threading_disabled(self, monkeypatch):
         """Ensure threading not used when disabled."""
         # Ensure threading is disabled.
@@ -68,3 +75,10 @@ class TestCheckMixin:
         with patch("health_check.mixins.ThreadPoolExecutor") as tpe:
             Checker().run_check()
             tpe.assert_not_called()
+
+            # Ensure ThreadPoolExecutor is used
+            with patch(
+                "django.db.connections.close_all",
+            ) as close_all:
+                Checker().run_check()
+                close_all.assert_not_called()

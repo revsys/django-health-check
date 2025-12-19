@@ -60,8 +60,7 @@ class CheckMixin:
                 return plugin
             finally:
                 if not HEALTH_CHECK["DISABLE_THREADING"]:
-                    # If this connection was opened by the child thread,
-                    # it must be manually closed.
+                    # DB connections are thread-local so we need to close them here
                     connections.close_all()
 
         def _collect_errors(plugin):
