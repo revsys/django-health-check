@@ -1,7 +1,18 @@
 from django.db import connection
+from django.db.models import Expression
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
+
+
+class SelectOne(Expression):
+    """An expression that represents a simple SELECT 1; query."""
+
+    def as_sql(self, compiler, connection):
+        return "SELECT 1", []
+
+    def as_oracle(self, compiler, connection):
+        return "SELECT 1 FROM DUAL", []
 
 
 class DatabaseHeartBeatCheck(BaseHealthCheckBackend):
@@ -10,11 +21,9 @@ class DatabaseHeartBeatCheck(BaseHealthCheckBackend):
     def check_status(self):
         try:
             result = None
+            compiler = connection.ops.compiler("SQLCompiler")(SelectOne(), connection, None)
             with connection.cursor() as cursor:
-                if cursor.db.vendor == 'oracle':
-                    cursor.execute("SELECT 1 FROM DUAL;")
-                else:
-                    cursor.execute("SELECT 1;")
+                cursor.execute(compiler.compile(SelectOne()))
                 result = cursor.fetchone()
 
             if result != (1,):
