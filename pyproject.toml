@@ -73,26 +73,18 @@ name = "health_check"
 write_to = "health_check/_version.py"
 
 [tool.pytest.ini_options]
-addopts = "--nomigrations --reuse-db --strict-markers"
+addopts = "--nomigrations --cov --reuse-db --strict-markers --cov-report=xml --cov-report=term --doctest-modules"
+testpaths = [
+  "tests",
+]
 DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
 norecursedirs = ".git"
 python_files = "test_*.py"
 xfail_strict = true
 
-[tool.coverage.run]
-branch = true
-omit = [
-  "*/migrations/*",
-  "*/tests/*",
-  "*/test_*.py",
-  ".eggs/*"
-]
-
 [tool.coverage.report]
-ignore_errors = true
 show_missing = true
 skip_covered = true
-sort = "Cover"
 
 [tool.ruff]
 line-length = 120
