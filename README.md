@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://github.com/codingjoe/django-health-check/raw/main/docs/images/logo-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="https://github.com/codingjoe/django-health-check/raw/main/docs/images/logo-light.svg">
-    <img alt="Django django-health-check: Lean workflow automation for machines with hearts" src="https://github.com/codingjoe/django-health-check/raw/main/docs/images/logo-light.svg">
+    <img alt="Django HealthCheck: Pluggable health checks for Django applications" src="https://github.com/codingjoe/django-health-check/raw/main/docs/images/logo-light.svg">
   </picture>
 <br>
   <a href="https://django-health-check.rtfd.io">Documentation</a> |
