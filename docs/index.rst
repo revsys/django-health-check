@@ -18,7 +18,7 @@ anomalous behavior is detected.
 
 `Documentation`_ | `Issues`_ | `Changelog`_ | `Funding`_ 💚
 
-.. _documentation: https://django-health-check.rtfd.io/
+.. _documentation: https://codingjoe.dev/django-health-check/
 .. _issues: https://github.com/codingjoe/django-health-check/issues/new/choose
 .. _changelog: https://github.com/codingjoe/django-health-check/releases
 .. _funding: https://github.com/sponsors/codingjoe
