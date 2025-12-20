@@ -5,7 +5,7 @@
     <img alt="Django HealthCheck: Pluggable health checks for Django applications" src="https://github.com/codingjoe/django-health-check/raw/main/docs/images/logo-light.svg">
   </picture>
 <br>
-  <a href="https://django-health-check.rtfd.io">Documentation</a> |
+  <a href="https://codingjoe.dev/django-health-check/">Documentation</a> |
   <a href="https://github.com/codingjoe/django-health-check/issues/new/choose">Issues</a> |
   <a href="https://github.com/codingjoe/django-health-check/releases">Changelog</a> |
   <a href="https://github.com/sponsors/codingjoe">Funding</a> 💚
