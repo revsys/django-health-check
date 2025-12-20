@@ -314,7 +314,7 @@ class TestMainView:
 
     @pytest.mark.django_db(transaction=True)
     def test_non_native_atomic_request(self, settings, monkeypatch, client):
-        # See also: https://github.com/revsys/django-health-check/pull/469
+        # See also: https://github.com/codingjoe/django-health-check/pull/469
         settings.DATABASES["default"]["ATOMIC_REQUESTS"] = True
         # disable the ensure_connection
         monkeypatch.setattr(
