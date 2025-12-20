@@ -1,3 +1,13 @@
+.. image:: https://github.com/codingjoe/django-health-check/raw/main/docs/images/logo-light.svg
+   :align: center
+   :alt: Django HealthCheck: Pluggable health checks for Django applications
+   :class: only-light
+
+.. image:: https://github.com/codingjoe/django-health-check/raw/main/docs/images/logo-dark.svg
+   :align: center
+   :alt: Django HealthCheck: Pluggable health checks for Django applications
+   :class: only-dark
+
 django-health-check
 ===================
 
@@ -5,6 +15,13 @@ django-health-check
 
 This project checks for various conditions and provides reports when
 anomalous behavior is detected.
+
+`Documentation`_ | `Issues`_ | `Changelog`_ | `Funding`_ 💚
+
+.. _documentation: https://django-health-check.rtfd.io/
+.. _issues: https://github.com/codingjoe/django-health-check/issues/new/choose
+.. _changelog: https://github.com/codingjoe/django-health-check/releases
+.. _funding: https://github.com/sponsors/codingjoe
 
 The following health checks are bundled with this project:
 
