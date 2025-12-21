@@ -65,7 +65,13 @@ test = [
   "django-storages",
   "boto3",
 ]
-docs = ["sphinx", "furo"]
+docs = [
+  "mkdocs",
+  "mkdocstrings[python]>=0.18",
+  "mkdocs-material",
+  "markdown-callouts",
+  "Pygments",
+]
 
 [tool.flit.module]
 name = "health_check"

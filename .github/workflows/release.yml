@@ -9,10 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
-      - run: uv run --group docs sphinx-build -b html docs docs/_build
+      - run: uv run mkdocs build
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: docs/_build
+          path: site
   gh-page-deploy:
     needs: gh-page-build
     permissions:

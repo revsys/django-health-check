@@ -1,0 +1,60 @@
+site_name: Django HealthCheck
+repo_url: https://github.com/codingjoe/django-health-check
+watch:
+  - docs/
+  - mkdocs.yml
+  - health_check/
+nav:
+  - Home: index.md
+  - Installation: install.md
+  - Usage: usage.md
+  - Settings: settings.md
+  - Contrib: contrib.md
+plugins:
+  - autorefs
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          load_external_modules: true
+          options:
+            docstring_style: google
+          inventories:
+            - https://docs.python.org/3/objects.inv
+            - https://docs.djangoproject.com/en/stable/objects.inv
+            - https://www.psycopg.org/psycopg3/docs/objects.inv
+            - https://docs.celeryq.dev/en/stable/objects.inv
+            - https://psutil.readthedocs.io/en/latest/objects.inv
+            - https://django-storages.readthedocs.io/en/latest/objects.inv
+            - https://redis.readthedocs.io/en/stable/objects.inv
+theme:
+  name: material
+  logo: images/icon.svg
+  palette:
+    - media: "(prefers-color-scheme)"
+      primary: teal
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: teal
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: teal
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  features:
+    - search.suggest
+    - search.share
+    - content.code.select
+markdown_extensions:
+  - github-callouts
+  - pymdownx.highlight:
+      use_pygments: true
+  - pymdownx.superfences
