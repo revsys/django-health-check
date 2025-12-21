@@ -31,7 +31,7 @@ to `None`.
 ```python
 HEALTH_CHECK = {
     'DISK_USAGE_MAX': 90,  # percent
-    'MEMORY_MIN' = 100,    # in MB
+    'MEMORY_MIN': 100,     # in MB
 }
 ```
 
@@ -51,14 +51,14 @@ can be processed frequently all the time.
 
 `health_check.contrib.celery_ping` is a
 different check. It checks that each predefined Celery task queue has a
-consumer (i.e. worker) that responds <span class="title-ref">{"ok":
-"pong"}</span> in
+consumer (i.e. worker) that responds `{"ok": "pong"}` in
 `HEALTHCHECK_CELERY_PING_TIMEOUT` seconds.
 The default for this is one second. You may override that in your Django
+settings module. This check is suitable for use cases which don't
 settings module. This check is suitable for use cases which don't
 require that tasks are executed almost instantly but require that they
 are going to be executed in sometime the future i.e. that the worker
 process is alive and processing tasks all the time.
 
 You may also use both of them. To use these checks add them to
-`ROOT_URLCONF` in your Django settings module.
+`INSTALLED_APPS` in your Django settings module.

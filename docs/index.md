@@ -21,11 +21,7 @@
 This project checks for various conditions and provides reports when
 anomalous behavior is detected.
 
-[Documentation](https://codingjoe.dev/django-health-check/) |
-[Issues](https://github.com/codingjoe/django-health-check/issues/new/choose)
-|
-[Changelog](https://github.com/codingjoe/django-health-check/releases)
-| [Funding](https://github.com/sponsors/codingjoe) 💚
+[Documentation](https://codingjoe.dev/django-health-check/) | [Issues](https://github.com/codingjoe/django-health-check/issues/new/choose) | [Changelog](https://github.com/codingjoe/django-health-check/releases) | [Funding](https://github.com/sponsors/codingjoe) 💚
 
 The following health checks are bundled with this project:
 

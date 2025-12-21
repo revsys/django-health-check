@@ -9,7 +9,7 @@ Treats `ServiceWarning` as errors, meaning they will cause the views to
 respond with a 500 status code. Default is
 `True`. If set to
 `False` warnings will be displayed in the
-template on in the JSON response but the status code will remain a 200.
+template or in the JSON response but the status code will remain a 200.
 
 ## Security
 
@@ -68,7 +68,7 @@ to `None`.
 ```python
 HEALTH_CHECK = {
     'DISK_USAGE_MAX': 90,  # percent
-    'MEMORY_MIN' = 100,    # in MB
+    'MEMORY_MIN': 100,     # in MB
 }
 ```
 
@@ -97,7 +97,7 @@ fine-grained control over the behavior of the celery health check
 | `HEALTHCHECK_CELERY_RESULT_TIMEOUT` | Number | `3`     | Specifies the maximum total time for a task to complete and return a result, including queue time.                               |
 | `HEALTHCHECK_CELERY_PRIORITY`       | Number | `None`  | Specifies the healthcheck task priority.                                                                                         |
 
-Additional Settings
+## Additional settings
 
 ## Threading
 
