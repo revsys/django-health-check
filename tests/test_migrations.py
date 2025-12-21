@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
+import pytest
 from django.db.migrations import Migration
-from django.test import TestCase
 
 from health_check.contrib.migrations.backends import MigrationsHealthCheck
 
@@ -9,7 +9,8 @@ from health_check.contrib.migrations.backends import MigrationsHealthCheck
 class MockMigration(Migration): ...
 
 
-class TestMigrationsHealthCheck(TestCase):
+@pytest.mark.django_db
+class TestMigrationsHealthCheck:
     def test_check_status_work(self):
         with patch(
             "health_check.contrib.migrations.backends.MigrationsHealthCheck.get_migration_plan",
@@ -17,7 +18,7 @@ class TestMigrationsHealthCheck(TestCase):
         ):
             backend = MigrationsHealthCheck()
             backend.run_check()
-            self.assertFalse(backend.errors)
+            assert not backend.errors
 
     def test_check_status_raises_error_if_there_are_migrations(self):
         with patch(
@@ -26,4 +27,4 @@ class TestMigrationsHealthCheck(TestCase):
         ):
             backend = MigrationsHealthCheck()
             backend.run_check()
-            self.assertTrue(backend.errors)
+            assert backend.errors

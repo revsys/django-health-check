@@ -3,9 +3,9 @@ from io import BytesIO
 from unittest import mock
 
 import django
+import pytest
 from django.core.files.base import File
 from django.core.files.storage import Storage
-from django.test import TestCase, override_settings
 
 from health_check.contrib.s3boto3_storage.backends import S3Boto3StorageHealthCheck
 from health_check.exceptions import ServiceUnavailable
@@ -118,7 +118,7 @@ def get_file_content(*args, **kwargs):
     "health_check.storage.backends.StorageHealthCheck.get_file_content",
     get_file_content,
 )
-class HealthCheckStorageTests(TestCase):
+class TestHealthCheckStorage:
     """
     Tests health check behavior with a mocked storage backend.
 
@@ -128,26 +128,26 @@ class HealthCheckStorageTests(TestCase):
     def test_get_storage(self):
         """Test get_storage method returns None on the base class, but a Storage instance on default."""
         base_storage = StorageHealthCheck()
-        self.assertIsNone(base_storage.get_storage())
+        assert base_storage.get_storage() is None
 
         default_storage = DefaultFileStorageHealthCheck()
-        self.assertIsInstance(default_storage.get_storage(), Storage)
+        assert isinstance(default_storage.get_storage(), Storage)
 
     @unittest.skipUnless((4, 2) <= django.VERSION < (5, 0), "Only for Django 4.2 - 5.0")
-    def test_get_storage_django_between_42_and_50(self):
+    def test_get_storage_django_between_42_and_50(self, settings):
         """Check that the old DEFAULT_FILE_STORAGE setting keeps being supported."""
         # Note: this test doesn't work on Django<4.2 because the setting value is
         # evaluated when the class attribute DefaultFileStorageHealthCheck.store is
         # read, which is at import time, before we can mock the setting.
-        with self.settings(DEFAULT_FILE_STORAGE="tests.test_storage.CustomStorage"):
-            default_storage = DefaultFileStorageHealthCheck()
-            self.assertIsInstance(default_storage.get_storage(), CustomStorage)
+        settings.DEFAULT_FILE_STORAGE = "tests.test_storage.CustomStorage"
+        default_storage = DefaultFileStorageHealthCheck()
+        assert isinstance(default_storage.get_storage(), CustomStorage)
 
-    def test_get_storage_django_42_plus(self):
+    def test_get_storage_django_42_plus(self, settings):
         """Check that the new STORAGES setting is supported."""
-        with self.settings(STORAGES={"default": {"BACKEND": "tests.test_storage.CustomStorage"}}):
-            default_storage = DefaultFileStorageHealthCheck()
-            self.assertIsInstance(default_storage.get_storage(), CustomStorage)
+        settings.STORAGES = {"default": {"BACKEND": "tests.test_storage.CustomStorage"}}
+        default_storage = DefaultFileStorageHealthCheck()
+        assert isinstance(default_storage.get_storage(), CustomStorage)
 
     @mock.patch(
         "health_check.storage.backends.DefaultFileStorageHealthCheck.storage",
@@ -165,7 +165,7 @@ class HealthCheckStorageTests(TestCase):
             default_storage_open,
             mock.mock_open(read_data=default_storage_health.get_file_content()),
         ):
-            self.assertTrue(default_storage_health.check_status())
+            assert default_storage_health.check_status()
 
     @mock.patch(
         "health_check.storage.backends.storages",
@@ -174,7 +174,7 @@ class HealthCheckStorageTests(TestCase):
     def test_file_does_not_exist(self):
         """Test check_status raises ServiceUnavailable when file is not saved."""
         default_storage_health = DefaultFileStorageHealthCheck()
-        with self.assertRaises(ServiceUnavailable):
+        with pytest.raises(ServiceUnavailable):
             default_storage_health.check_status()
 
     @mock.patch(
@@ -184,21 +184,20 @@ class HealthCheckStorageTests(TestCase):
     def test_file_not_deleted(self):
         """Test check_status raises ServiceUnavailable when file is not deleted."""
         default_storage_health = DefaultFileStorageHealthCheck()
-        with self.assertRaises(ServiceUnavailable):
+        with pytest.raises(ServiceUnavailable):
             default_storage_health.check_status()
 
 
 @mock.patch("storages.backends.s3boto3.S3Boto3Storage", new=MockS3Boto3Storage)
-@override_settings(
-    STORAGES={
-        "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
-    }
-)
-class HealthCheckS3Boto3StorageTests(TestCase):
+@pytest.mark.django_db
+class TestHealthCheckS3Boto3Storage:
     """Tests health check behavior with a mocked S3Boto3Storage backend."""
 
-    def test_check_delete_success(self):
+    def test_check_delete_success(self, settings):
         """Test that check_delete correctly deletes a file when S3Boto3Storage is working."""
+        settings.STORAGES = {
+            "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        }
         health_check = S3Boto3StorageHealthCheck()
         mock_storage = health_check.get_storage()
         file_name = "testfile.txt"
@@ -206,35 +205,47 @@ class HealthCheckS3Boto3StorageTests(TestCase):
         mock_storage.save(file_name, content)
 
         health_check.check_delete(file_name)
-        self.assertFalse(mock_storage.exists(file_name))
+        assert not mock_storage.exists(file_name)
 
-    def test_check_delete_failure(self):
+    def test_check_delete_failure(self, settings):
         """Test that check_delete raises ServiceUnavailable when deletion fails."""
+        settings.STORAGES = {
+            "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        }
         with mock.patch.object(
             MockS3Boto3Storage,
             "delete",
             side_effect=Exception("Failed to delete file."),
         ):
             health_check = S3Boto3StorageHealthCheck()
-            with self.assertRaises(ServiceUnavailable):
+            with pytest.raises(ServiceUnavailable):
                 health_check.check_delete("testfile.txt")
 
-    def test_check_status_working(self):
+    def test_check_status_working(self, settings):
         """Test check_status returns True when S3Boto3Storage can save and delete files."""
+        settings.STORAGES = {
+            "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        }
         health_check = S3Boto3StorageHealthCheck()
-        self.assertTrue(health_check.check_status())
+        assert health_check.check_status()
 
-    def test_check_status_failure_on_save(self):
+    def test_check_status_failure_on_save(self, settings):
         """Test check_status raises ServiceUnavailable when file cannot be saved."""
+        settings.STORAGES = {
+            "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        }
         with mock.patch.object(MockS3Boto3Storage, "save", side_effect=Exception("Failed to save file.")):
             health_check = S3Boto3StorageHealthCheck()
-            with self.assertRaises(ServiceUnavailable):
+            with pytest.raises(ServiceUnavailable):
                 health_check.check_status()
 
-    def test_check_status_failure_on_delete(self):
+    def test_check_status_failure_on_delete(self, settings):
         """Test check_status raises ServiceUnavailable when file cannot be deleted."""
+        settings.STORAGES = {
+            "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        }
         with mock.patch.object(MockS3Boto3Storage, "exists", new_callable=mock.PropertyMock) as mock_exists:
             mock_exists.return_value = False
             health_check = S3Boto3StorageHealthCheck()
-            with self.assertRaises(ServiceUnavailable):
+            with pytest.raises(ServiceUnavailable):
                 health_check.check_status()

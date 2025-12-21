@@ -1,8 +1,8 @@
 from unittest.mock import patch
 
+import pytest
 from django.db import DatabaseError, IntegrityError
 from django.db.models import Model
-from django.test import TestCase
 
 from health_check.db.backends import DatabaseBackend
 
@@ -34,7 +34,7 @@ def raise_(ex):
     raise ex
 
 
-class HealthCheckDatabaseTests(TestCase):
+class TestHealthCheckDatabase:
     """
     Tests health check behavior with a mocked database backend.
 
@@ -48,7 +48,7 @@ class HealthCheckDatabaseTests(TestCase):
     def test_check_status_works(self):
         db_backend = DatabaseBackend()
         db_backend.check_status()
-        self.assertFalse(db_backend.errors)
+        assert not db_backend.errors
 
     @patch(
         "health_check.db.backends.TestModel.objects.create",
@@ -57,8 +57,8 @@ class HealthCheckDatabaseTests(TestCase):
     def test_raise_integrity_error(self):
         db_backend = DatabaseBackend()
         db_backend.run_check()
-        self.assertTrue(db_backend.errors)
-        self.assertIn("unexpected result: Integrity Error", db_backend.pretty_status())
+        assert db_backend.errors
+        assert "unexpected result: Integrity Error" in db_backend.pretty_status()
 
     @patch(
         "health_check.db.backends.TestModel.objects.create",
@@ -67,8 +67,8 @@ class HealthCheckDatabaseTests(TestCase):
     def test_raise_database_error(self):
         db_backend = DatabaseBackend()
         db_backend.run_check()
-        self.assertTrue(db_backend.errors)
-        self.assertIn("unavailable: Database error", db_backend.pretty_status())
+        assert db_backend.errors
+        assert "unavailable: Database error" in db_backend.pretty_status()
 
     @patch(
         "health_check.db.backends.TestModel.objects.create",
@@ -76,5 +76,5 @@ class HealthCheckDatabaseTests(TestCase):
     )
     def test_raise_exception(self):
         db_backend = DatabaseBackend()
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             db_backend.run_check()
