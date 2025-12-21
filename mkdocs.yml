@@ -41,7 +41,7 @@ theme:
       scheme: default
       toggle:
         icon: material/brightness-7
-        name: Switch to dark modeserv
+        name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       primary: teal
       scheme: slate
