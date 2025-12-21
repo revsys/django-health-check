@@ -30,6 +30,7 @@ plugins:
             - https://redis.readthedocs.io/en/stable/objects.inv
 theme:
   name: material
+  logo: images/icon.svg
   palette:
     - media: "(prefers-color-scheme)"
       primary: teal
