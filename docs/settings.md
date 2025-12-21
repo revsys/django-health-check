@@ -97,8 +97,6 @@ fine-grained control over the behavior of the celery health check
 | `HEALTHCHECK_CELERY_RESULT_TIMEOUT` | Number | `3`     | Specifies the maximum total time for a task to complete and return a result, including queue time.                               |
 | `HEALTHCHECK_CELERY_PRIORITY`       | Number | `None`  | Specifies the healthcheck task priority.                                                                                         |
 
-## Additional settings
-
 ## Threading
 
 Django Health Check runs each check in a separate thread by default to
