@@ -1,4 +1,3 @@
-import unittest
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -21,7 +20,7 @@ class TestSelectOne:
         assert not params
 
 
-class TestDatabaseHeartBeatCheck(unittest.TestCase):
+class TestDatabaseHeartBeatCheck:
     @pytest.mark.django_db
     def test_check_status__success(self):
         health_check = DatabaseHeartBeatCheck()
@@ -37,12 +36,12 @@ class TestDatabaseHeartBeatCheck(unittest.TestCase):
         try:
             health_check.check_status()
         except Exception as e:
-            self.fail(f"check_status() raised an exception unexpectedly: {e}")
+            pytest.fail(f"check_status() raised an exception unexpectedly: {e}")
 
     @patch("health_check.contrib.db_heartbeat.backends.connection")
     def test_check_status_service_unavailable(self, mock_connection):
         mock_connection.cursor.side_effect = Exception("Database error")
 
         health_check = DatabaseHeartBeatCheck()
-        with self.assertRaises(ServiceUnavailable):
+        with pytest.raises(ServiceUnavailable):
             health_check.check_status()
