@@ -83,6 +83,9 @@ norecursedirs = ".git"
 python_files = "test_*.py"
 xfail_strict = true
 
+[tool.coverage.run]
+source = ["health_check"]
+
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
