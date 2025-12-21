@@ -135,7 +135,7 @@ urlpatterns = [
 ## Django command
 
 You can run the Django command `health_check` to perform your health
-checks via the command line, or periodically with a cron, as follow:
+checks via the command line, or periodically with a cron, as follows:
 
 ```shell
 django-admin health_check

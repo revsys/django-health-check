@@ -16,7 +16,7 @@ template or in the JSON response but the status code will remain a 200.
 Django health check can be used as a possible DOS attack vector as it
 can put your system under a lot of stress. As a default the view is also
 not cached by CDNs. Therefore, we recommend to use a secure token to
-protect you application servers from an attacker.
+protect your application servers from an attacker.
 
 1. Setup HTTPS. Seriously...
 1. Add a secure token to your URL.

@@ -55,9 +55,9 @@ consumer (i.e. worker) that responds `{"ok": "pong"}` in
 `HEALTHCHECK_CELERY_PING_TIMEOUT` seconds.
 The default for this is one second. You may override that in your Django
 settings module. This check is suitable for use cases which don't
-settings module. This check is suitable for use cases which don't
+
 require that tasks are executed almost instantly but require that they
-are going to be executed in sometime the future i.e. that the worker
+are going to be executed some time in the future i.e. that the worker
 process is alive and processing tasks all the time.
 
 You may also use both of them. To use these checks add them to
