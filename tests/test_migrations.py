@@ -6,7 +6,8 @@ from django.db.migrations import Migration
 from health_check.contrib.migrations.backends import MigrationsHealthCheck
 
 
-class MockMigration(Migration): ...
+class MockMigration(Migration):
+    pass
 
 
 @pytest.mark.django_db
