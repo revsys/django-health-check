@@ -73,6 +73,8 @@ spec:
                 - python
                 - manage.py
                 - health_check
+                - --subset
+                - container
             periodSeconds: 60
             timeoutSeconds: 10
 ```
