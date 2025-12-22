@@ -17,14 +17,14 @@ class RabbitMQHealthCheck(BaseHealthCheckBackend):
 
     def check_status(self):
         """Check RabbitMQ service by opening and closing a broker channel."""
-        logger.debug("Checking for a broker_url on django settings...")
+        logger.debug("Checking for a broker_url on django settings…")
 
         broker_url_setting_key = f"{self.namespace}_BROKER_URL" if self.namespace else "BROKER_URL"
         broker_url = getattr(settings, broker_url_setting_key, None)
 
-        logger.debug("Got %s as the broker_url. Connecting to rabbit...", broker_url)
+        logger.debug("Got %s as the broker_url. Connecting to rabbit…", broker_url)
 
-        logger.debug("Attempting to connect to rabbit...")
+        logger.debug("Attempting to connect to rabbit…")
         try:
             # conn is used as a context to release opened resources later
             with Connection(broker_url) as conn:

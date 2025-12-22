@@ -24,7 +24,7 @@ class Command(CheckMixin, BaseCommand):
 
         for plugin_identifier, plugin in self.filter_plugins(subset=subset).items():
             style_func = self.style.SUCCESS if not plugin.errors else self.style.ERROR
-            self.stdout.write(f"{plugin_identifier:<24} ... {style_func(plugin.pretty_status())}\n")
+            self.stdout.write(f"{plugin_identifier:<24} … {style_func(plugin.pretty_status())}\n")
 
         if errors:
             sys.exit(1)

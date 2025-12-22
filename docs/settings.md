@@ -18,7 +18,7 @@ can put your system under a lot of stress. As a default the view is also
 not cached by CDNs. Therefore, we recommend to use a secure token to
 protect your application servers from an attacker.
 
-1. Setup HTTPS. Seriously...
+1. Setup HTTPS. Seriously…
 1. Add a secure token to your URL.
 
 Create a secure token:
@@ -35,7 +35,7 @@ from django.urls import include, path
 
 
 urlpatterns = [
-    # ...
+    # …
     path("ht/super_secret_token/", include("health_check.urls")),
 ]
 ```

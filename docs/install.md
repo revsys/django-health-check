@@ -15,7 +15,7 @@ Add the health checker to a URL you want to use:
 from django.urls import include, path
 
 urlpatterns = [
-    # ...
+    # …
     path("ht/", include("health_check.urls")),
 ]
 ```
@@ -25,7 +25,7 @@ Add the `health_check` applications to your `INSTALLED_APPS`:
 ```python
 # settings.py
 INSTALLED_APPS = [
-    # ...
+    # …
     "health_check",  # required
     "health_check.db",  # stock Django health checkers
     "health_check.cache",

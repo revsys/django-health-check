@@ -9,6 +9,7 @@ nav:
   - Installation: install.md
   - Usage: usage.md
   - Settings: settings.md
+  - Containers: container.md
   - Contrib: contrib.md
 plugins:
   - autorefs
@@ -50,6 +51,8 @@ theme:
         icon: material/brightness-4
         name: Switch to system preference
   features:
+    - content.code.select
+    - content.code.copy
     - search.suggest
     - search.share
     - content.code.select

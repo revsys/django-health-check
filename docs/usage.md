@@ -107,7 +107,7 @@ class HealthCheckCustomView(MainView):
     def get(self, request, *args, **kwargs):
         plugins = []
         status = 200  # needs to be filled status you need
-        # ...
+        # …
         if "application/json" in request.META.get("HTTP_ACCEPT", ""):
             return self.render_to_response_json(plugins, status)
         return self.render_to_response(plugins, status)
@@ -127,7 +127,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # ...
+    # …
     path(r"^ht/$", views.HealthCheckCustomView.as_view(), name="health_check_custom"),
 ]
 ```
