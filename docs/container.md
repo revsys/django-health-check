@@ -8,7 +8,7 @@ Django HealthCheck can be integrated into various container orchestration system
 ## Subsets
 
 You may want to limit the checks performed by the health check command to a subset of all available checks.
-E.G. you might want to skip checks that are monitoring external services like databases, caches, or task queues.
+E.g. you might want to skip checks that are monitoring external services like databases, caches, or task queues.
 
 You can define subsets in your Django settings:
 
