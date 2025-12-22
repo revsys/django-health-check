@@ -3,7 +3,7 @@
 Django HealthCheck can be integrated into various container orchestration systems by defining health checks that utilize the `manage.py health_check` command. Below are examples for Containerfile/Dockerfile, Docker Compose, and Kubernetes.
 
 > [!TIP]
-> Utilizing the health check command is usually supperior to simple HTTP checks, as Django's `ALLOWED_HOSTS` settings and other middleware may interfere with HTTP-based health checks.
+> Utilizing the health check command is usually superior to simple HTTP checks, as Django's `ALLOWED_HOSTS` settings and other middleware may interfere with HTTP-based health checks.
 
 ## Subsets
 

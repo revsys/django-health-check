@@ -55,7 +55,7 @@ theme:
     - content.code.copy
     - search.suggest
     - search.share
-    - content.code.select
+
 markdown_extensions:
   - github-callouts
   - pymdownx.highlight:
