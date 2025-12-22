@@ -69,7 +69,7 @@ spec:
           image: my-django-image:latest
           livenessProbe:
             exec:
-                command:
+              command:
                 - python
                 - manage.py
                 - health_check
