@@ -10,13 +10,14 @@ from health_check.exceptions import ServiceReturnedUnexpectedResult, ServiceWarn
 host = socket.gethostname()
 
 DISK_USAGE_MAX = HEALTH_CHECK["DISK_USAGE_MAX"]
+DISK_USAGE_PATH = HEALTH_CHECK["DISK_USAGE_PATH"]
 MEMORY_MIN = HEALTH_CHECK["MEMORY_MIN"]
 
 
 class DiskUsage(BaseHealthCheckBackend):
     def check_status(self):
         try:
-            du = psutil.disk_usage("/")
+            du = psutil.disk_usage(DISK_USAGE_PATH)
             if DISK_USAGE_MAX and du.percent >= DISK_USAGE_MAX:
                 raise ServiceWarning(f"{host} {du.percent}% disk usage exceeds {DISK_USAGE_MAX}%")
         except ValueError as e:
