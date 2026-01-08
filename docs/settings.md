@@ -75,10 +75,27 @@ HEALTH_CHECK = {
 With the above default settings, warnings will be reported when disk
 utilization exceeds 90% or available memory drops below 100 MB.
 
+By default `psutil` assume the disk to check is available at `/` path.
+To use a different disk e.g. when the app is deployed in a
+container but the relevant disk is the host disk, update the dictionary
+above to include `DISK_USAGE_PATH` setting.
+
+```python
+HEALTH_CHECK = {
+    # existing settings
+    "DISK_USAGE_PATH": "/host/",  # string path to disk
+}
+```
+
 ### `DISK_USAGE_MAX`
 
 Specify the desired disk utilization threshold, in percent. When disk
 usage exceeds the specified value, a warning will be reported.
+
+### `DISK_USAGE_PATH`
+
+Specify the path to the desired disk for which utilization needs to be
+checked.
 
 ### `MEMORY_MIN`
 
