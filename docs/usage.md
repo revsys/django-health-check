@@ -46,12 +46,15 @@ $ curl -v -X GET http://www.example.com/ht/?format=json
 
 ## Writing a custom health check
 
-Writing a health check is quick and easy:
+You can write your own health checks by inheriting from [BaseHealthCheckBackend][health_check.backends.BaseHealthCheckBackend]
+and implementing the `check_status` method. For example:
 
 ```python
+import dataclasses
 from health_check.backends import BaseHealthCheckBackend
 
 
+@dataclasses.dataclass
 class MyHealthCheckBackend(BaseHealthCheckBackend):
     #: The status endpoints will respond with a 200 status code
     #: even if the check errors.
@@ -63,45 +66,24 @@ class MyHealthCheckBackend(BaseHealthCheckBackend):
         # raise a `HealthCheckException`,
         # similar to Django's form validation.
         pass
-
-    def identifier(self):
-        return self.__class__.__name__  # Display name on the endpoint.
 ```
 
-After writing a custom checker, register it in your app configuration:
-
-```python
-from django.apps import AppConfig
-
-from health_check.plugins import plugin_dir
-
-
-class MyAppConfig(AppConfig):
-    name = "my_app"
-
-    def ready(self):
-        from .backends import MyHealthCheckBackend
-
-        plugin_dir.register(MyHealthCheckBackend)
-```
-
-Make sure the application you write the checker into is registered in
-your `INSTALLED_APPS`.
+::: health_check.backends.BaseHealthCheckBackend
 
 ## Customizing output
 
-You can customize HTML or JSON rendering by inheriting from `MainView`
-in `health_check.views` and customizing the `template_name`, `get`,
+You can customize HTML or JSON rendering by inheriting from [HealthCheckView][health_check.views.HealthCheckView]
+and customizing the `template_name`, `get`,
 `render_to_response` and `render_to_response_json` properties:
 
 ```python
 # views.py
 from django.http import HttpResponse, JsonResponse
 
-from health_check.views import MainView
+from health_check.views import HealthCheckView
 
 
-class HealthCheckCustomView(MainView):
+class HealthCheckCustomView(HealthCheckView):
     template_name = "myapp/health_check_dashboard.html"  # customize the used templates
 
     def get(self, request, *args, **kwargs):
@@ -128,9 +110,15 @@ from . import views
 
 urlpatterns = [
     # ...
-    path(r"^ht/$", views.HealthCheckCustomView.as_view(), name="health_check_custom"),
+    path(
+        r"^ht/$",
+        views.HealthCheckCustomView.as_view(checks=["myapp.health_checks.MyHealthCheckBackend"]),
+        name="health_check_custom",
+    ),
 ]
 ```
+
+::: health_check.views.HealthCheckView
 
 ## Django command
 

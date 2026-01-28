@@ -1,28 +1,26 @@
+from __future__ import annotations
+
+import dataclasses
 import uuid
 
 from django.core.files.base import ContentFile
-from django.core.files.storage import InvalidStorageError, default_storage, storages
+from django.core.files.storage import InvalidStorageError, storages
 
 from health_check.backends import BaseHealthCheckBackend
 from health_check.exceptions import ServiceUnavailable
 
 
+@dataclasses.dataclass
 class StorageHealthCheck(BaseHealthCheckBackend):
     """
-    Tests the status of a `StorageBackend`.
+    Check file storage backends by saving, reading, and deleting a test file.
 
-    Can be extended to test any storage backend by subclassing:
+    Args:
+        storage_alias (str): The alias of the storage backend to check. Defaults to "default".
 
-        class MyStorageHealthCheck(StorageHealthCheck):
-            storage = 'some.other.StorageBackend'
-        plugin_dir.register(MyStorageHealthCheck)
-
-    storage must be either a string pointing to a storage class
-    (e.g 'django.core.files.storage.FileSystemStorage') or a Storage instance.
     """
 
-    storage_alias = None
-    storage = None
+    storage_alias: str = "default"
 
     def get_storage(self):
         try:
@@ -71,4 +69,3 @@ class StorageHealthCheck(BaseHealthCheckBackend):
 
 class DefaultFileStorageHealthCheck(StorageHealthCheck):
     storage_alias = "default"
-    storage = default_storage

@@ -16,7 +16,7 @@ class SelectOne(Expression):
 
 
 class DatabaseHeartBeatCheck(BaseHealthCheckBackend):
-    """Health check that runs a simple SELECT 1; query to test if the database connection is alive."""
+    """Check database connectivity by executing a simple SELECT 1 query."""
 
     def check_status(self):
         try:

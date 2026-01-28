@@ -1,4 +1,6 @@
+import dataclasses
 import logging
+import warnings
 from timeit import default_timer as timer
 
 from django.utils.translation import gettext_lazy as _  # noqa: N812
@@ -8,19 +10,32 @@ from health_check.exceptions import HealthCheckException
 logger = logging.getLogger("health-check")
 
 
+@dataclasses.dataclass()
 class BaseHealthCheckBackend:
-    critical_service = True
     """
-    Define if service is critical to the operation of the site.
+    Base class for all health check backends.
 
-    If set to ``True`` service failures return 500 response code on the
-    health check endpoint.
+    To create your own health check backend, subclass this class
+    and implement the ``check_status`` method.
     """
 
-    def __init__(self):
-        self.errors = []
+    critical_service: bool = dataclasses.field(init=False, default=True, repr=False)
+    errors: list[HealthCheckException] = dataclasses.field(init=False, default_factory=list)
 
     def check_status(self):
+        """
+        Execute the health check logic.
+
+        This method should be overridden by subclasses to implement
+        specific health check logic. If the check fails, it should
+        call `self.add_error` with an appropriate error message or
+        raise a `HealthCheckException`.
+
+        Raises:
+            HealthCheckException: If the health check fails.
+            ServiceWarning: If the health check encounters a warning condition.
+
+        """
         raise NotImplementedError
 
     def run_check(self):
@@ -62,3 +77,10 @@ class BaseHealthCheckBackend:
 
     def identifier(self):
         return self.__class__.__name__
+
+    def __repr__(self):
+        if hasattr(self, "identifier"):
+            warnings.warn("identifier method is deprecated, use __repr__ instead", DeprecationWarning)
+            return self.identifier()
+
+        return super().__repr__()

@@ -6,13 +6,15 @@ from django.db import connections
 from django.http import Http404
 
 from health_check.conf import HEALTH_CHECK
-from health_check.exceptions import ServiceWarning
+from health_check.exceptions import HealthCheckException, ServiceWarning
 from health_check.plugins import plugin_dir
 
 
 class CheckMixin:
-    _errors = None
+    _errors: list[HealthCheckException] = None
     _plugins = None
+    disable_threading: bool = HEALTH_CHECK["DISABLE_THREADING"]
+    warnings_as_errors: bool = HEALTH_CHECK["WARNINGS_AS_ERRORS"]
 
     @property
     def errors(self):
@@ -59,13 +61,13 @@ class CheckMixin:
             try:
                 return plugin
             finally:
-                if not HEALTH_CHECK["DISABLE_THREADING"]:
+                if not self.disable_threading:
                     # DB connections are thread-local so we need to close them here
                     connections.close_all()
 
         def _collect_errors(plugin):
             if plugin.critical_service:
-                if not HEALTH_CHECK["WARNINGS_AS_ERRORS"]:
+                if not self.warnings_as_errors:
                     errors.extend(e for e in plugin.errors if not isinstance(e, ServiceWarning))
                 else:
                     errors.extend(plugin.errors)
@@ -73,7 +75,7 @@ class CheckMixin:
         plugins = self.filter_plugins(subset=subset)
         plugin_instances = plugins.values()
 
-        if HEALTH_CHECK["DISABLE_THREADING"]:
+        if self.disable_threading:
             for plugin in plugin_instances:
                 _run(plugin)
                 _collect_errors(plugin)
