@@ -23,9 +23,6 @@ class CacheBackend(BaseHealthCheckBackend):
         self.backend = backend
         self.cache_key = getattr(settings, "HEALTHCHECK_CACHE_KEY", "djangohealthcheck_test")
 
-    def identifier(self):
-        return f"Cache backend: {self.backend}"
-
     def check_status(self):
         cache = caches[self.backend]
 

@@ -69,7 +69,7 @@ class TestCheckMixin:
     def test_run_check_threading_disabled(self, monkeypatch):
         """Ensure threading not used when disabled."""
         # Ensure threading is disabled.
-        monkeypatch.setitem(HEALTH_CHECK, "DISABLE_THREADING", True)
+        monkeypatch.setattr("health_check.mixins.CheckMixin.disable_threading", True)
 
         # Ensure ThreadPoolExecutor is not used
         with patch("health_check.mixins.ThreadPoolExecutor") as tpe:

@@ -96,8 +96,10 @@ class TestMainView:
         assert response["content-type"] == "text/html; charset=utf-8"
         assert b"Super Fail!" in response.content
 
-    def test_warning(self, client):
+    def test_warning(self, client, monkeypatch):
         class MyBackend(BaseHealthCheckBackend):
+            level = "warning"
+
             def check_status(self):
                 raise ServiceWarning("so so")
 
@@ -107,7 +109,7 @@ class TestMainView:
         assert response.status_code == 500, response.content.decode("utf-8")
         assert b"so so" in response.content, response.content
 
-        HEALTH_CHECK["WARNINGS_AS_ERRORS"] = False
+        monkeypatch.setattr("health_check.mixins.CheckMixin.warnings_as_errors", False)
 
         response = client.get(self.url)
         assert response.status_code == 200, response.content.decode("utf-8")
@@ -124,7 +126,7 @@ class TestMainView:
         plugin_dir.reset()
         plugin_dir.register(MyBackend)
         response = client.get(self.url)
-        assert response.status_code == 200, response.content.decode("utf-8")
+        assert response.status_code == 200, "Should be 200 OK for non-critical services"
         assert response["content-type"] == "text/html; charset=utf-8"
         assert b"Super Fail!" in response.content
 

@@ -3,6 +3,7 @@ import re
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
+from django.utils.module_loading import import_string
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
@@ -82,6 +83,8 @@ class MediaType:
 
 @method_decorator(transaction.non_atomic_requests, name="dispatch")
 class MainView(CheckMixin, TemplateView):
+    """Deprecated: Use HealthCheckView instead."""
+
     template_name = "health_check/index.html"
 
     @method_decorator(never_cache)
@@ -124,3 +127,21 @@ class MainView(CheckMixin, TemplateView):
             {str(plugin_identifier): str(p.pretty_status()) for plugin_identifier, p in plugins.items()},
             status=status,
         )
+
+
+class HealthCheckView(MainView):
+    """Perform health checks and return results in various formats."""
+
+    checks: list[str | tuple[str, dict]] = []
+
+    @property
+    def plugins(self):
+        for check in self.checks:
+            try:
+                check, options = check
+            except ValueError:
+                options = {}
+            if isinstance(check, str):
+                check = import_string(check)
+            plugin_instance = check(**options)
+            yield plugin_instance.identifier(), plugin_instance
